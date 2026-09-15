@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a2634">
+<title>МедКалькулятор</title>
+<style>
+  * { box-sizing: border-box; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: #f5f7fa; color: #1a2634; min-height: 100vh; padding: 16px; display: flex; justify-content: center; }
+  .app { max-width: 480px; width: 100%; }
+  .header { padding: 8px 4px 20px; }
+  .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+  .header p { color: #6b7a8a; font-size: 14px; margin-top: 4px; }
+  .search { width: 100%; padding: 14px 16px; border: 1.5px solid #e2e8f0; border-radius: 16px; font-size: 16px; margin-bottom: 16px; outline: none; background: white; }
+  .search:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); cursor: pointer; transition: 0.15s; border: 1.5px solid transparent; }
+  .card:hover { border-color: #3b82f6; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,0.12); }
+  .card:active { transform: scale(0.99); }
+  .card .name { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+  .card .meta { font-size: 13px; color: #6b7a8a; display: flex; gap: 8px; align-items: center; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+  .badge.formula { background: #dbeafe; color: #1e40af; }
+  .badge.questionnaire { background: #fce7f3; color: #9d174d; }
+  .back { background: none; border: none; font-size: 15px; color: #3b82f6; cursor: pointer; padding: 8px 0; margin-bottom: 8px; font-weight: 500; }
+  .page-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .page-sub { font-size: 14px; color: #6b7a8a; margin-bottom: 20px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 14px; font-weight: 500; color: #34495e; margin-bottom: 6px; }
+  .field input { width: 100%; padding: 14px 16px; border: 1.5px solid #e2e8f0; border-radius: 14px; font-size: 16px; outline: none; background: white; transition: 0.15s; }
+  .field input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  .question { background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 8px; }
+  .question .qtext { font-size: 15px; margin-bottom: 10px; line-height: 1.35; }
+  .options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .opt { padding: 10px 4px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; font-size: 13px; text-align: center; cursor: pointer; transition: 0.12s; font-weight: 500; color: #4a5a6a; }
+  .opt:hover { border-color: #cbd5e1; }
+  .opt.active { background: #1a2634; color: white; border-color: #1a2634; font-weight: 600; }
+  .btn { width: 100%; background: #1a2634; color: white; border: none; padding: 16px; border-radius: 40px; font-size: 17px; font-weight: 600; cursor: pointer; transition: 0.15s; margin-top: 12px; }
+  .btn:active { transform: scale(0.98); background: #2d3b4a; }
+  .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+  .result { margin-top: 20px; background: white; border-radius: 20px; padding: 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+  .result .value { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+  .result .unit { font-size: 18px; color: #6b7a8a; font-weight: 500; margin-left: 4px; }
+  .result .interp { font-size: 16px; font-weight: 600; margin-top: 12px; padding: 8px 16px; border-radius: 12px; display: inline-block; }
+  .result .source { font-size: 12px; color: #94a3b8; margin-top: 14px; }
+  .hidden { display: none !important; }
+  .loading { text-align: center; color: #6b7a8a; padding: 40px 0; }
+  .error-box { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 16px; border-radius: 14px; font-size: 14px; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="app"></div>
+</div>
+
+<script>
+// ---------- Состояние ----------
+let DATA = null;
+let currentCalc = null;
+let answers = {};
+
+// ---------- Загрузка данных ----------
+async function loadData() {
+  try {
+    const res = await fetch('formulas.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('Не удалось загрузить formulas.json');
+    DATA = await res.json();
+    renderList();
+  } catch (e) {
+    document.getElementById('app').innerHTML = `
+      <div class="error-box">
+        <b>Ошибка загрузки данных</b><br>
+        ${e.message}<br><br>
+        Убедитесь, что файл <code>formulas.json</code> лежит в той же папке, и вы открываете страницу через Live Server, а не двойным кликом.
+      </div>`;
+  }
+}
+
+// ---------- Экран списка ----------
+function renderList(filter = '') {
+  const f = filter.toLowerCase().trim();
+  const items = DATA.calculators.filter(c =>
+    !f || c.name.toLowerCase().includes(f) ||
+    (c.specialty || '').toLowerCase().includes(f) ||
+    (c.description || '').toLowerCase().includes(f)
+  );
+
+  let html = `
+    <div class="header">
+      <h1>🏥 МедКалькулятор</h1>
+      <p>v${DATA.version} · ${DATA.calculators.length} инструментов</p>
+    </div>
+    <input class="search" id="search" placeholder="Поиск по названию или специальности..." value="${filter}">
+  `;
+
+  if (items.length === 0) {
+    html += `<div class="loading">Ничего не найдено</div>`;
+  } else {
+    items.forEach(c => {
+      const badgeClass = c.type === 'formula' ? 'formula' : 'questionnaire';
+      const badgeText = c.type === 'formula' ? 'Формула' : 'Опросник';
+      html += `
+        <div class="card" onclick="openCalc('${c.id}')">
+          <div class="name">${c.name}</div>
+          <div class="meta">
+            <span class="badge ${badgeClass}">${badgeText}</span>
+            <span>${c.specialty || ''}</span>
+          </div>
+        </div>`;
+    });
+  }
+
+  document.getElementById('app').innerHTML = html;
+  const searchEl = document.getElementById('search');
+  if (searchEl) {
+    searchEl.addEventListener('input', e => renderList(e.target.value));
+    if (filter) { searchEl.focus(); searchEl.setSelectionRange(filter.length, filter.length); }
+  }
+}
+
+// ---------- Открытие калькулятора ----------
+function openCalc(id) {
+  currentCalc = DATA.calculators.find(c => c.id === id);
+  answers = {};
+  if (currentCalc.type === 'formula') renderFormula();
+  else renderQuestionnaire();
+}
+
+// ---------- Экран формулы ----------
+function renderFormula() {
+  const c = currentCalc;
+  let html = `
+    <button class="back" onclick="renderList()">← Назад</button>
+    <div class="page-title">${c.name}</div>
+    <div class="page-sub">${c.description || ''}</div>
+  `;
+  c.fields.forEach(f => {
+    html += `
+      <div class="field">
+        <label>${f.label}</label>
+        <input type="number" id="f_${f.id}" placeholder="${f.placeholder || ''}" step="${f.step || 'any'}" inputmode="decimal">
+      </div>`;
+  });
+  html += `<button class="btn" id="calcBtn">Рассчитать</button>`;
+  html += `<div id="resultZone"></div>`;
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('calcBtn').addEventListener('click', calcFormula);
+}
+
+function calcFormula() {
+  const c = currentCalc;
+  const vals = {};
+  let valid = true;
+  c.fields.forEach(f => {
+    const v = parseFloat(document.getElementById(`f_${f.id}`).value);
+    if (isNaN(v)) valid = false;
+    vals[f.id] = v;
+  });
+  const zone = document.getElementById('resultZone');
+  if (!valid) {
+    zone.innerHTML = `<div class="error-box">Заполните все поля числами</div>`;
+    return;
+  }
+
+  // Собираем тело функции по-другому — через объект window
+  let result;
+  try {
+    // Создаём временные переменные в window, потом удаляем
+    const keys = Object.keys(vals);
+    keys.forEach(k => { window['__var_' + k] = vals[k]; });
+    
+    // Подменяем имена в формуле на безопасные
+    let safeFormula = c.formula;
+    keys.forEach(k => {
+      const re = new RegExp('\\b' + k + '\\b', 'g');
+      safeFormula = safeFormula.replace(re, '__var_' + k);
+    });
+    
+    result = eval(safeFormula);
+    
+    keys.forEach(k => { delete window['__var_' + k]; });
+  } catch (e) {
+    zone.innerHTML = `<div class="error-box">Ошибка в формуле: ${e.message}</div>`;
+    return;
+  }
+
+  if (!isFinite(result)) {
+    zone.innerHTML = `<div class="error-box">Проверьте введённые данные (деление на ноль?)</div>`;
+    return;
+  }
+
+  const decimals = c.decimals !== undefined ? c.decimals : 1;
+  const display = result.toFixed(decimals);
+  const interp = (c.interpretation || []).find(i => result >= i.min && result < i.max);
+  const color = interp ? interp.color : '#1a2634';
+  const label = interp ? interp.label : '—';
+
+  zone.innerHTML = `
+    <div class="result">
+      <div class="value" style="color:${color}">${display}<span class="unit">${c.unit || ''}</span></div>
+      <div class="interp" style="background:${color}22; color:${color}">${label}</div>
+      ${c.source ? `<div class="source">Источник: ${c.source}</div>` : ''}
+    </div>`;
+}
+// ---------- Экран опросника ----------
+function renderQuestionnaire() {
+  const c = currentCalc;
+  let html = `
+    <button class="back" onclick="renderList()">← Назад</button>
+    <div class="page-title">${c.name}</div>
+    <div class="page-sub">${c.description || ''}</div>
+  `;
+  c.questions.forEach(q => {
+    html += `
+      <div class="question">
+        <div class="qtext">${q.text}</div>
+        <div class="options">
+          ${c.options.map(o => `<button class="opt" data-q="${q.id}" data-v="${o.value}" onclick="selectOpt(this)">${o.label}</button>`).join('')}
+        </div>
+      </div>`;
+  });
+  html += `<button class="btn" id="calcBtn" disabled>Посчитать результат</button>`;
+  html += `<div id="resultZone"></div>`;
+  document.getElementById('app').innerHTML = html;
+
+  document.getElementById('calcBtn').addEventListener('click', calcQuestionnaire);
+}
+
+function selectOpt(btn) {
+  const qid = btn.dataset.q;
+  const val = parseInt(btn.dataset.v);
+  answers[qid] = val;
+  btn.parentElement.querySelectorAll('.opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Проверка — все ли отвечено
+  const total = currentCalc.questions.length;
+  const done = Object.keys(answers).length;
+  const calcBtn = document.getElementById('calcBtn');
+  calcBtn.disabled = done < total;
+  calcBtn.textContent = done < total ? `Ответьте на все (${done}/${total})` : 'Посчитать результат';
+}
+
+function calcQuestionnaire() {
+  const c = currentCalc;
+  const total = c.questions.reduce((sum, q) => sum + (answers[q.id] || 0), 0);
+  const interp = (c.interpretation || []).find(i => total >= i.min && total < i.max);
+  const color = interp ? interp.color : '#1a2634';
+  const label = interp ? interp.label : '—';
+
+  document.getElementById('resultZone').innerHTML = `
+    <div class="result">
+      <div class="value" style="color:${color}">${total}<span class="unit">баллов</span></div>
+      <div class="interp" style="background:${color}22; color:${color}">${label}</div>
+      ${c.source ? `<div class="source">Источник: ${c.source}</div>` : ''}
+    </div>`;
+}
+
+// ---------- Старт ----------
+loadData();
+</script>
+</body>
+</html>
