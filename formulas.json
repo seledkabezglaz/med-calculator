@@ -1,6 +1,6 @@
 {
-  "version": "0.1-beta",
-  "updated": "2025-01-01",
+  "version": "0.2-beta",
+  "updated": "15-09-2026",
   "calculators": [
     {
       "id": "bmi",
@@ -8,11 +8,11 @@
       "name": "Индекс массы тела (ИМТ)",
       "specialty": "Антропометрия",
       "description": "Оценка соответствия веса и роста взрослого человека",
-      "fields": [
-        { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "70", "step": "0.1" },
-        { "id": "m_height", "label": "Рост (м)", "type": "number", "placeholder": "1.75", "step": "0.01" }
-      ],
-      "formula": "m_weight / (m_height * m_height)",
+  "fields": [
+    { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "70", "step": "0.1" },
+    { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "175", "step": "1" }
+  ],
+  "formula": "m_weight / ((m_height / 100) * (m_height / 100))",
       "unit": "кг/м²",
       "decimals": 1,
       "interpretation": [
@@ -76,10 +76,10 @@
       "description": "Оценка ИМТ с учётом возраста и пола (для детей и подростков)",
       "fields": [
         { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "45", "step": "0.1" },
-        { "id": "m_height", "label": "Рост (м)", "type": "number", "placeholder": "1.55", "step": "0.01" },
+        { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "155", "step": "1" },
         { "id": "m_age",    "label": "Возраст (лет)", "type": "number", "placeholder": "13", "step": "1" }
-      ],
-      "formula": "m_weight / (m_height * m_height)",
+],
+"formula": "m_weight / ((m_height / 100) * (m_height / 100))",
       "unit": "кг/м²",
       "decimals": 1,
       "interpretation": [
