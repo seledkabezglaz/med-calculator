@@ -3,15 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a2634">
+<meta name="theme-color" content="#1e40af">
 <title>МедКалькулятор</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
 <style>
   * { box-sizing: border-box; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { background: #f5f7fa; color: #1a2634; min-height: 100vh; padding: 16px; display: flex; justify-content: center; }
   .app { max-width: 480px; width: 100%; }
-  .header { padding: 8px 4px 20px; }
-  .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-  .header p { color: #6b7a8a; font-size: 14px; margin-top: 4px; }
+  .header { background: #1e40af; color: white; padding: 16px; margin: -16px -16px 16px -16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .header .logo {
+  width: 36px; height: 36px;
+  background: white;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.header .logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+}
+  .header .title-block { flex: 1; min-width: 0; }
+  .header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; margin: 0; }
+  .header p { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 2px; }
+  .header .menu-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 4px 8px; color: white; line-height: 1; flex-shrink: 0; }
+  .header .info-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 0 4px; color: rgba(255,255,255,0.8); vertical-align: super; }
   .search { width: 100%; padding: 14px 16px; border: 1.5px solid #e2e8f0; border-radius: 16px; font-size: 16px; margin-bottom: 16px; outline: none; background: white; }
   .search:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
   .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); cursor: pointer; transition: 0.15s; border: 1.5px solid transparent; position: relative; }
@@ -124,12 +143,13 @@ function renderList(filter = '') {
   const otherItems = DATA.calculators.filter(c => !favorites.includes(c.id) && matches(c));
 
   let html = `
-      <div class="header" style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-        <div style="flex:1;">
-          <h1>🏥 МедКалькулятор <span onclick="showDisclaimer()" style="cursor:pointer; font-size:16px; color:#6b7a8a; vertical-align:super;">ⓘ</span></h1>
+      <div class="header">
+        <div class="logo"><img src="icon-192.png" alt=""></div>
+        <div class="title-block">
+          <h1>МедКалькулятор <span onclick="showDisclaimer()" class="info-btn">ⓘ</span></h1>
           <p>v${DATA.version} · ${DATA.calculators.length} инструментов</p>
         </div>
-        <button onclick="toggleMenu()" style="background:none; border:none; font-size:26px; cursor:pointer; padding:4px 8px; color:#1a2634; line-height:1; flex-shrink:0;">⋮</button>
+        <button class="menu-btn" onclick="toggleMenu()">⋮</button>
       </div>
     <input class="search" id="search" placeholder="Поиск по названию или специальности..." value="${filter}">
   `;
