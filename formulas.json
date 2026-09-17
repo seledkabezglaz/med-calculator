@@ -1,5 +1,5 @@
 {
-  "version": "0.2-beta",
+  "version": "0.3-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -125,6 +125,141 @@
         { "min": 0, "max": 999, "label": "Площадь поверхности тела", "color": "#22c55e" }
       ],
       "source": "Mosteller RD, N Engl J Med, 1987"
+    },
+    {
+  "id": "bishop_score",
+  "type": "questionnaire",
+  "name": "Шкала Бишопа (зрелость шейки матки)",
+  "specialty": "Акушерство",
+  "description": "Оценка степени зрелости шейки матки для прогноза успешности индукции родов",
+  "scoring": "sum",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Раскрытие наружного зева",
+      "options": [
+        { "value": 0, "label": "<1 см" },
+        { "value": 1, "label": "1–2 см" },
+        { "value": 2, "label": "2–4 см" },
+        { "value": 3, "label": ">4 см" }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Длина шейки матки",
+      "options": [
+        { "value": 0, "label": ">4 см" },
+        { "value": 1, "label": "2–4 см" },
+        { "value": 2, "label": "1–2 см" },
+        { "value": 3, "label": "<1 см" }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Консистенция шейки матки",
+      "options": [
+        { "value": 0, "label": "Плотная" },
+        { "value": 1, "label": "Умеренно размягчена" },
+        { "value": 2, "label": "Мягкая" }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Положение шейки относительно оси таза",
+      "options": [
+        { "value": 0, "label": "Кзади" },
+        { "value": 1, "label": "По центру" },
+        { "value": 2, "label": "Кпереди" }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Положение головки плода",
+      "options": [
+        { "value": 0, "label": "−3" },
+        { "value": 1, "label": "−2" },
+        { "value": 2, "label": "−1 или 0" },
+        { "value": 3, "label": "+1 или +2" }
+      ]
+    }
+  ],
+  "interpretation": [
+    { "min": 0, "max": 6, "label": "Незрелая шейка матки", "color": "#ef4444" },
+    { "min": 6, "max": 8, "label": "Недостаточно зрелая", "color": "#f59e0b" },
+    { "min": 8, "max": 14, "label": "Зрелая шейка матки", "color": "#22c55e" }
+  ],
+  "source": "Bishop EH. Pelvic scoring for elective induction. Obstet Gynecol. 1964;24:266-268"
+    },
+    {
+  "id": "ideal_weight_devine",
+  "type": "formula",
+  "name": "Идеальная масса тела (формула Девина)",
+  "specialty": "Антропометрия",
+  "description": "Расчёт идеальной массы тела для дозирования лекарств (стандарт для аминогликозидов, вентиляции)",
+  "fields": [
+    { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "175", "step": "1" },
+    {
+      "id": "m_sex",
+      "label": "Пол",
+      "type": "radio",
+      "options": [
+        { "value": 1, "label": "Мужской" },
+        { "value": 0, "label": "Женский" }
+      ]
+    }
+  ],
+  "formula": "m_sex === 1 ? (50 + 2.3 * (m_height / 2.54 - 60)) : (45.5 + 2.3 * (m_height / 2.54 - 60))",
+  "unit": "кг",
+  "decimals": 1,
+  "interpretation": [
+    { "min": 0, "max": 999, "label": "Идеальная масса тела", "color": "#22c55e" }
+  ],
+  "source": "Devine BJ. Gentamicin therapy. Drug Intell Clin Pharm. 1974;8:650-655"
+    },
+    {
+  "id": "lean_body_mass_james",
+  "type": "formula",
+  "name": "Масса обезжиренного тела (формула Джеймса)",
+  "specialty": "Антропометрия",
+  "description": "Оценка массы обезжиренного тела (мышцы, кости, органы) для фармакокинетических расчётов",
+  "fields": [
+    { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "70", "step": "0.1" },
+    { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "175", "step": "1" },
+    {
+      "id": "m_sex",
+      "label": "Пол",
+      "type": "radio",
+      "options": [
+        { "value": 1, "label": "Мужской" },
+        { "value": 0, "label": "Женский" }
+      ]
+    }
+  ],
+  "formula": "m_sex === 1 ? (1.10 * m_weight - 128 * (m_weight / m_height) ** 2) : (1.07 * m_weight - 148 * (m_weight / m_height) ** 2)",
+  "unit": "кг",
+  "decimals": 1,
+  "interpretation": [
+    { "min": 0, "max": 999, "label": "Масса обезжиренного тела", "color": "#22c55e" }
+  ],
+  "source": "James WPT. Research on obesity. London: Her Majesty's Stationery Office, 1976"
+    },
+    {
+  "id": "nagele_rule",
+  "type": "formula",
+  "name": "Правило Негеле (ПДР)",
+  "specialty": "Акушерство",
+  "description": "Расчёт предполагаемой даты родов по первому дню последней менструации",
+  "fields": [
+    { "id": "m_lmp", "label": "Первый день последней менструации", "type": "date" }
+  ],
+  
+  "formula": "(() => { const d = new Date(m_lmp); d.setDate(d.getDate() + 7); d.setMonth(d.getMonth() - 3); d.setFullYear(d.getFullYear() + 1); return d.toLocaleDateString('ru-RU'); })()",
+  "unit": "",
+  "decimals": 0,
+  "interpretation": [
+    { "min": 0, "max": 999, "label": "Предполагаемая дата родов", "color": "#22c55e" }
+  ],
+  "source": "Naegele F. 1812; адаптировано ВОЗ"
     }
   ]
 }
