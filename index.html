@@ -13,19 +13,8 @@
   body { background: #f5f7fa; color: #1a2634; min-height: 100vh; padding: 16px; display: flex; justify-content: center; }
   .app { max-width: 480px; width: 100%; }
   .header { background: #1e40af; color: white; padding: 16px; margin: -16px -16px 16px -16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-  .header .logo {
-  width: 36px; height: 36px;
-  background: white;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.header .logo img {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  display: block;
-}
+  .header .logo { width: 36px; height: 36px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+  .header .logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .header .title-block { flex: 1; min-width: 0; }
   .header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; margin: 0; }
   .header p { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 2px; }
@@ -62,14 +51,47 @@
   .opt { flex: 1 1 auto; min-width: 60px; padding: 10px 8px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; font-size: 13px; text-align: center; cursor: pointer; transition: 0.12s; font-weight: 500; color: #4a5a6a; }
   .opt:hover { border-color: #cbd5e1; }
   .opt.active { background: #1a2634; color: white; border-color: #1a2634; font-weight: 600; }
+
+  .q-check { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 12px 14px; background: white; border-radius: 14px; margin-bottom: 8px; border: 1.5px solid transparent; transition: 0.12s; user-select: none; }
+  .q-check:hover { border-color: #cbd5e1; }
+  .q-check.on { border-color: #1a2634; background: #f8fafc; }
+  .q-check.auto { border-color: #3b82f6; background: #eff6ff; cursor: not-allowed; }
+  .q-check.auto .box { background: #3b82f6; border-color: #3b82f6; }
+  .q-check.auto .pts { color: #1e40af; }
+  .q-check .box { flex-shrink: 0; width: 24px; height: 24px; border: 2px solid #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: 0.12s; background: white; margin-top: 1px; }
+  .q-check.on .box { background: #1a2634; border-color: #1a2634; }
+  .q-check .box svg { opacity: 0; transition: 0.12s; }
+  .q-check.on .box svg { opacity: 1; }
+  .q-check .qtext { font-size: 15px; line-height: 1.35; flex: 1; }
+  .q-check .pts { font-size: 12px; color: #6b7a8a; font-weight: 600; white-space: nowrap; margin-top: 2px; }
+  .q-check.on .pts { color: #1a2634; }
+  .q-check .auto-tag { font-size: 10px; font-weight: 700; color: #1e40af; background: #dbeafe; padding: 2px 6px; border-radius: 6px; margin-left: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+  .pre-block { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+  .pre-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pre-fields .field { margin-bottom: 0; }
+  .pre-fields .field.full { grid-column: 1 / -1; }
+  .calc-line { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: baseline; }
+  .calc-line .cl-label { font-size: 13px; color: #6b7a8a; font-weight: 500; }
+  .calc-line .cl-value { font-size: 18px; font-weight: 700; color: #1a2634; }
+  .calc-line .cl-value .unit { font-size: 13px; color: #6b7a8a; font-weight: 500; margin-left: 3px; }
+  .calc-line.in-total .cl-value { color: #1e40af; }
+  .calc-line.in-total .cl-label::after { content: " · в сумме"; color: #3b82f6; font-size: 11px; font-weight: 600; }
+
+  .progress-bar { font-size: 13px; color: #6b7a8a; margin-bottom: 12px; padding: 8px 4px; display: flex; justify-content: space-between; align-items: center; }
+  .progress-bar b { color: #1a2634; }
+
   .btn { width: 100%; background: #1a2634; color: white; border: none; padding: 16px; border-radius: 40px; font-size: 17px; font-weight: 600; cursor: pointer; transition: 0.15s; margin-top: 12px; }
   .btn:active { transform: scale(0.98); background: #2d3b4a; }
   .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
   .result { margin-top: 20px; background: white; border-radius: 20px; padding: 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
   .result .value { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
   .result .unit { font-size: 18px; color: #6b7a8a; font-weight: 500; margin-left: 4px; }
-  .result .interp { font-size: 16px; font-weight: 600; margin-top: 12px; padding: 8px 16px; border-radius: 12px; display: inline-block; }
+  .result .interp { font-size: 15px; font-weight: 500; margin-top: 12px; padding: 10px 16px; border-radius: 12px; display: inline-block; line-height: 1.4; text-align: left; }
   .result .source { font-size: 12px; color: #94a3b8; margin-top: 14px; }
+  .result .breakdown { font-size: 13px; color: #6b7a8a; margin-top: 12px; padding: 10px; background: #f8fafc; border-radius: 10px; text-align: left; }
+  .result .breakdown div { display: flex; justify-content: space-between; padding: 3px 0; }
+  .result .breakdown .b-total { border-top: 1px solid #e2e8f0; margin-top: 6px; padding-top: 6px; font-weight: 700; color: #1a2634; }
   .hidden { display: none !important; }
   .loading { text-align: center; color: #6b7a8a; padding: 40px 0; }
   .error-box { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 16px; border-radius: 14px; font-size: 14px; margin-top: 20px; }
@@ -86,6 +108,7 @@ let DATA = null;
 let currentCalc = null;
 let answers = {};
 let formValues = {};
+let calcVars = {};
 let favorites = JSON.parse(localStorage.getItem('medcalc_favorites') || '[]');
 
 // ---------- Избранное ----------
@@ -181,6 +204,7 @@ function openCalc(id) {
   currentCalc = DATA.calculators.find(c => c.id === id);
   answers = {};
   formValues = {};
+  calcVars = {};
   if (currentCalc.type === 'formula') renderFormula();
   else renderQuestionnaire();
 }
@@ -223,6 +247,35 @@ function selectField(btn) {
   btn.classList.add('active');
 }
 
+// ---------- Интерпретация ----------
+function pickInterpretation(interpList, mode, value, vars) {
+  if (!interpList || interpList.length === 0) return null;
+
+  for (const item of interpList) {
+    if (item.if) {
+      let condOk = false;
+      try {
+        const keys = Object.keys(vars);
+        const fn = new Function('value', ...keys, `return (${item.if});`);
+        condOk = !!fn(value, ...keys.map(k => vars[k]));
+      } catch (e) {
+        console.warn('Ошибка в условии if:', item.if, e);
+        condOk = false;
+      }
+      if (!condOk) continue;
+      if (item.min === undefined || item.max === undefined) return item;
+    }
+
+    if (item.min === undefined || item.max === undefined) {
+      if (mode === 'logic') continue;
+      continue;
+    }
+
+    if (value >= item.min && value < item.max) return item;
+  }
+  return null;
+}
+
 function calcFormula() {
   const c = currentCalc;
   const vals = {};
@@ -247,19 +300,16 @@ function calcFormula() {
     return;
   }
 
-    // Безопасный расчёт: поддерживает и выражения, и функции с return
   let result;
   try {
     const keys = Object.keys(vals);
     const values = keys.map(k => vals[k]);
 
-    // Пробуем как выражение: return (формула)
     let fn;
     try {
       fn = new Function('Math', ...keys, `return (${c.formula});`);
       result = fn(Math, ...values);
     } catch (e) {
-      // Если не выражение — пробуем как тело функции (с return внутри)
       fn = new Function('Math', ...keys, c.formula);
       result = fn(Math, ...values);
     }
@@ -267,7 +317,6 @@ function calcFormula() {
     zone.innerHTML = `<div class="error-box">Ошибка в формуле: ${e.message}</div>`;
     return;
   }
-  
 
   if (typeof result === 'number' && !isFinite(result)) {
     zone.innerHTML = `<div class="error-box">Проверьте введённые данные</div>`;
@@ -276,10 +325,12 @@ function calcFormula() {
 
   const decimals = c.decimals !== undefined ? c.decimals : 1;
   const display = typeof result === 'number' ? result.toFixed(decimals) : result;
+
   let interp = null;
   if (typeof result === 'number') {
-  interp = (c.interpretation || []).find(i => result >= i.min && result < i.max);
-   }
+    interp = pickInterpretation(c.interpretation, c.interpretationMode, result, vals);
+  }
+
   const color = interp ? interp.color : '#1a2634';
   const label = interp ? interp.label : (typeof result === 'string' ? '' : '—');
 
@@ -291,30 +342,251 @@ function calcFormula() {
     </div>`;
 }
 
-// ---------- Экран опросника ----------
+// ================================================================
+//                        ОПРОСНИК
+// ================================================================
+
 function renderQuestionnaire() {
   const c = currentCalc;
+  const hasChecks = c.questions.some(q => q.type === 'check');
+  const hasPre = c.preFields && c.preFields.length > 0;
+  const hasCalc = c.calc && c.calc.length > 0;
+
   let html = `
     <button class="back" onclick="renderList()">← Назад</button>
     <div class="page-title">${c.name}</div>
     <div class="page-sub">${c.description || ''}</div>
   `;
+
+  // --- Pre-fields + calc ---
+  if (hasPre) {
+    html += `<div class="pre-block"><div class="pre-fields">`;
+    c.preFields.forEach(f => {
+      const full = f.type === 'radio' || f.type === 'select' ? ' full' : '';
+      html += `<div class="field${full}"><label>${f.label}</label>`;
+      if (f.type === 'radio' || f.type === 'select') {
+        html += `<div class="radio-group" data-field="${f.id}">`;
+        f.options.forEach(o => {
+          html += `<button class="radio-btn" data-field="${f.id}" data-value="${o.value}" onclick="selectPreField(this)">${o.label}</button>`;
+        });
+        html += `</div>`;
+      } else if (f.type === 'date') {
+        html += `<input type="date" id="p_${f.id}" oninput="onPreInput()">`;
+      } else {
+        html += `<input type="number" id="p_${f.id}" placeholder="${f.placeholder || ''}" step="${f.step || 'any'}" inputmode="decimal" oninput="onPreInput()">`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+
+    if (hasCalc) {
+      c.calc.forEach(cv => {
+        const inTotal = cv.includeInTotal ? ' in-total' : '';
+        html += `<div class="calc-line${inTotal}" id="calcLine_${cv.id}" style="display:none;">
+          <span class="cl-label">${cv.label || cv.id}</span>
+          <span class="cl-value"><span id="calcVal_${cv.id}">—</span><span class="unit">${cv.unit || ''}</span></span>
+        </div>`;
+      });
+    }
+    html += `</div>`;
+  }
+
+  if (hasChecks) {
+    html += `<div class="progress-bar"><span>Отмечено: <b id="progCount">0</b> из <b>${c.questions.length}</b></span><span>Сумма: <b id="progSum">0</b> балл.</span></div>`;
+  }
+
+  // --- Вопросы ---
   c.questions.forEach(q => {
-    // options могут быть у вопроса (q.options) или общие (c.options)
-    const opts = q.options || c.options || [];
-    html += `
-      <div class="question">
-        <div class="qtext">${q.text}</div>
-        <div class="options">
-          ${opts.map(o => `<button class="opt" data-q="${q.id}" data-v="${o.value}" onclick="selectOpt(this)">${o.label}</button>`).join('')}
-        </div>
-      </div>`;
+    const hideAttr = q.hideIf ? ` data-hideif="${q.hideIf.replace(/"/g, '&quot;')}"` : '';
+    if (q.type === 'check') {
+      const pts = q.points !== undefined ? q.points : 1;
+      const autoTag = q.auto ? `<span class="auto-tag">авто</span>` : '';
+      html += `
+        <div class="q-check" data-q="${q.id}" data-pts="${pts}" data-auto="${(q.auto || '').replace(/"/g, '&quot;')}"${hideAttr} onclick="toggleCheck(this, event)">
+          <div class="box">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7L6 11L12 3" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="qtext">${q.text} ${autoTag}</div>
+          <div class="pts">+${pts}</div>
+        </div>`;
+    } else {
+      const opts = q.options || c.options || [];
+      html += `
+        <div class="question" data-q="${q.id}"${hideAttr}>
+          <div class="qtext">${q.text}</div>
+          <div class="options">
+            ${opts.map(o => `<button class="opt" data-q="${q.id}" data-v="${o.value}" onclick="selectOpt(this)">${o.label}</button>`).join('')}
+          </div>
+        </div>`;
+    }
   });
-  html += `<button class="btn" id="calcBtn" disabled>Посчитать результат</button>`;
+
+  html += `<button class="btn" id="calcBtn">Посчитать результат</button>`;
   html += `<div id="resultZone"></div>`;
   document.getElementById('app').innerHTML = html;
 
   document.getElementById('calcBtn').addEventListener('click', calcQuestionnaire);
+
+  applyHideIf();
+  recalcAutoChecks();
+  updateProgress();
+}
+
+function selectPreField(btn) {
+  const fieldId = btn.dataset.field;
+  formValues[fieldId] = btn.dataset.value;
+  btn.parentElement.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  onPreInput();
+}
+
+function collectPreFields() {
+  const c = currentCalc;
+  if (!c.preFields) return;
+  c.preFields.forEach(f => {
+    if (f.type === 'radio' || f.type === 'select') return;
+    const el = document.getElementById(`p_${f.id}`);
+    if (!el) return;
+    if (f.type === 'date') formValues[f.id] = el.value;
+    else {
+      const v = parseFloat(el.value);
+      formValues[f.id] = isNaN(v) ? undefined : v;
+    }
+  });
+}
+
+function onPreInput() {
+  const c = currentCalc;
+  if (!c.preFields) return;
+
+  collectPreFields();
+  calcVars = {};
+
+  if (c.calc) {
+    c.calc.forEach(cv => {
+      const lineEl = document.getElementById(`calcLine_${cv.id}`);
+      const valEl = document.getElementById(`calcVal_${cv.id}`);
+      const varsForCalc = { ...formValues, ...calcVars };
+
+      let allSet = true;
+      Object.values(varsForCalc).forEach(v => { if (v === undefined || v === '') allSet = false; });
+
+      if (!allSet) {
+        if (lineEl) lineEl.style.display = 'none';
+        return;
+      }
+
+      try {
+        const keys = Object.keys(varsForCalc);
+        const values = keys.map(k => varsForCalc[k]);
+        let fn;
+        let res;
+        try {
+          fn = new Function('Math', ...keys, `return (${cv.formula});`);
+          res = fn(Math, ...values);
+        } catch (e) {
+          fn = new Function('Math', ...keys, cv.formula);
+          res = fn(Math, ...values);
+        }
+        if (typeof res === 'number' && isFinite(res)) {
+          calcVars[cv.id] = res;
+          if (lineEl && valEl) {
+            lineEl.style.display = 'flex';
+            valEl.textContent = res.toFixed(cv.decimals !== undefined ? cv.decimals : 1);
+          }
+        } else {
+          if (lineEl) lineEl.style.display = 'none';
+        }
+      } catch (e) {
+        if (lineEl) lineEl.style.display = 'none';
+      }
+    });
+  }
+
+  applyHideIf();
+  recalcAutoChecks();
+  updateProgress();
+}
+
+function applyHideIf() {
+  const all = document.querySelectorAll('[data-hideif]');
+  const varsForHide = { ...formValues, ...calcVars, ...answers };
+
+  all.forEach(el => {
+    const expr = el.dataset.hideif;
+    const qid = el.dataset.q;
+    if (!expr) return;
+
+    let hide = false;
+    try {
+      const keys = Object.keys(varsForHide);
+      const fn = new Function(...keys, `return (${expr});`);
+      hide = !!fn(...keys.map(k => varsForHide[k]));
+    } catch (e) {
+      hide = false;
+    }
+
+    if (hide) {
+      el.classList.add('hidden');
+      if (answers[qid] !== undefined) delete answers[qid];
+      el.querySelectorAll('.opt.active').forEach(b => b.classList.remove('active'));
+      el.querySelectorAll('.q-check.on').forEach(b => { b.classList.remove('on'); });
+    } else {
+      el.classList.remove('hidden');
+    }
+  });
+}
+
+function recalcAutoChecks() {
+  const allChecks = document.querySelectorAll('.q-check');
+
+  allChecks.forEach(el => {
+    const qid = el.dataset.q;
+    const autoExpr = el.dataset.auto;
+    if (!autoExpr) return;
+    if (el.classList.contains('hidden')) return;
+
+    const varsForAuto = { ...formValues, ...calcVars, ...answers };
+    let autoOn = false;
+    try {
+      const keys = Object.keys(varsForAuto);
+      const fn = new Function(...keys, `return (${autoExpr});`);
+      autoOn = !!fn(...keys.map(k => varsForAuto[k]));
+    } catch (e) {
+      autoOn = false;
+    }
+
+    if (autoOn) {
+      el.classList.add('on', 'auto');
+      answers[qid] = parseInt(el.dataset.pts);
+      el.dataset.wasAuto = '1';
+    } else {
+      el.classList.remove('auto');
+      if (el.classList.contains('on') && el.dataset.wasAuto === '1') {
+        el.classList.remove('on');
+        delete answers[qid];
+      }
+      el.dataset.wasAuto = '';
+    }
+  });
+}
+
+function toggleCheck(el, event) {
+  if (el.classList.contains('auto')) { event.preventDefault(); return; }
+  if (el.classList.contains('hidden')) return;
+  const qid = el.dataset.q;
+  const pts = parseInt(el.dataset.pts);
+  if (el.classList.contains('on')) {
+    el.classList.remove('on');
+    delete answers[qid];
+  } else {
+    el.classList.add('on');
+    answers[qid] = pts;
+  }
+  recalcAutoChecks();
+  updateProgress();
 }
 
 function selectOpt(btn) {
@@ -323,29 +595,92 @@ function selectOpt(btn) {
   answers[qid] = val;
   btn.parentElement.querySelectorAll('.opt').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  const total = currentCalc.questions.length;
-  const done = Object.keys(answers).length;
-  const calcBtn = document.getElementById('calcBtn');
-  calcBtn.disabled = done < total;
-  calcBtn.textContent = done < total ? `Ответьте на все (${done}/${total})` : 'Посчитать результат';
+  applyHideIf();
+  recalcAutoChecks();
+  updateProgress();
 }
 
+function updateProgress() {
+  const progCount = document.getElementById('progCount');
+  const progSum = document.getElementById('progSum');
+  if (!progCount) return;
+  const totalQ = currentCalc.questions.length;
+  const marked = Object.keys(answers).length;
+  const sum = Object.values(answers).reduce((a, b) => a + b, 0);
+  progCount.textContent = marked;
+  progSum.textContent = sum;
+}
+
+// --- Расчёт результата опросника ---
 function calcQuestionnaire() {
   const c = currentCalc;
-  const total = c.questions.reduce((sum, q) => sum + (answers[q.id] || 0), 0);
-  const interp = (c.interpretation || []).find(i => total >= i.min && total < i.max);
+
+  collectPreFields();
+
+  const preValues = {};
+  if (c.preFields) {
+    c.preFields.forEach(f => {
+      if (f.type === 'radio' || f.type === 'select') {
+        const v = formValues[f.id];
+        preValues[f.id] = v !== undefined ? parseFloat(v) : undefined;
+      } else {
+        preValues[f.id] = formValues[f.id];
+      }
+    });
+  }
+
+  // --- Сумма ответов (только видимые) ---
+  let sumAnswers = 0;
+  c.questions.forEach(q => {
+    const el = document.querySelector(`[data-q="${q.id}"]`);
+    if (el && el.classList.contains('hidden')) return;
+    sumAnswers += (answers[q.id] || 0);
+  });
+
+  // --- Сумма calc с includeInTotal ---
+  let sumCalc = 0;
+  const calcBreakdown = [];
+  if (c.calc) {
+    c.calc.forEach(cv => {
+      if (cv.includeInTotal && calcVars[cv.id] !== undefined) {
+        const val = calcVars[cv.id];
+        sumCalc += val;
+        calcBreakdown.push({ label: cv.label || cv.id, value: val, unit: cv.unit || '' });
+      }
+    });
+  }
+
+  const total = sumAnswers + sumCalc;
+
+  const vars = { ...preValues, ...calcVars, ...answers, total };
+
+  const interp = pickInterpretation(c.interpretation, c.interpretationMode, total, vars);
   const color = interp ? interp.color : '#1a2634';
   const label = interp ? interp.label : '—';
+
+  // --- Разбивка (показываем если есть calc с includeInTotal) ---
+  let breakdownHTML = '';
+  if (calcBreakdown.length > 0) {
+    breakdownHTML = `<div class="breakdown">`;
+    breakdownHTML += `<div><span>Баллы за ответы:</span><span>${sumAnswers}</span></div>`;
+    calcBreakdown.forEach(b => {
+      const disp = Number.isInteger(b.value) ? b.value : b.value.toFixed(1);
+      breakdownHTML += `<div><span>${b.label}:</span><span>${disp} ${b.unit}</span></div>`;
+    });
+    breakdownHTML += `<div class="b-total"><span>Итого:</span><span>${total}</span></div>`;
+    breakdownHTML += `</div>`;
+  }
 
   document.getElementById('resultZone').innerHTML = `
     <div class="result">
       <div class="value" style="color:${color}">${total}<span class="unit">баллов</span></div>
       <div class="interp" style="background:${color}22; color:${color}">${label}</div>
+      ${breakdownHTML}
       ${c.source ? `<div class="source">Источник: ${c.source}</div>` : ''}
     </div>`;
 }
 
-// ---------- Меню и служебные диалоги ----------
+// ---------- Меню ----------
 function toggleMenu() {
   alert('Меню работает! Скоро здесь будет: инструкция, о проекте, сообщество, донаты.');
 }
