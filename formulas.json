@@ -1,5 +1,5 @@
 {
-  "version": "0.5-beta",
+  "version": "0.6-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -924,6 +924,614 @@
     { "min": 30, "max": 999, "label": "MELD ≥ 30. Очень высокий риск. 3-месячная смертность > 50%.", "color": "#ef4444" }
   ],
   "source": "Kim WR, et al. MELD 3.0. Gastroenterology. 2021;161:1887. OPTN MELD/PELD Calculator User Guide."
+    },
+    {
+  "id": "fib4",
+  "type": "formula",
+  "name": "FIB-4 (индекс фиброза печени)",
+  "specialty": "Гепатология",
+  "description": "Неинвазивный индекс для оценки вероятности выраженного фиброза печени. Рассчитывается по возрасту, АСТ, АЛТ и тромбоцитам.",
+  "fields": [
+    { "id": "m_age", "label": "Возраст (лет)", "type": "number", "placeholder": "50", "step": "1" },
+    { "id": "m_ast", "label": "АСТ (Ед/л)", "type": "number", "placeholder": "35", "step": "1" },
+    { "id": "m_alt", "label": "АЛТ (Ед/л)", "type": "number", "placeholder": "40", "step": "1" },
+    { "id": "m_plt", "label": "Тромбоциты (×10⁹/л)", "type": "number", "placeholder": "200", "step": "1" }
+  ],
+  "formula": "(m_age * m_ast) / (m_plt * Math.sqrt(m_alt))",
+  "unit": "",
+  "decimals": 2,
+  "interpretation": [
+    { "min": 0, "max": 1.3, "label": "Выраженный фиброз маловероятен (F0–F1)", "color": "#22c55e" },
+    { "min": 1.3, "max": 2.67, "label": "Неопределённый результат — требуется дообследование", "color": "#f59e0b" },
+    { "min": 2.67, "max": 999, "label": "Выраженный фиброз вероятен (F3–F4)", "color": "#ef4444" }
+  ],
+  "source": "Shah AG, et al. Clin Gastroenterol Hepatol. 2009;7(10):1104-1112. PMID: 19523535. Vallet-Pichard A, et al. Hepatology. 2007;46(1):32-36. PMID: 17567829."
+    },
+    {
+  "id": "apri",
+  "type": "formula",
+  "name": "APRI (АСТ/тромбоцитарный индекс)",
+  "specialty": "Гепатология",
+  "description": "Неинвазивный маркер фиброза и цирроза печени. Отношение АСТ к верхней границе нормы, делённое на число тромбоцитов.",
+  "fields": [
+    { "id": "m_ast", "label": "АСТ (Ед/л)", "type": "number", "placeholder": "35", "step": "1" },
+    { "id": "m_ast_uln", "label": "ВГН АСТ (Ед/л)", "type": "number", "placeholder": "40", "step": "1" },
+    { "id": "m_plt", "label": "Тромбоциты (×10⁹/л)", "type": "number", "placeholder": "200", "step": "1" }
+  ],
+  "formula": "((m_ast / m_ast_uln) / m_plt) * 100",
+  "unit": "",
+  "decimals": 2,
+  "interpretation": [
+    { "min": 0, "max": 0.5, "label": "Значительный фиброз или цирроз маловероятен", "color": "#22c55e" },
+    { "min": 0.5, "max": 1.5, "label": "Фиброз возможен — требуется уточнение", "color": "#f59e0b" },
+    { "min": 1.5, "max": 2.0, "label": "Значительный фиброз вероятен", "color": "#f97316" },
+    { "min": 2.0, "max": 999, "label": "Цирроз печени вероятен", "color": "#ef4444" }
+  ],
+  "source": "Wai CT, et al. Hepatology. 2003;38(2):518-526. PMID: 12883497. LOINC LP250658-4."
+    },
+    {
+  "id": "clif_sofa",
+  "type": "questionnaire",
+  "name": "CLIF-SOFA (органная недостаточность при ЦП)",
+  "specialty": "Гепатология",
+  "description": "Chronic Liver Failure – Sequential Organ Failure Assessment. Оценка тяжести органной недостаточности при острой-на-хронической печёночной недостаточности (ACLF).",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Печень: билирубин (мг/дл)", "options": [
+      { "value": 0, "label": "< 1.2" },
+      { "value": 1, "label": "1.2–1.9" },
+      { "value": 2, "label": "2.0–5.9" },
+      { "value": 3, "label": "6.0–11.9" },
+      { "value": 4, "label": "≥ 12.0" }
+    ]},
+    { "id": "q2", "text": "Почки: креатинин (мг/дл) или ЗПТ", "options": [
+      { "value": 0, "label": "< 1.2" },
+      { "value": 1, "label": "1.2–1.9" },
+      { "value": 2, "label": "2.0–3.4" },
+      { "value": 3, "label": "3.5–4.9 или ЗПТ" },
+      { "value": 4, "label": "≥ 5.0 или ЗПТ" }
+    ]},
+    { "id": "q3", "text": "ЦНС: печёночная энцефалопатия (степень)", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "I" },
+      { "value": 2, "label": "II" },
+      { "value": 3, "label": "III" },
+      { "value": 4, "label": "IV" }
+    ]},
+    { "id": "q4", "text": "Коагуляция: МНО", "options": [
+      { "value": 0, "label": "< 1.1" },
+      { "value": 1, "label": "1.1–1.24" },
+      { "value": 2, "label": "1.25–1.49" },
+      { "value": 3, "label": "1.5–2.49 или тромбоциты ≤20×10⁹/л" },
+      { "value": 4, "label": "≥ 2.5" }
+    ]},
+    { "id": "q5", "text": "Кровообращение: среднее АД (мм рт. ст.) / вазопрессоры", "options": [
+      { "value": 0, "label": "≥ 70" },
+      { "value": 1, "label": "< 70" },
+      { "value": 2, "label": "Допамин ≤5 или добутамин/терлипрессин" },
+      { "value": 3, "label": "Допамин >5 или эпинефрин ≤0.1 или норэпинефрин ≤0.1" },
+      { "value": 4, "label": "Допамин >15 или эпинефрин >0.1 или норэпинефрин >0.1" }
+    ]},
+    { "id": "q6", "text": "Лёгкие: PaO₂/FiO₂ или SpO₂/FiO₂", "options": [
+      { "value": 0, "label": "> 400 / > 512" },
+      { "value": 1, "label": "300–400 / 357–512" },
+      { "value": 2, "label": "200–300 / 214–357" },
+      { "value": 3, "label": "100–200 / 89–214" },
+      { "value": 4, "label": "≤ 100 / ≤ 89" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 9, "label": "Низкий риск смерти в течение 28 дней (NPV > 90% при ≤ 8)", "color": "#22c55e" },
+    { "min": 9, "max": 18, "label": "Умеренный риск — требуется интенсивная терапия", "color": "#f59e0b" },
+    { "min": 18, "max": 999, "label": "Высокий риск смерти (PPV > 90% при ≥ 18)", "color": "#ef4444" }
+  ],
+  "source": "Moreau R, et al. J Hepatol. 2013;59(4):737-743. PMID: 23796601. PLOS ONE. 2019;14(7):e0219516."
+    },
+    {
+  "id": "glasgow_alcoholic_hepatitis",
+  "type": "questionnaire",
+  "name": "Шкала Глазго (алкогольный гепатит)",
+  "specialty": "Гепатология",
+  "description": "Glasgow Alcoholic Hepatitis Score (GAHS). Прогноз 28- и 84-дневной выживаемости при алкогольном гепатите. Порог ≥9 — показана стероидная терапия.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Возраст (лет)", "options": [
+      { "value": 1, "label": "< 50" },
+      { "value": 2, "label": "50–59" },
+      { "value": 3, "label": "≥ 60" }
+    ]},
+    { "id": "q2", "text": "Лейкоциты (×10⁹/л)", "options": [
+      { "value": 1, "label": "< 15" },
+      { "value": 2, "label": "15–20" },
+      { "value": 3, "label": "> 20" }
+    ]},
+    { "id": "q3", "text": "Мочевина (ммоль/л)", "options": [
+      { "value": 1, "label": "< 6" },
+      { "value": 2, "label": "6–11" },
+      { "value": 3, "label": "> 11" }
+    ]},
+    { "id": "q4", "text": "МНО (или ПВ-отношение)", "options": [
+      { "value": 1, "label": "< 1.5" },
+      { "value": 2, "label": "1.5–2.0" },
+      { "value": 3, "label": "> 2.0" }
+    ]},
+    { "id": "q5", "text": "Билирубин (мкмоль/л)", "options": [
+      { "value": 1, "label": "< 125" },
+      { "value": 2, "label": "125–250" },
+      { "value": 3, "label": "> 250" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 5, "max": 9, "label": "Низкий риск. 28-дневная выживаемость ~ 80%. Стероиды, как правило, не показаны.", "color": "#22c55e" },
+    { "min": 9, "max": 999, "label": "Высокий риск. 28-дневная выживаемость ~ 50%. Показана стероидная терапия (улучшение 28- и 84-дневной выживаемости).", "color": "#ef4444" }
+  ],
+  "source": "Forrest EH, et al. Gut. 2005;54(8):1174-1179. PMID: 15951548. NIH Bookshelf NBK549995."
+    },
+    {
+  "id": "maddrey_df",
+  "type": "formula",
+  "name": "Дискриминантная функция Мэддрея (mDF)",
+  "specialty": "Гепатология",
+  "description": "Maddrey's Discriminant Function. Оценка тяжести алкогольного гепатита и показаний к стероидной терапии. Порог ≥32 — тяжёлое течение. Важно: ПВ (протромбиновое время) в секундах. Если у вас билирубин в мкмоль/л — разделите на 17.1",
+  "fields": [
+    { "id": "m_pt", "label": "ПВ пациента (сек)", "type": "number", "placeholder": "15", "step": "0.1" },
+    { "id": "m_pt_ctrl", "label": "ПВ контроля (сек)", "type": "number", "placeholder": "12", "step": "0.1" },
+    { "id": "m_bili", "label": "Общий билирубин (мг/дл)", "type": "number", "placeholder": "10", "step": "0.1" }
+  ],
+  "formula": "4.6 * (m_pt - m_pt_ctrl) + m_bili",
+  "unit": "баллов",
+  "decimals": 1,
+  "interpretation": [
+    { "min": 0, "max": 32, "label": "Лёгкое/среднетяжёлое течение. 30-дневная смертность < 10%. Стероиды не показаны.", "color": "#22c55e" },
+    { "min": 32, "max": 999, "label": "Тяжёлое течение. 30-дневная смертность 30–50%. Показаны стероиды (преднизолон 40 мг/сут).", "color": "#ef4444" }
+  ],
+  "source": "Maddrey WC, et al. Gastroenterology. 1978;75(2):193-199. PMID: 352796. MDCalc. Maddrey's Discriminant Function."
+    },{
+  "id": "mean_arterial_pressure",
+  "type": "formula",
+  "name": "Среднее артериальное давление (САД)",
+  "specialty": "Кардиология",
+  "description": "Среднее давление в крупных артериях за сердечный цикл. Отражает перфузионное давление органов. Рассчитывается по систолическому и диастолическому АД.",
+  "fields": [
+    { "id": "m_sbp", "label": "Систолическое АД (мм рт. ст.)", "type": "number", "placeholder": "120", "step": "1" },
+    { "id": "m_dbp", "label": "Диастолическое АД (мм рт. ст.)", "type": "number", "placeholder": "80", "step": "1" }
+  ],
+  "formula": "m_dbp + (m_sbp - m_dbp) / 3",
+  "unit": "мм рт. ст.",
+  "decimals": 1,
+  "interpretation": [
+    { "min": 0, "max": 65, "label": "Гипоперфузия. Требуется немедленная оценка гемодинамики.", "color": "#ef4444" },
+    { "min": 65, "max": 70, "label": "Нижняя граница нормы. Требуется контроль.", "color": "#f59e0b" },
+    { "min": 70, "max": 100, "label": "Норма (70–100 мм рт. ст.)", "color": "#22c55e" },
+    { "min": 100, "max": 999, "label": "Повышенное САД. Возможна гипертензия.", "color": "#f59e0b" }
+  ],
+  "source": "Physiology, Mean Arterial Pressure. StatPearls. NCBI Bookshelf NBK538226. 2023. ScienceDirect Topics: Mean Arterial Pressure."
+    },
+    {
+  "id": "qtc_bazett",
+  "type": "formula",
+  "name": "Корригированный QT (Bazett)",
+  "specialty": "Кардиология",
+  "description": "QTc по формуле Базетта. Наиболее распространённая формула, но переоценивает QTc при высокой ЧСС и недооценивает при низкой.",
+  "fields": [
+    { "id": "m_qt", "label": "QT (мс)", "type": "number", "placeholder": "400", "step": "1" },
+    { "id": "m_hr", "label": "ЧСС (уд/мин)", "type": "number", "placeholder": "60", "step": "1" }
+  ],
+  "formula": "m_qt / Math.sqrt(60 / m_hr)",
+  "unit": "мс",
+  "decimals": 0,
+  "interpretation": [
+    { "min": 0, "max": 440, "label": "Норма", "color": "#22c55e" },
+    { "min": 440, "max": 460, "label": "Пограничное значение", "color": "#f59e0b" },
+    { "min": 460, "max": 500, "label": "Удлинение QTc", "color": "#ef4444" },
+    { "min": 500, "max": 9999, "label": "Выраженное удлинение QTc — риск TdP", "color": "#991b1b" }
+  ],
+  "source": "Bazett HC. Heart. 1920;7:353-370. AHA/ACCF/HRS 2009 Recommendations. EKG.nu QTc Calculator."
+    },
+    {
+  "id": "qtc_fridericia",
+  "type": "formula",
+  "name": "Корригированный QT (Fridericia)",
+  "specialty": "Кардиология",
+  "description": "QTc по формуле Фридериции. Считается более точной, чем Bazett, при тахикардии. Рекомендуется для оценки лекарственной безопасности.",
+  "fields": [
+    { "id": "m_qt", "label": "QT (мс)", "type": "number", "placeholder": "400", "step": "1" },
+    { "id": "m_hr", "label": "ЧСС (уд/мин)", "type": "number", "placeholder": "60", "step": "1" }
+  ],
+  "formula": "m_qt / Math.cbrt(60 / m_hr)",
+  "unit": "мс",
+  "decimals": 0,
+  "interpretation": [
+    { "min": 0, "max": 440, "label": "Норма", "color": "#22c55e" },
+    { "min": 440, "max": 460, "label": "Пограничное значение", "color": "#f59e0b" },
+    { "min": 460, "max": 500, "label": "Удлинение QTc", "color": "#ef4444" },
+    { "min": 500, "max": 9999, "label": "Выраженное удлинение QTc — риск TdP", "color": "#991b1b" }
+  ],
+  "source": "Fridericia LS. Acta Med Scand. 1920;53:469-486. EKG.nu QTc Calculator."
+    },
+    {
+  "id": "qtc_framingham",
+  "type": "formula",
+  "name": "Корригированный QT (Framingham)",
+  "specialty": "Кардиология",
+  "description": "QTc по формуле Framingham (Sagie). Линейная коррекция, менее зависима от ЧСС, чем Bazett.",
+  "fields": [
+    { "id": "m_qt", "label": "QT (мс)", "type": "number", "placeholder": "400", "step": "1" },
+    { "id": "m_hr", "label": "ЧСС (уд/мин)", "type": "number", "placeholder": "60", "step": "1" }
+  ],
+  "formula": "m_qt + 154 * (1 - (60 / m_hr))",
+  "unit": "мс",
+  "decimals": 0,
+  "interpretation": [
+    { "min": 0, "max": 440, "label": "Норма", "color": "#22c55e" },
+    { "min": 440, "max": 460, "label": "Пограничное значение", "color": "#f59e0b" },
+    { "min": 460, "max": 500, "label": "Удлинение QTc", "color": "#ef4444" },
+    { "min": 500, "max": 9999, "label": "Выраженное удлинение QTc — риск TdP", "color": "#991b1b" }
+  ],
+  "source": "Sagie A, et al. Am J Cardiol. 1992;70(7):797-801. EKG.nu QTc Calculator."
+    },
+    {
+  "id": "qtc_hodges",
+  "type": "formula",
+  "name": "Корригированный QT (Hodges)",
+  "specialty": "Кардиология",
+  "description": "QTc по формуле Ходжеса. Линейная коррекция, наименее зависима от ЧСС среди четырёх формул.",
+  "fields": [
+    { "id": "m_qt", "label": "QT (мс)", "type": "number", "placeholder": "400", "step": "1" },
+    { "id": "m_hr", "label": "ЧСС (уд/мин)", "type": "number", "placeholder": "60", "step": "1" }
+  ],
+  "formula": "m_qt + 1.75 * (m_hr - 60)",
+  "unit": "мс",
+  "decimals": 0,
+  "interpretation": [
+    { "min": 0, "max": 440, "label": "Норма", "color": "#22c55e" },
+    { "min": 440, "max": 460, "label": "Пограничное значение", "color": "#f59e0b" },
+    { "min": 460, "max": 500, "label": "Удлинение QTc", "color": "#ef4444" },
+    { "min": 500, "max": 9999, "label": "Выраженное удлинение QTc — риск TdP", "color": "#991b1b" }
+  ],
+  "source": "Hodges M, et al. Am Heart J. 1983;105(1):131-137. EKG.nu QTc Calculator."
+    },
+    {
+  "id": "cha2ds2_vasc",
+  "type": "questionnaire",
+  "name": "Шкала CHA₂DS₂-VASc",
+  "specialty": "Кардиология",
+  "description": "Оценка риска инсульта и системной тромбоэмболии у пациентов с фибрилляцией предсердий. Используется для решения о назначении антикоагулянтной терапии.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Хроническая сердечная недостаточность / дисфункция ЛЖ", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q2", "text": "Артериальная гипертензия (АД >140/90 или на терапии)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q3", "text": "Возраст ≥ 75 лет", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 2, "label": "Да (+2)" }
+    ]},
+    { "id": "q4", "text": "Сахарный диабет", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q5", "text": "Инсульт / ТИА / тромбоэмболия в анамнезе", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 2, "label": "Да (+2)" }
+    ]},
+    { "id": "q6", "text": "Сосудистое заболевание (ИМ, ЗПА, атеросклероз аорты)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q7", "text": "Возраст 65–74 года", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q8", "text": "Женский пол", "options": [
+      { "value": 0, "label": "Мужской" }, { "value": 1, "label": "Женский (+1)" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 1, "label": "Низкий риск. Антикоагулянты не показаны (или рассмотреть индивидуально при 1 балле у мужчин).", "color": "#22c55e" },
+    { "min": 1, "max": 2, "label": "Промежуточный риск. Рассмотреть антикоагуляцию с учётом риска кровотечения.", "color": "#f59e0b" },
+    { "min": 2, "max": 9, "label": "Высокий риск (≥2 у мужчин, ≥3 у женщин). Показана антикоагулянтная терапия (I/A).", "color": "#ef4444" }
+  ],
+  "source": "Lip GYH, et al. Chest. 2010;137(2):263-272. 2016 ESC Guidelines for the management of atrial fibrillation. Eur Heart J. 2016;37(38):2893-2962."
+    },
+    {
+  "id": "has_bled",
+  "type": "questionnaire",
+  "name": "Шкала HAS-BLED",
+  "specialty": "Кардиология",
+  "description": "Оценка риска крупных кровотечений у пациентов с фибрилляцией предсердий на антикоагулянтной терапии. Высокий балл — повод для коррекции модифицируемых факторов, а не отмены антикоагулянтов.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Гипертензия (систолическое АД > 160 мм рт. ст.)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q2a", "text": "Нарушение функции почек (диализ, трансплантация, креатинин ≥200 мкмоль/л)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q2b", "text": "Нарушение функции печени (цирроз, билирубин >2×ВГН, АСТ/АЛТ/ЩФ >3×ВГН)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q3", "text": "Инсульт в анамнезе", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q4", "text": "Кровотечение в анамнезе или предрасположенность (анемия)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q5", "text": "Лабильное МНО (TTR < 60%)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q6", "text": "Возраст > 65 лет", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q7a", "text": "Приём препаратов, повышающих риск кровотечения (антиагреганты, НПВС, СИОЗС)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q7b", "text": "Злоупотребление алкоголем (≥8 порций в неделю)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 2, "label": "Низкий–средний риск кровотечения", "color": "#22c55e" },
+    { "min": 2, "max": 3, "label": "Средний риск (2 балла). Контроль факторов риска.", "color": "#f59e0b" },
+    { "min": 3, "max": 9, "label": "Высокий риск кровотечения (≥3). Требуется коррекция модифицируемых факторов и регулярный контроль.", "color": "#ef4444" }
+  ],
+  "source": "Pisters R, et al. Chest. 2010;138(5):1093-1100. Queensland Health. HAS-BLED Bleeding Risk Score. 2024."
+    },
+    {
+  "id": "grace_score",
+  "type": "questionnaire",
+  "name": "Шкала GRACE (ОКС)",
+  "specialty": "Кардиология",
+  "description": "Global Registry of Acute Coronary Events. Оценка риска госпитальной летальности при остром коронарном синдроме. Порог >140 — показание к ранней инвазивной стратегии.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Возраст (лет)", "options": [
+      { "value": 0, "label": "< 30" },
+      { "value": 8, "label": "30–39" },
+      { "value": 25, "label": "40–49" },
+      { "value": 41, "label": "50–59" },
+      { "value": 58, "label": "60–69" },
+      { "value": 75, "label": "70–79" },
+      { "value": 91, "label": "80–89" },
+      { "value": 100, "label": "≥ 90" }
+    ]},
+    { "id": "q2", "text": "ЧСС (уд/мин)", "options": [
+      { "value": 0, "label": "< 50" },
+      { "value": 3, "label": "50–69" },
+      { "value": 9, "label": "70–89" },
+      { "value": 15, "label": "90–109" },
+      { "value": 24, "label": "110–149" },
+      { "value": 38, "label": "150–199" },
+      { "value": 46, "label": "≥ 200" }
+    ]},
+    { "id": "q3", "text": "Систолическое АД (мм рт. ст.)", "options": [
+      { "value": 58, "label": "< 80" },
+      { "value": 53, "label": "80–99" },
+      { "value": 43, "label": "100–119" },
+      { "value": 34, "label": "120–139" },
+      { "value": 24, "label": "140–159" },
+      { "value": 10, "label": "160–199" },
+      { "value": 0, "label": "≥ 200" }
+    ]},
+    { "id": "q4", "text": "Креатинин сыворотки (мг/дл)", "options": [
+      { "value": 1, "label": "0–0.39" },
+      { "value": 4, "label": "0.40–0.79" },
+      { "value": 7, "label": "0.80–1.19" },
+      { "value": 10, "label": "1.20–1.59" },
+      { "value": 13, "label": "1.60–1.99" },
+      { "value": 21, "label": "2.00–3.99" },
+      { "value": 28, "label": "≥ 4.0" }
+    ]},
+    { "id": "q5", "text": "Класс по Killip", "options": [
+      { "value": 0, "label": "I (нет признаков СН)" },
+      { "value": 20, "label": "II (хрипы <50%, ритм галопа)" },
+      { "value": 39, "label": "III (отёк лёгких)" },
+      { "value": 59, "label": "IV (кардиогенный шок)" }
+    ]},
+    { "id": "q6", "text": "Остановка сердца при поступлении", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 39, "label": "Да (+39)" }
+    ]},
+    { "id": "q7", "text": "Девиация сегмента ST", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 28, "label": "Да (+28)" }
+    ]},
+    { "id": "q8", "text": "Повышение кардиоспецифических ферментов", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 14, "label": "Да (+14)" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 109, "label": "Низкий риск. Госпитальная летальность < 1%. Стандартное ведение.", "color": "#22c55e" },
+    { "min": 109, "max": 141, "label": "Средний риск. Летальность 1–3%. Рассмотреть раннюю инвазивную стратегию.", "color": "#f59e0b" },
+    { "min": 141, "max": 999, "label": "Высокий риск. Летальность > 3%. Показана коронароангиография в течение 24 часов.", "color": "#ef4444" }
+  ],
+  "source": "Fox KAA, et al. BMJ. 2006;333(7578):1091. Granger CB, et al. Arch Intern Med. 2003;163(19):2345-2353. ESC Guidelines 2023."
+    },
+    {
+  "id": "timi_score_stemi",
+  "type": "questionnaire",
+  "name": "Шкала TIMI для ИМпST",
+  "specialty": "Кардиология",
+  "description": "Thrombolysis in Myocardial Infarction. Оценка риска 30-дневной летальности при инфаркте миокарда с подъёмом ST. Валидирована для пациентов после тромболизиса.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Возраст ≥ 75 лет", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 3, "label": "Да (+3)" }
+    ]},
+    { "id": "q2", "text": "Возраст 65–74 года", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 2, "label": "Да (+2)" }
+    ]},
+    { "id": "q3", "text": "Сахарный диабет, гипертензия или стенокардия в анамнезе", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q4", "text": "Систолическое АД < 100 мм рт. ст.", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 3, "label": "Да (+3)" }
+    ]},
+    { "id": "q5", "text": "ЧСС > 100 уд/мин", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 2, "label": "Да (+2)" }
+    ]},
+    { "id": "q6", "text": "Класс Killip II–IV", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 2, "label": "Да (+2)" }
+    ]},
+    { "id": "q7", "text": "Вес < 67 кг", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q8", "text": "Передний подъём ST или блокада левой ножки пучка Гиса", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q9", "text": "Время до лечения > 4 часов", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 1, "label": "Очень низкий риск. 30-дневная летальность 0,8–1,6%.", "color": "#22c55e" },
+    { "min": 1, "max": 4, "label": "Низкий риск. 30-дневная летальность 2,2–4,4%.", "color": "#84cc16" },
+    { "min": 4, "max": 6, "label": "Средний риск. 30-дневная летальность 7,3–12,4%.", "color": "#f59e0b" },
+    { "min": 6, "max": 9, "label": "Высокий риск. 30-дневная летальность 16,1–26,8%.", "color": "#ef4444" },
+    { "min": 9, "max": 14, "label": "Очень высокий риск. 30-дневная летальность ~36%.", "color": "#991b1b" }
+  ],
+  "source": "Morrow DA, et al. Circulation. 2000;102(17):2031-2037. PMID: 11044416. MSD Manuals."
+    },
+    {
+  "id": "timi_score_nstemi",
+  "type": "questionnaire",
+  "name": "Шкала TIMI для ОКС без подъёма ST",
+  "specialty": "Кардиология",
+  "description": "Thrombolysis in Myocardial Infarction для нестабильной стенокардии / ИМ без подъёма ST. Оценка риска смерти, ИМ или срочной реваскуляризации в течение 14 дней.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Возраст ≥ 65 лет", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q2", "text": "Наличие ≥ 3 факторов риска ИБС (семейный анамнез, гипертензия, гиперхолестеринемия, диабет, курение)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q3", "text": "Известная коронарная стеноз ≥ 50% (КАГ)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q4", "text": "Отклонение сегмента ST ≥ 0,5 мм на ЭКГ", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q5", "text": "Повышение кардиальных маркеров (тропонин)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q6", "text": "Приём аспирина в течение последних 7 дней", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]},
+    { "id": "q7", "text": "≥ 2 эпизода стенокардии за последние 24 часа", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 1, "label": "Да (+1)" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 2, "label": "Низкий риск. Риск смерти/ИМ/срочной реваскуляризации в 14 дней: 4,7%.", "color": "#22c55e" },
+    { "min": 2, "max": 3, "label": "Промежуточный риск. Риск ~8,3%.", "color": "#f59e0b" },
+    { "min": 3, "max": 5, "label": "Высокий риск. Риск 13,2–19,9%.", "color": "#ef4444" },
+    { "min": 5, "max": 7, "label": "Очень высокий риск. Риск 26,2–40,9%.", "color": "#991b1b" }
+  ],
+  "source": "Antman EM, et al. JAMA. 2000;284(7):835-842. PMID: 10938172. ESC Guidelines 2023."
+    },
+    {
+  "id": "framingham_risk",
+  "type": "equation",
+  "name": "Фрамингемская шкала риска ССЗ",
+  "specialty": "Кардиология",
+  "description": "10-летний риск развития сердечно-сосудистых событий (General CVD) по Framingham Heart Study. Версия D'Agostino 2008.",
+  "fields": [
+    { "id": "m_age", "label": "Возраст (лет)", "type": "number", "placeholder": "55", "step": "1" },
+    { "id": "m_sex", "label": "Пол", "type": "radio", "options": [{ "value": 1, "label": "Мужской" }, { "value": 0, "label": "Женский" }] },
+    { "id": "m_tchol", "label": "Общий холестерин (ммоль/л)", "type": "number", "placeholder": "5.2", "step": "0.1" },
+    { "id": "m_hdl", "label": "ХС ЛПВП (ммоль/л)", "type": "number", "placeholder": "1.3", "step": "0.1" },
+    { "id": "m_sbp", "label": "Систолическое АД (мм рт. ст.)", "type": "number", "placeholder": "130", "step": "1" },
+    { "id": "m_bp_treat", "label": "Приём антигипертензивных", "type": "radio", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+    { "id": "m_smoke", "label": "Курение", "type": "radio", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+    { "id": "m_diabetes", "label": "Сахарный диабет", "type": "radio", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] }
+  ],
+  "equation": {
+    "formula": "(() => { const age = m_age; const tc = m_tchol * 38.67; const hdl = m_hdl * 38.67; const sbp = m_sbp; let s, mean, s0; if (m_sex === 1) { s = 0.04826 * age - 0.65945 * Math.log(tc/hdl) + (m_bp_treat ? 0.21594 : 0.28320) * Math.log(sbp) + 0.52337 * m_smoke + 0.42839 * m_diabetes; mean = 23.9802; s0 = 0.88936; } else { s = 0.33766 * age - 0.00268 * age * age - 0.26138 * Math.log(tc/hdl) + (m_bp_treat ? 0.20771 : 0.26288) * Math.log(sbp) + 0.20771 * m_smoke + 0.60938 * m_diabetes; mean = 26.1931; s0 = 0.95012; } return (1 - Math.pow(s0, Math.exp(s - mean))) * 100; })()",
+    "unit": "%",
+    "decimals": 1
+  },
+  "interpretation": [
+    { "min": 0, "max": 5, "label": "Низкий риск (< 5% за 10 лет)", "color": "#22c55e" },
+    { "min": 5, "max": 10, "label": "Умеренный риск (5–10%)", "color": "#84cc16" },
+    { "min": 10, "max": 20, "label": "Повышенный риск (10–20%)", "color": "#f59e0b" },
+    { "min": 20, "max": 100, "label": "Высокий риск (≥ 20%)", "color": "#ef4444" }
+  ],
+  "source": "D'Agostino RB Sr, et al. General cardiovascular risk profile for use in primary care: the Framingham Heart Study. Circulation. 2008;117(6):743-753. PMID: 18212285."
+    },
+    {
+  "id": "score2",
+  "type": "equation",
+  "name": "SCORE2 (риск ССЗ в Европе)",
+  "specialty": "Кардиология",
+  "description": "10-летний риск фатальных и нефатальных сердечно-сосудистых событий по SCORE2 (ESC 2021). Калибровка для России (Very High Risk region). Возраст 40–69 лет.",
+  "fields": [
+    { "id": "m_age", "label": "Возраст (лет, 40–69)", "type": "number", "placeholder": "55", "step": "1" },
+    { "id": "m_sex", "label": "Пол", "type": "radio", "options": [{ "value": 1, "label": "Мужской" }, { "value": 0, "label": "Женский" }] },
+    { "id": "m_sbp", "label": "Систолическое АД (мм рт. ст.)", "type": "number", "placeholder": "130", "step": "1" },
+    { "id": "m_tchol", "label": "Общий холестерин (ммоль/л)", "type": "number", "placeholder": "5.5", "step": "0.1" },
+    { "id": "m_hdl", "label": "ХС ЛПВП (ммоль/л)", "type": "number", "placeholder": "1.3", "step": "0.1" },
+    { "id": "m_smoke", "label": "Курение", "type": "radio", "options": [{ "value": 1, "label": "Да" }, { "value": 0, "label": "Нет" }] }
+  ],
+  "equation": {
+    "formula": "(() => { const age = m_age; const sbp = m_sbp; const tc = m_tchol; const hdl = m_hdl; const smoke = m_smoke; const isMale = m_sex === 1; const ageRisk = isMale ? (age - 60) * 0.3742 : (age - 60) * 0.4648; const sbpRisk = isMale ? 0.00226 * (sbp - 120) : 0.00261 * (sbp - 120); const cholRisk = isMale ? 0.1276 * (tc - 6) : 0.1303 * (tc - 6); const hdlRisk = isMale ? -0.0860 * (hdl - 1.3) : -0.0972 * (hdl - 1.3); const smokeRisk = isMale ? 0.4824 * smoke : 0.4486 * smoke; const linearPredictor = ageRisk + sbpRisk + cholRisk + hdlRisk + smokeRisk; const baselineSurvival = isMale ? 0.9605 : 0.9776; return (1 - Math.pow(baselineSurvival, Math.exp(linearPredictor))) * 100; })()",
+    "unit": "%",
+    "decimals": 1
+  },
+  "interpretation": [
+    { "min": 0, "max": 5, "label": "Низкий–умеренный риск (< 5%)", "color": "#22c55e" },
+    { "min": 5, "max": 10, "label": "Высокий риск (5–10%)", "color": "#f59e0b" },
+    { "min": 10, "max": 100, "label": "Очень высокий риск (≥ 10%)", "color": "#ef4444" }
+  ],
+  "source": "SCORE2 working group and ESC Cardiovascular risk collaboration. SCORE2 risk prediction algorithms: new models to estimate 10-year risk of cardiovascular disease in Europe. Eur Heart J. 2021;42(25):2439-2454. PMID: 34120177."
+    },
+    {
+  "id": "reynolds_risk",
+  "type": "equation",
+  "name": "Reynolds Risk Score",
+  "specialty": "Кардиология",
+  "description": "10-летний риск сердечно-сосудистых событий (ИМ, инсульт, реваскуляризация, смерть) у мужчин и женщин без диабета. Включает hsCRP и семейный анамнез.",
+  "fields": [
+    { "id": "m_age", "label": "Возраст (лет, 45–80)", "type": "number", "placeholder": "55", "step": "1" },
+    {
+      "id": "m_sex",
+      "label": "Пол",
+      "type": "radio",
+      "options": [
+        { "value": 1, "label": "Мужской" },
+        { "value": 0, "label": "Женский" }
+      ]
+    },
+    { "id": "m_sbp", "label": "Систолическое АД (мм рт. ст.)", "type": "number", "placeholder": "130", "step": "1" },
+    { "id": "m_tchol", "label": "Общий холестерин (ммоль/л)", "type": "number", "placeholder": "5.2", "step": "0.1" },
+    { "id": "m_hdl", "label": "ХС ЛПВП (ммоль/л)", "type": "number", "placeholder": "1.3", "step": "0.1" },
+    { "id": "m_hscrp", "label": "hsCRP (мг/л)", "type": "number", "placeholder": "1.0", "step": "0.1" },
+    { "id": "m_hba1c", "label": "HbA1c (%)", "type": "number", "placeholder": "5.5", "step": "0.1", "hideIf": "m_sex === 1" },
+    {
+      "id": "m_smoke",
+      "label": "Курение",
+      "type": "radio",
+      "options": [
+        { "value": 1, "label": "Да" },
+        { "value": 0, "label": "Нет" }
+      ]
+    },
+    {
+      "id": "m_family",
+      "label": "Семейный анамнез ИМ (у родителей < 60 лет)",
+      "type": "radio",
+      "options": [
+        { "value": 1, "label": "Да" },
+        { "value": 0, "label": "Нет" }
+      ]
+    }
+  ],
+  "equation": {
+    "formula": "(() => { const age = m_age; const sbp = m_sbp; const tc = m_tchol * 38.67; const hdl = m_hdl * 38.67; const hscrp = Math.log(Math.max(0.1, m_hscrp)); const smoke = m_smoke; const fam = m_family; if (m_sex === 1) { const B = 4.385 * Math.log(age) + 2.607 * Math.log(sbp) + 0.102 * hscrp + 0.963 * Math.log(tc) - 0.772 * Math.log(hdl) + 0.405 * smoke + 0.541 * fam; return (1 - Math.pow(0.8990, Math.exp(B - 33.097))) * 100; } else { const hba1c = m_hba1c; const hasDiabetes = hba1c > 6.0; const B = 0.0799 * age + 3.137 * Math.log(sbp) + 0.180 * hscrp + 1.382 * Math.log(tc) - 1.172 * Math.log(hdl) + (hasDiabetes ? 0.134 * hba1c : 0) + 0.818 * smoke + 0.438 * fam; return (1 - Math.pow(0.98634, Math.exp(B - 22.325))) * 100; } })()",
+    "unit": "%",
+    "decimals": 1
+  },
+  "interpretation": [
+    { "min": 0, "max": 10, "label": "Низкий риск (< 10%)", "color": "#22c55e" },
+    { "min": 10, "max": 20, "label": "Повышенный риск (10–20%) — рассмотреть статины", "color": "#f59e0b" },
+    { "min": 20, "max": 100, "label": "Высокий риск (≥ 20%)", "color": "#ef4444" }
+  ],
+  "source": "Ridker PM, et al. Development and validation of improved algorithms for the assessment of global cardiovascular risk in women: the Reynolds Risk Score. JAMA. 2007;297(6):611-619. PMID: 17299196 (женщины). Ridker PM, et al. C-reactive protein and parental history improve global cardiovascular risk prediction: the Reynolds Risk Score for men. Circulation. 2008;118(22):2243-2251. PMID: 18997194 (мужчины)."
     }
   ]
 }
