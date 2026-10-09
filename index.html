@@ -140,8 +140,10 @@ async function loadData() {
 
 // ---------- Рендер карточки ----------
 function cardHTML(c) {
-  const badgeClass = c.type === 'formula' ? 'formula' : 'questionnaire';
-  const badgeText = c.type === 'formula' ? 'Формула' : 'Опросник';
+  let badgeClass, badgeText;
+  if (c.type === 'formula') { badgeClass = 'formula'; badgeText = 'Формула'; }
+  else if (c.type === 'equation') { badgeClass = 'formula'; badgeText = 'Уравнение'; }
+  else { badgeClass = 'questionnaire'; badgeText = 'Опросник'; }
   const isFav = favorites.includes(c.id);
   return `
     <div class="card" onclick="openCalc('${c.id}')">
@@ -205,7 +207,7 @@ function openCalc(id) {
   answers = {};
   formValues = {};
   calcVars = {};
-  if (currentCalc.type === 'formula') renderFormula();
+  if (currentCalc.type === 'formula' || currentCalc.type === 'equation') renderFormula();
   else renderQuestionnaire();
 }
 
@@ -218,7 +220,9 @@ function renderFormula() {
     <div class="page-sub">${c.description || ''}</div>
   `;
   c.fields.forEach(f => {
-    html += `<div class="field"><label>${f.label}</label>`;
+    const hideAttr = f.hideIf ? ` data-hideif="${f.hideIf.replace(/"/g, '&quot;')}"` : '';
+    const showAttr = f.showIf ? ` data-showif="${f.showIf.replace(/"/g, '&quot;')}"` : '';
+    html += `<div class="field" data-field-wrap="${f.id}"${hideAttr}${showAttr}><label>${f.label}</label>`;
     if (f.type === 'select' || f.type === 'radio') {
       html += `<div class="${f.type === 'select' ? 'select-group' : 'radio-group'}" data-field="${f.id}">`;
       f.options.forEach(o => {
@@ -226,9 +230,9 @@ function renderFormula() {
       });
       html += `</div>`;
     } else if (f.type === 'date') {
-      html += `<input type="date" id="f_${f.id}">`;
+      html += `<input type="date" id="f_${f.id}" oninput="applyFieldVisibility()">`;
     } else {
-      html += `<input type="number" id="f_${f.id}" placeholder="${f.placeholder || ''}" step="${f.step || 'any'}" inputmode="decimal">`;
+      html += `<input type="number" id="f_${f.id}" placeholder="${f.placeholder || ''}" step="${f.step || 'any'}" inputmode="decimal" oninput="applyFieldVisibility()">`;
     }
     html += `</div>`;
   });
@@ -237,6 +241,57 @@ function renderFormula() {
   document.getElementById('app').innerHTML = html;
 
   document.getElementById('calcBtn').addEventListener('click', calcFormula);
+  applyFieldVisibility();
+}
+
+// --- Скрытие/показ полей формулы ---
+function applyFieldVisibility() {
+  const c = currentCalc;
+  if (!c || !c.fields) return;
+
+  // Собираем все значения из полей
+  const vals = {};
+  c.fields.forEach(f => {
+    if (f.type === 'select' || f.type === 'radio') {
+      vals[f.id] = formValues[f.id] !== undefined ? parseFloat(formValues[f.id]) : undefined;
+    } else if (f.type === 'date') {
+      const el = document.getElementById(`f_${f.id}`);
+      vals[f.id] = el ? el.value : undefined;
+    } else {
+      const el = document.getElementById(`f_${f.id}`);
+      if (el) {
+        const v = parseFloat(el.value);
+        vals[f.id] = isNaN(v) ? undefined : v;
+      }
+    }
+  });
+
+  // Применяем hideIf и showIf
+  c.fields.forEach(f => {
+    const wrap = document.querySelector(`[data-field-wrap="${f.id}"]`);
+    if (!wrap) return;
+
+    let visible = true;
+
+    if (f.hideIf) {
+      try {
+        const keys = Object.keys(vals);
+        const fn = new Function(...keys, `return (${f.hideIf});`);
+        if (fn(...keys.map(k => vals[k]))) visible = false;
+      } catch (e) { /* ignore */ }
+    }
+
+    if (f.showIf && visible) {
+      try {
+        const keys = Object.keys(vals);
+        const fn = new Function(...keys, `return (${f.showIf});`);
+        if (!fn(...keys.map(k => vals[k]))) visible = false;
+      } catch (e) { /* ignore */ }
+    }
+
+    if (visible) wrap.classList.remove('hidden');
+    else wrap.classList.add('hidden');
+  });
 }
 
 function selectField(btn) {
@@ -245,6 +300,7 @@ function selectField(btn) {
   formValues[fieldId] = value;
   btn.parentElement.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+   applyFieldVisibility();
 }
 
 // ---------- Интерпретация ----------
@@ -280,20 +336,36 @@ function calcFormula() {
   const c = currentCalc;
   const vals = {};
   let valid = true;
+
   c.fields.forEach(f => {
+    const wrap = document.querySelector(`[data-field-wrap="${f.id}"]`);
+    const isHidden = wrap && wrap.classList.contains('hidden');
+
     if (f.type === 'select' || f.type === 'radio') {
-      if (formValues[f.id] === undefined) valid = false;
-      else vals[f.id] = parseFloat(formValues[f.id]);
+      if (formValues[f.id] === undefined) {
+        if (!isHidden) valid = false;
+      } else if (!isHidden) {
+        vals[f.id] = parseFloat(formValues[f.id]);
+      }
     } else if (f.type === 'date') {
       const el = document.getElementById(`f_${f.id}`);
-      if (!el.value) valid = false;
-      else vals[f.id] = el.value;
+      const v = el ? el.value : '';
+      if (!v) {
+        if (!isHidden) valid = false;
+      } else if (!isHidden) {
+        vals[f.id] = v;
+      }
     } else {
-      const v = parseFloat(document.getElementById(`f_${f.id}`).value);
-      if (isNaN(v)) valid = false;
-      vals[f.id] = v;
+      const el = document.getElementById(`f_${f.id}`);
+      const v = el ? parseFloat(el.value) : NaN;
+      if (isNaN(v)) {
+        if (!isHidden) valid = false;
+      } else if (!isHidden) {
+        vals[f.id] = v;
+      }
     }
   });
+
   const zone = document.getElementById('resultZone');
   if (!valid) {
     zone.innerHTML = `<div class="error-box">Заполните все поля</div>`;
@@ -305,12 +377,15 @@ function calcFormula() {
     const keys = Object.keys(vals);
     const values = keys.map(k => vals[k]);
 
+    const formulaCode = c.formula || (c.equation && c.equation.formula);
+    if (!formulaCode) throw new Error('Не задана формула');
+
     let fn;
     try {
-      fn = new Function('Math', ...keys, `return (${c.formula});`);
+      fn = new Function('Math', ...keys, `return (${formulaCode});`);
       result = fn(Math, ...values);
     } catch (e) {
-      fn = new Function('Math', ...keys, c.formula);
+      fn = new Function('Math', ...keys, formulaCode);
       result = fn(Math, ...values);
     }
   } catch (e) {
