@@ -1,5 +1,5 @@
 {
-  "version": "0.5 -beta",
+  "version": "0.5-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -471,7 +471,7 @@
     { "min": 3, "max": 6, "label": "Средний риск (3–5 баллов)", "color": "#f59e0b" },
     { "min": 6, "max": 999, "label": "Высокий риск (≥ 6 баллов)", "color": "#ef4444" }
   ],
-  "source": "NICE Clinical Guidelines, No. 141. Acute Upper Gastrointestinal Bleeding: Management. 2012. Table 8 [citation:2]. Валидация: PMC5473785 [citation:12]"
+  "source": "NICE Clinical Guidelines, No. 141. Acute Upper Gastrointestinal Bleeding: Management. 2012. Table 8. Валидация: PMC5473785"
    },
    {
   "id": "glasgow_bleeding",
@@ -625,7 +625,7 @@
     { "min": 8, "max": 17, "label": "Умеренная активность (8–16)", "color": "#f59e0b" },
     { "min": 17, "max": 999, "label": "Тяжёлая активность (> 16)", "color": "#ef4444" }
   ],
-  "source": "NHS Scotland. Inflammatory Bowel Disease. Right Decisions. [citation:4]"
+  "source": "NHS Scotland. Inflammatory Bowel Disease. Right Decisions."
    },
    {
   "id": "cdai",
@@ -680,6 +680,250 @@
     { "min": 451, "max": 9999, "label": "Тяжёлая–фульминантная активность (451+)", "color": "#ef4444" }
   ],
   "source": "Best WR, et al. Development of a Crohn's disease activity index. Gastroenterology. 1976;70(3):439-444. MSD Manuals."
+    },
+        {
+      "id": "cardiac_index",
+      "type": "formula",
+      "name": "Сердечный индекс (СИ)",
+      "specialty": "Гемодинамика",
+      "description": "Отношение сердечного выброса (МОК) к площади поверхности тела. Отражает насосную функцию сердца, приведённую к площади тела.",
+      "fields": [
+        { "id": "m_co", "label": "Сердечный выброс (л/мин)", "type": "number", "placeholder": "5.0", "step": "0.1" },
+        { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "70", "step": "0.1" },
+        { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "175", "step": "1" }
+      ],
+      "formula": "m_co / Math.sqrt((m_weight * m_height) / 3600)",
+      "unit": "л/мин/м²",
+      "decimals": 2,
+      "interpretation": [
+        { "min": 0, "max": 2.2, "label": "Гипокинетический тип (СИ < 2,2)", "color": "#3b82f6" },
+        { "min": 2.2, "max": 2.7, "label": "Норма (2,2–2,7)", "color": "#22c55e" },
+        { "min": 2.7, "max": 3.5, "label": "Эукинетический тип (2,7–3,5)", "color": "#22c55e" },
+        { "min": 3.5, "max": 999, "label": "Гиперкинетический тип (> 3,5)", "color": "#f59e0b" }
+      ],
+      "source": "Норма: 2,2–2,4 л/мин/м². Типы гемодинамики по СИ."
+    },
+    {
+      "id": "stroke_index",
+      "type": "formula",
+      "name": "Ударный индекс (УИ)",
+      "specialty": "Гемодинамика",
+      "description": "Отношение ударного объёма (УО) к площади поверхности тела. Позволяет сравнивать сократительную функцию у пациентов разного телосложения.",
+      "fields": [
+        { "id": "m_sv", "label": "Ударный объём (мл)", "type": "number", "placeholder": "70", "step": "1" },
+        { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "70", "step": "0.1" },
+        { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "175", "step": "1" }
+      ],
+      "formula": "m_sv / Math.sqrt((m_weight * m_height) / 3600)",
+      "unit": "мл/м²",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 0, "max": 36, "label": "Ниже нормы (< 36 мл/м²)", "color": "#3b82f6" },
+        { "min": 36, "max": 48, "label": "Норма (36–48 мл/м²)", "color": "#22c55e" },
+        { "min": 48, "max": 999, "label": "Выше нормы (> 48 мл/м²)", "color": "#f59e0b" }
+      ],
+      "source": "Норма 36–48 мл/м². Альтернативные диапазоны: 42–47±8,5; 45–55 мл/м²."
+    },
+    {
+      "id": "oxygen_delivery",
+      "type": "formula",
+      "name": "Доставка кислорода (DO₂)",
+      "specialty": "Гемодинамика",
+      "description": "Общее количество кислорода, доставляемого тканям за минуту. Зависит от сердечного выброса и содержания кислорода в артериальной крови.",
+      "fields": [
+        { "id": "m_co", "label": "Сердечный выброс (л/мин)", "type": "number", "placeholder": "5.0", "step": "0.1" },
+        { "id": "m_hb", "label": "Гемоглобин (г/л)", "type": "number", "placeholder": "140", "step": "1" },
+        { "id": "m_sao2", "label": "Сатурация артериальной крови SaO₂ (%)", "type": "number", "placeholder": "98", "step": "1" },
+        { "id": "m_pao2", "label": "PaO₂ (мм рт. ст.)", "type": "number", "placeholder": "90", "step": "1" }
+      ],
+      "formula": "m_co * (m_hb * 1.39 * (m_sao2 / 100) + 0.0031 * m_pao2)",
+      "unit": "мл/мин",
+      "decimals": 0,
+      "interpretation": [
+        { "min": 0, "max": 600, "label": "Сниженная доставка кислорода", "color": "#ef4444" },
+        { "min": 600, "max": 1200, "label": "Нормальная доставка (900–1100 мл/мин)", "color": "#22c55e" },
+        { "min": 1200, "max": 9999, "label": "Повышенная доставка кислорода", "color": "#f59e0b" }
+      ],
+      "source": "Формула: DO₂ = CO × (Hb × 1,39 × SaO₂ + 0,0031 × PaO₂). Норма ~1000 мл/мин."
+    },
+    {
+      "id": "oxygen_extraction_ratio",
+      "type": "formula",
+      "name": "Коэффициент экстракции кислорода (O₂ER)",
+      "specialty": "Гемодинамика",
+      "description": "Доля кислорода, извлекаемая тканями из доставляемого объёма. Отражает баланс между доставкой и потреблением кислорода.",
+      "fields": [
+        { "id": "m_sao2", "label": "Сатурация артериальной крови SaO₂ (%)", "type": "number", "placeholder": "98", "step": "1" },
+        { "id": "m_svo2", "label": "Сатурация смешанной венозной крови SvO₂ (%)", "type": "number", "placeholder": "75", "step": "1" }
+      ],
+      "formula": "((m_sao2 - m_svo2) / m_sao2) * 100",
+      "unit": "%",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 0, "max": 20, "label": "Сниженная экстракция (< 20%) — доставка превышает потребность", "color": "#3b82f6" },
+        { "min": 20, "max": 31, "label": "Норма (20–30%)", "color": "#22c55e" },
+        { "min": 31, "max": 999, "label": "Повышенная экстракция (> 30%) — доставка ограничена", "color": "#ef4444" }
+      ],
+      "source": "Норма 20–30%. Формула O₂ER = (SaO₂ − SvO₂) / SaO₂."
+    },
+    {
+      "id": "svri",
+      "type": "formula",
+      "name": "Индекс сосудистого сопротивления (SVRI)",
+      "specialty": "Гемодинамика",
+      "description": "Системное сосудистое сопротивление, приведённое к площади поверхности тела. Отражает тонус периферических сосудов.",
+      "fields": [
+        { "id": "m_map", "label": "Среднее артериальное давление (мм рт. ст.)", "type": "number", "placeholder": "90", "step": "1" },
+        { "id": "m_cvp", "label": "Центральное венозное давление (мм рт. ст.)", "type": "number", "placeholder": "5", "step": "1" },
+        { "id": "m_ci", "label": "Сердечный индекс (л/мин/м²)", "type": "number", "placeholder": "3.0", "step": "0.1" }
+      ],
+      "formula": "79.9 * (m_map - m_cvp) / m_ci",
+      "unit": "дин·с/см⁵/м²",
+      "decimals": 0,
+      "interpretation": [
+        { "min": 0, "max": 800, "label": "Сниженное сопротивление (< 800) — вазодилатация", "color": "#3b82f6" },
+        { "min": 800, "max": 1600, "label": "Норма (800–1600)", "color": "#22c55e" },
+        { "min": 1600, "max": 99999, "label": "Повышенное сопротивление (> 1600) — вазоконстрикция", "color": "#ef4444" }
+      ],
+      "source": "Формула: SVRI = 79,9 × (MAP − CVP) / CI. Норма 800–1600 дин·с/см⁵/м²."
+    },
+    {
+  "id": "lvswi",
+  "type": "formula",
+  "name": "Индекс ударной работы ЛЖ (LVSWI)",
+  "specialty": "Гемодинамика",
+  "description": "Оценка работы левого желудочка за одно сокращение, приведённая к площади тела. Отражает сократительную способность и условия нагрузки.",
+  "fields": [
+    { "id": "m_svi", "label": "Ударный индекс (мл/м²)", "type": "number", "placeholder": "45", "step": "1" },
+    { "id": "m_map", "label": "Среднее артериальное давление (мм рт. ст.)", "type": "number", "placeholder": "90", "step": "1" },
+    { "id": "m_pawp", "label": "Давление заклинивания (PAWP, мм рт. ст.)", "type": "number", "placeholder": "10", "step": "1" }
+  ],
+  "formula": "m_svi * (m_map - m_pawp) * 0.0136",
+  "unit": "г·м/м²",
+  "decimals": 1,
+  "interpretation": [
+    { "min": 0, "max": 50, "label": "Сниженная работа ЛЖ (< 50 г·м/м²)", "color": "#3b82f6" },
+    { "min": 50, "max": 62, "label": "Норма (50–62 г·м/м²)", "color": "#22c55e" },
+    { "min": 62, "max": 999, "label": "Повышенная работа ЛЖ (> 62 г·м/м²)", "color": "#f59e0b" }
+  ],
+  "source": "Edwards Lifesciences. DOC-0140282A. ScyMed. LVSWI Equation. Норма: 50–62 г·м/м²."
+    },
+    {
+  "id": "cao2",
+  "type": "formula",
+  "name": "Содержание кислорода в артериальной крови (CaO₂)",
+  "specialty": "Гемодинамика",
+  "description": "Общее количество кислорода, связанного с гемоглобином и растворённого в плазме артериальной крови.",
+  "fields": [
+    { "id": "m_hb", "label": "Гемоглобин (г/дл)", "type": "number", "placeholder": "14", "step": "0.1" },
+    { "id": "m_sao2", "label": "Сатурация артериальной крови SaO₂ (%)", "type": "number", "placeholder": "98", "step": "1" },
+    { "id": "m_pao2", "label": "PaO₂ (мм рт. ст.)", "type": "number", "placeholder": "90", "step": "1" }
+  ],
+  "formula": "(m_hb * 1.34 * (m_sao2 / 100)) + (m_pao2 * 0.0031)",
+  "unit": "мл/дл",
+  "decimals": 2,
+  "interpretation": [
+    { "min": 0, "max": 17, "label": "Сниженное содержание O₂ (< 17 мл/дл)", "color": "#3b82f6" },
+    { "min": 17, "max": 21, "label": "Норма (17–20 мл/дл)", "color": "#22c55e" },
+    { "min": 21, "max": 999, "label": "Повышенное содержание O₂ (> 20 мл/дл)", "color": "#f59e0b" }
+  ],
+  "source": "PMC8905304. ScyMed. Ca-vO2 Equation. Норма CaO₂: 17–20 мл/дл."
+    },
+    {
+  "id": "avo2_diff",
+  "type": "formula",
+  "name": "Артериовенозная разница по O₂ (a-vDO₂)",
+  "specialty": "Гемодинамика",
+  "description": "Разница между содержанием кислорода в артериальной и смешанной венозной крови. Отражает потребление кислорода тканями.",
+  "fields": [
+    { "id": "m_hb", "label": "Гемоглобин (г/дл)", "type": "number", "placeholder": "14", "step": "0.1" },
+    { "id": "m_sao2", "label": "Сатурация артериальной крови SaO₂ (%)", "type": "number", "placeholder": "98", "step": "1" },
+    { "id": "m_pao2", "label": "PaO₂ (мм рт. ст.)", "type": "number", "placeholder": "90", "step": "1" },
+    { "id": "m_svo2", "label": "Сатурация смешанной венозной крови SvO₂ (%)", "type": "number", "placeholder": "75", "step": "1" },
+    { "id": "m_pvo2", "label": "PvO₂ (мм рт. ст.)", "type": "number", "placeholder": "40", "step": "1" }
+  ],
+  "formula": "((m_hb * 1.34 * (m_sao2 / 100)) + (m_pao2 * 0.0031)) - ((m_hb * 1.34 * (m_svo2 / 100)) + (m_pvo2 * 0.0031))",
+  "unit": "мл/дл",
+  "decimals": 2,
+  "interpretation": [
+    { "min": 0, "max": 5, "label": "Норма (≤ 5 мл/дл)", "color": "#22c55e" },
+    { "min": 5, "max": 999, "label": "Повышенная экстракция O₂ (> 5 мл/дл) — усиленное потребление", "color": "#ef4444" }
+  ],
+  "source": "Innovmedkub. PMC8905304. Норма a-vDO₂ ≤ 5 мл/дл."
+    },
+    {
+  "id": "child_pugh",
+  "type": "questionnaire",
+  "name": "Шкала Чайлд-Пью (Child-Pugh)",
+  "specialty": "Гепатология",
+  "description": "Оценка тяжести цирроза печени и прогноза выживаемости. 5 параметров: билирубин, альбумин, МНО, асцит, энцефалопатия.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Общий билирубин (мкмоль/л)", "options": [
+      { "value": 1, "label": "< 34" },
+      { "value": 2, "label": "34–50" },
+      { "value": 3, "label": "> 50" }
+    ]},
+    { "id": "q2", "text": "Альбумин (г/л)", "options": [
+      { "value": 1, "label": "> 35" },
+      { "value": 2, "label": "28–35" },
+      { "value": 3, "label": "< 28" }
+    ]},
+    { "id": "q3", "text": "МНО (протромбиновое время)", "options": [
+      { "value": 1, "label": "< 1,7" },
+      { "value": 2, "label": "1,7–2,3" },
+      { "value": 3, "label": "> 2,3" }
+    ]},
+    { "id": "q4", "text": "Асцит", "options": [
+      { "value": 1, "label": "Нет" },
+      { "value": 2, "label": "Лёгкий (контролируется диуретиками)" },
+      { "value": 3, "label": "Умеренный/выраженный (резистентный)" }
+    ]},
+    { "id": "q5", "text": "Печёночная энцефалопатия", "options": [
+      { "value": 1, "label": "Нет" },
+      { "value": 2, "label": "Степень 1–2" },
+      { "value": 3, "label": "Степень 3–4" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 5, "max": 7, "label": "Класс A (5–6 баллов). Компенсированный цирроз. 1-летняя выживаемость 84–96%.", "color": "#22c55e" },
+    { "min": 7, "max": 10, "label": "Класс B (7–9 баллов). Субкомпенсированный цирроз. 1-летняя выживаемость 62–78%.", "color": "#f59e0b" },
+    { "min": 10, "max": 999, "label": "Класс C (10–15 баллов). Декомпенсированный цирроз. 1-летняя выживаемость 41–51%.", "color": "#ef4444" }
+  ],
+  "source": "Universitätsklinikum Ulm. MSD Manuals. Pugh RN, et al. Br J Surg. 1973. Evigrade."
+    },
+    {
+  "id": "meld_score",
+  "type": "formula",
+  "name": "Шкала MELD 3.0",
+  "specialty": "Гепатология",
+  "description": "Model for End-Stage Liver Disease 3.0. Оценка тяжести терминальной стадии заболевания печени и 90-дневной выживаемости. Используется для приоритизации в листе ожидания трансплантации.",
+  "fields": [
+    {
+      "id": "m_sex",
+      "label": "Пол",
+      "type": "radio",
+      "options": [
+        { "value": 0, "label": "Мужской" },
+        { "value": 1.33, "label": "Женский" }
+      ]
+    },
+    { "id": "m_bili", "label": "Общий билирубин (мг/дл)", "type": "number", "placeholder": "1.5", "step": "0.1" },
+    { "id": "m_inr", "label": "МНО (INR)", "type": "number", "placeholder": "1.2", "step": "0.1" },
+    { "id": "m_creat", "label": "Креатинин сыворотки (мг/дл)", "type": "number", "placeholder": "1.0", "step": "0.1" },
+    { "id": "m_sodium", "label": "Натрий сыворотки (мЭкв/л)", "type": "number", "placeholder": "137", "step": "1" },
+    { "id": "m_albumin", "label": "Альбумин сыворотки (г/дл)", "type": "number", "placeholder": "3.5", "step": "0.1" }
+  ],
+  "formula": "(() => { const bili = Math.max(1, m_bili); const inr = Math.max(1, m_inr); const creat = Math.min(3, Math.max(1, m_creat)); const na = Math.min(137, Math.max(125, m_sodium)); const alb = Math.min(3.5, Math.max(1.5, m_albumin)); return Math.round(m_sex + (4.56 * Math.log(bili)) + (0.82 * (137 - na)) - (0.24 * (137 - na) * Math.log(bili)) + (9.09 * Math.log(inr)) + (11.14 * Math.log(creat)) + (1.85 * (3.5 - alb)) - (1.83 * (3.5 - alb) * Math.log(creat)) + 6); })()",
+  "unit": "баллов",
+  "decimals": 0,
+  "interpretation": [
+    { "min": 0, "max": 10, "label": "MELD 6–9. Низкий риск. 3-месячная смертность < 2%.", "color": "#22c55e" },
+    { "min": 10, "max": 20, "label": "MELD 10–19. Умеренный риск. 3-месячная смертность ~6%.", "color": "#84cc16" },
+    { "min": 20, "max": 30, "label": "MELD 20–29. Высокий риск. 3-месячная смертность ~20%.", "color": "#f59e0b" },
+    { "min": 30, "max": 999, "label": "MELD ≥ 30. Очень высокий риск. 3-месячная смертность > 50%.", "color": "#ef4444" }
+  ],
+  "source": "Kim WR, et al. MELD 3.0. Gastroenterology. 2021;161:1887. OPTN MELD/PELD Calculator User Guide."
     }
   ]
 }
