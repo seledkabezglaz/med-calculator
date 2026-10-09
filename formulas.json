@@ -1,5 +1,5 @@
 {
-  "version": "0.4-beta",
+  "version": "0.5 -beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -69,27 +69,26 @@
       "source": "Клинические рекомендации РОАГ «Менопауза и климактерическое состояние у женщины», 2021"
     },
     {
-      "id": "tanner",
-      "type": "formula",
-      "name": "Индекс Таннера (ИМТ по возрасту)",
-      "specialty": "Педиатрия",
-      "description": "Оценка ИМТ с учётом возраста и пола (для детей и подростков)",
-      "fields": [
-        { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "45", "step": "0.1" },
-        { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "155", "step": "1" },
-        { "id": "m_age",    "label": "Возраст (лет)", "type": "number", "placeholder": "13", "step": "1" }
-],
-"formula": "m_weight / ((m_height / 100) * (m_height / 100))",
-      "unit": "кг/м²",
-      "decimals": 1,
-      "interpretation": [
-        { "min": 0,    "max": 14,   "label": "Выраженный дефицит",   "color": "#3b82f6" },
-        { "min": 14,   "max": 18.5, "label": "Дефицит массы",        "color": "#60a5fa" },
-        { "min": 18.5, "max": 25,   "label": "Норма",                "color": "#22c55e" },
-        { "min": 25,   "max": 30,   "label": "Избыток массы",        "color": "#f59e0b" },
-        { "min": 30,   "max": 999,  "label": "Ожирение",             "color": "#ef4444" }
-      ],
-      "source": "ВОЗ, центильные таблицы Таннера"
+  "id": "tanner",
+  "type": "formula",
+  "name": "Индекс Таннера (ИМТ для детей и подростков, упрощённый)",
+  "specialty": "Педиатрия",
+  "description": "Оценка ИМТ для детей старше 5 лет (без учёта возрастных центилей)",
+  "fields": [
+    { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "45", "step": "0.1" },
+    { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "155", "step": "1" }
+  ],
+  "formula": "m_weight / ((m_height / 100) * (m_height / 100))",
+  "unit": "кг/м²",
+  "decimals": 1,
+  "interpretation": [
+    { "min": 0,    "max": 14,   "label": "Выраженный дефицит",   "color": "#3b82f6" },
+    { "min": 14,   "max": 18.5, "label": "Дефицит массы",        "color": "#60a5fa" },
+    { "min": 18.5, "max": 25,   "label": "Норма",                "color": "#22c55e" },
+    { "min": 25,   "max": 30,   "label": "Избыток массы",        "color": "#f59e0b" },
+    { "min": 30,   "max": 999,  "label": "Ожирение",             "color": "#ef4444" }
+  ],
+  "source": "ВОЗ. Оценка физического развития детей 5-19 лет. Женева: ВОЗ, 2007 (упрощённые пороги)"
     },
         {
       "id": "ideal_weight_broca",
@@ -260,6 +259,427 @@
     { "min": 0, "max": 999, "label": "Предполагаемая дата родов", "color": "#22c55e" }
   ],
   "source": "Naegele F. 1812; адаптировано ВОЗ"
+    },
+    {
+  "id": "mayo_score",
+  "type": "questionnaire",
+  "name": "Mayo Score (активность язвенного колита)",
+  "specialty": "Гастроэнтерология",
+  "description": "Клинико-эндоскопический индекс активности язвенного колита. Сумма 4 параметров (0–12).",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Частота стула", "options": [
+      { "value": 0, "label": "Обычная" },
+      { "value": 1, "label": "На 1–2 больше" },
+      { "value": 2, "label": "На 3–4 больше" },
+      { "value": 3, "label": "На 5+ больше" }
+    ]},
+    { "id": "q2", "text": "Ректальное кровотечение", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Прожилки <50%" },
+      { "value": 2, "label": "Видимая кровь" },
+      { "value": 3, "label": "Преимущественно кровь" }
+    ]},
+    { "id": "q3", "text": "Эндоскопическая картина", "options": [
+      { "value": 0, "label": "Норма / неактивно" },
+      { "value": 1, "label": "Лёгкая (эритема, снижение сосудистого рисунка)" },
+      { "value": 2, "label": "Умеренная (выраженная эритема, эрозии)" },
+      { "value": 3, "label": "Тяжёлая (язвы, спонтанное кровотечение)" }
+    ]},
+    { "id": "q4", "text": "Общая оценка врачом", "options": [
+      { "value": 0, "label": "Норма" },
+      { "value": 1, "label": "Лёгкая" },
+      { "value": 2, "label": "Средняя" },
+      { "value": 3, "label": "Тяжёлая" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0,  "max": 3,  "label": "Ремиссия",             "color": "#22c55e" },
+    { "min": 3,  "max": 6,  "label": "Лёгкая атака",         "color": "#f59e0b" },
+    { "min": 6,  "max": 11, "label": "Среднетяжёлая атака",  "color": "#f97316" },
+    { "min": 11, "max": 999, "label": "Тяжёлая атака",        "color": "#ef4444" }
+  ],
+  "source": "Schroeder KW, Tremaine WJ, Ilstrup DM. Coated oral 5-aminosalicylic acid therapy for mildly to moderately active ulcerative colitis. N Engl J Med. 1987;317(26):1625-1629"
+    },
+    {
+  "id": "whr",
+  "type": "formula",
+  "name": "Индекс талия/бедро (WHR)",
+  "specialty": "Антропометрия",
+  "description": "Оценка абдоминального ожирения и кардиометаболического риска. ВОЗ: мужчины > 0,90 и женщины > 0,85 указывают на центральное ожирение.",
+  "fields": [
+    { "id": "m_waist", "label": "Окружность талии (см)", "type": "number", "placeholder": "85", "step": "0.5" },
+    { "id": "m_hip", "label": "Окружность бёдер (см)", "type": "number", "placeholder": "100", "step": "0.5" },
+    {
+      "id": "m_sex",
+      "label": "Пол",
+      "type": "radio",
+      "options": [
+        { "value": 1, "label": "Мужской" },
+        { "value": 0, "label": "Женский" }
+      ]
+    }
+  ],
+  "formula": "m_waist / m_hip",
+  "unit": "",
+  "decimals": 2,
+  "interpretation": [
+    { "min": 0, "max": 999, "if": "m_sex === 1 && value > 0.90", "label": "Повышенный риск (мужчины, центральное ожирение)", "color": "#ef4444" },
+    { "min": 0, "max": 999, "if": "m_sex === 0 && value > 0.85", "label": "Повышенный риск (женщины, центральное ожирение)", "color": "#ef4444" },
+    { "min": 0, "max": 0.85, "label": "Норма (низкий риск)", "color": "#22c55e" },
+    { "min": 0.85, "max": 0.90, "label": "Пограничная зона (мужчины — норма, женщины — повышенный риск)", "color": "#f59e0b" },
+    { "min": 0.90, "max": 999, "label": "Повышенный риск (для обоих полов)", "color": "#ef4444" }
+  ],
+  "source": "WHO. Waist Circumference and Waist-Hip Ratio: Report of a WHO Expert Consultation. Geneva: WHO, 2008 (published 2011)"
+   },
+   {
+  "id": "truelove_witts",
+  "type": "questionnaire",
+  "name": "Критерии Трулав-Виттса (тяжесть язвенного колита)",
+  "specialty": "Гастроэнтерология",
+  "description": "Классические критерии оценки тяжести атаки язвенного колита. Тяжёлая атака: ≥ 6 дефекаций с кровью в сутки + системные проявления. Лёгкая атака: < 4 дефекаций без системных проявлений.",
+  "scoring": "logic",
+  "interpretationMode": "logic",
+  "questions": [
+    { "id": "q1", "text": "Количество дефекаций с кровью в сутки", "options": [
+      { "value": 0, "label": "< 4 раз" },
+      { "value": 1, "label": "4–5 раз" },
+      { "value": 2, "label": "≥ 6 раз" }
+    ]},
+    { "id": "q2", "text": "Температура тела", "options": [
+      { "value": 0, "label": "≤ 37,8 °C" },
+      { "value": 1, "label": "> 37,8 °C" }
+    ]},
+    { "id": "q3", "text": "Частота пульса", "options": [
+      { "value": 0, "label": "≤ 90 уд/мин" },
+      { "value": 1, "label": "> 90 уд/мин" }
+    ]},
+    { "id": "q4", "text": "Гемоглобин", "options": [
+      { "value": 0, "label": "≥ 10,5 г/дл" },
+      { "value": 1, "label": "< 10,5 г/дл" }
+    ]},
+    { "id": "q5", "text": "СОЭ (или СРБ)", "options": [
+      { "value": 0, "label": "≤ 30 мм/ч" },
+      { "value": 1, "label": "> 30 мм/ч (или СРБ > 30 мг/л)" }
+    ]}
+  ],
+  "interpretation": [
+    { "if": "q1 === 2 && (q2 === 1 || q3 === 1 || q4 === 1 || q5 === 1)", "label": "Тяжёлая атака (острая тяжёлая язвенная колит)", "color": "#ef4444" },
+    { "if": "q1 === 0 && q2 === 0 && q3 === 0 && q4 === 0 && q5 === 0", "label": "Лёгкая атака", "color": "#22c55e" },
+    { "min": 0, "max": 999, "label": "Средняя атака (промежуточное состояние)", "color": "#f59e0b" }
+  ],
+  "source": "Truelove SC, Witts LJ. Cortisone in ulcerative colitis; final report on a therapeutic trial. Br Med J. 1955;2(4947):1041-1048. (Современное применение см.: NHS Scotland. Acute severe colitis, 2024; ECCO Guidelines)"
+   },
+   {
+  "id": "caprini",
+  "type": "questionnaire",
+  "name": "Шкала Каприни (Caprini Risk Score)",
+  "specialty": "Хирургия / Флебология",
+  "description": "Оценка риска венозных тромбоэмболических осложнений (ВТЭО) у хирургических пациентов. Введите вес и рост — ИМТ рассчитается автоматически.",
+  "scoring": "sum",
+  "preFields": [
+    { "id": "m_weight", "label": "Вес (кг)", "type": "number", "placeholder": "70", "step": "0.1" },
+    { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "175", "step": "1" }
+  ],
+  "calc": [
+    { "id": "m_bmi", "formula": "m_weight / ((m_height / 100) ** 2)", "decimals": 1, "label": "ИМТ", "unit": "кг/м²" }
+  ],
+  "interpretation": [
+    { "min": 0, "max": 2, "label": "Очень низкий риск ВТЭО (0–1 балл). Частота < 0,5%. Специфических мероприятий не требуется; рекомендована ранняя активизация больного.", "color": "#22c55e" },
+    { "min": 2, "max": 3, "label": "Низкий риск ВТЭО (2 балла). Частота ~ 1,5%. Рекомендована ранняя активизация; при необходимости — механическая профилактика.", "color": "#84cc16" },
+    { "min": 3, "max": 5, "label": "Умеренный риск ВТЭО (3–4 балла). Частота ~ 3%. Рекомендована фармакологическая или механическая профилактика.", "color": "#f59e0b" },
+    { "min": 5, "max": 999, "label": "Высокий риск ВТЭО (≥ 5 баллов). Частота ~ 6%. Рекомендована продлённая фармакологическая профилактика (до 4 недель).", "color": "#ef4444" }
+  ],
+  "questions": [
+    { "id": "q01", "text": "Возраст 41–60 лет", "type": "check", "points": 1 },
+    { "id": "q02", "text": "Возраст 61–74 года", "type": "check", "points": 2 },
+    { "id": "q03", "text": "Возраст 75 лет и старше", "type": "check", "points": 3 },
+    { "id": "q04", "text": "ИМТ > 25 кг/м²", "type": "check", "points": 1, "auto": "m_bmi > 25" },
+    { "id": "q05", "text": "Отеки нижних конечностей (в данный момент)", "type": "check", "points": 1 },
+    { "id": "q06", "text": "Варикозные вены (видимые выпуклые вены)", "type": "check", "points": 1 },
+    { "id": "q07", "text": "Сепсис (давностью < 1 мес.)", "type": "check", "points": 1 },
+    { "id": "q08", "text": "Тяжёлое заболевание лёгких (в т.ч. пневмония < 1 мес.)", "type": "check", "points": 1 },
+    { "id": "q09", "text": "Приём оральных контрацептивов или ГЗТ", "type": "check", "points": 1 },
+    { "id": "q10", "text": "Беременность или послеродовый период (< 1 мес.)", "type": "check", "points": 1 },
+    { "id": "q11", "text": "В анамнезе: необъяснимые мертворождения, повторные выкидыши, ребёнок с задержкой роста", "type": "check", "points": 1 },
+    { "id": "q12", "text": "Острый инфаркт миокарда (< 1 мес.)", "type": "check", "points": 1 },
+    { "id": "q13", "text": "Хроническая сердечная недостаточность (сейчас или < 1 мес.)", "type": "check", "points": 1 },
+    { "id": "q14", "text": "Постельный режим (нехирургический пациент)", "type": "check", "points": 1 },
+    { "id": "q15", "text": "Постельный режим > 72 часов", "type": "check", "points": 2 },
+    { "id": "q16", "text": "Воспалительные заболевания толстой кишки в анамнезе", "type": "check", "points": 1 },
+    { "id": "q17", "text": "ХОБЛ", "type": "check", "points": 1 },
+    { "id": "q18", "text": "Злокачественное новообразование (в настоящее время или ранее)", "type": "check", "points": 2 },
+    { "id": "q19", "text": "Иммобилизация конечности (гипс/ортез — давностью < 1 мес.)", "type": "check", "points": 2 },
+    { "id": "q20", "text": "Личный анамнез ВТЭО (ТГВ/ТЭЛА)", "type": "check", "points": 3 },
+    { "id": "q21", "text": "Семейный анамнез ВТЭО", "type": "check", "points": 3 },
+    { "id": "q22", "text": "Мутация фактора V (Лейден)", "type": "check", "points": 3 },
+    { "id": "q23", "text": "Мутация протромбина 20210A", "type": "check", "points": 3 },
+    { "id": "q24", "text": "Гипергомоцистеинемия", "type": "check", "points": 3 },
+    { "id": "q25", "text": "Гепарин-индуцированная тромбоцитопения", "type": "check", "points": 3 },
+    { "id": "q26", "text": "Повышенный уровень антител к кардиолипину", "type": "check", "points": 3 },
+    { "id": "q27", "text": "Волчаночный антикоагулянт", "type": "check", "points": 3 },
+    { "id": "q28", "text": "Другая наследственная или приобретённая тромбофилия", "type": "check", "points": 3 },
+    { "id": "q29", "text": "Инсульт (< 1 мес.)", "type": "check", "points": 5 },
+    { "id": "q30", "text": "Повреждение спинного мозга с параличом (< 1 мес.)", "type": "check", "points": 5 },
+    { "id": "q31", "text": "Катетеризация центральных вен (< 1 мес.)", "type": "check", "points": 2 },
+    { "id": "q32", "text": "Малое хирургическое вмешательство (< 45 мин)", "type": "check", "points": 1 },
+    { "id": "q33", "text": "Артроскопическая операция", "type": "check", "points": 2 },
+    { "id": "q34", "text": "Лапароскопическая операция (> 60 мин)", "type": "check", "points": 2 },
+    { "id": "q35", "text": "Большое хирургическое вмешательство (> 45 мин)", "type": "check", "points": 2 },
+    { "id": "q36", "text": "Множественные травмы (< 1 мес.)", "type": "check", "points": 5 },
+    { "id": "q37", "text": "Эндопротезирование крупных суставов", "type": "check", "points": 5 },
+    { "id": "q38", "text": "Перелом костей конечности или таза", "type": "check", "points": 5 },
+    { "id": "q39", "text": "Какой-либо дополнительный фактор риска (+1)", "type": "check", "points": 1 }
+  ],
+  "source": "Caprini JA. Identification of patients at high risk for postoperative VTE. Semin Thromb Hemost. 1991;17(Suppl 3):222-225. PMID: 1754886. Современная версия: Cronin M, et al. Completion of the Updated Caprini Risk Assessment Model (2013 Version). Clin Appl Thromb Hemost. 2019;25:1076029619838052. Адаптация: Пахомов Е.А., actual-phlebology.ru, 2025."
+   },
+   {
+  "id": "rockall_score",
+  "type": "questionnaire",
+  "name": "Шкала Рокалла (Rockall Score)",
+  "specialty": "Гастроэнтерология",
+  "description": "Оценка риска повторного кровотечения и летальности при остром кровотечении из верхних отделов ЖКТ. Полная версия (клинические + эндоскопические критерии).",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Возраст", "options": [
+      { "value": 0, "label": "< 60 лет" },
+      { "value": 1, "label": "60–79 лет" },
+      { "value": 2, "label": "≥ 80 лет" }
+    ]},
+    { "id": "q2", "text": "Шок", "options": [
+      { "value": 0, "label": "Нет шока (АД сист. ≥ 100, пульс < 100)" },
+      { "value": 1, "label": "Тахикардия (АД сист. ≥ 100, пульс ≥ 100)" },
+      { "value": 2, "label": "Гипотензия (АД сист. < 100)" }
+    ]},
+    { "id": "q3", "text": "Сопутствующие заболевания", "options": [
+      { "value": 0, "label": "Нет серьёзных сопутствующих заболеваний" },
+      { "value": 2, "label": "Сердечная недостаточность, ИБС, любое серьёзное сопутствующее заболевание" },
+      { "value": 3, "label": "Почечная недостаточность, печёночная недостаточность, диссеминированное злокачественное новообразование" }
+    ]},
+    { "id": "q4", "text": "Эндоскопический диагноз", "options": [
+      { "value": 0, "label": "Синдром Мэллори-Вейсса, нет источника, нет стигм недавнего кровотечения" },
+      { "value": 1, "label": "Все другие диагнозы" },
+      { "value": 2, "label": "Злокачественное новообразование верхних отделов ЖКТ" }
+    ]},
+    { "id": "q5", "text": "Признаки недавнего кровотечения (SRH)", "options": [
+      { "value": 0, "label": "Нет / только тёмное пятно" },
+      { "value": 2, "label": "Кровь в верхних отделах ЖКТ, плотный сгусток, видимый или пульсирующий сосуд" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 3, "label": "Низкий риск (0–2 балла)", "color": "#22c55e" },
+    { "min": 3, "max": 6, "label": "Средний риск (3–5 баллов)", "color": "#f59e0b" },
+    { "min": 6, "max": 999, "label": "Высокий риск (≥ 6 баллов)", "color": "#ef4444" }
+  ],
+  "source": "NICE Clinical Guidelines, No. 141. Acute Upper Gastrointestinal Bleeding: Management. 2012. Table 8 [citation:2]. Валидация: PMC5473785 [citation:12]"
+   },
+   {
+  "id": "glasgow_bleeding",
+  "type": "questionnaire",
+  "name": "Шкала Глазго-Блэтчфорда (Glasgow-Blatchford Score)",
+  "specialty": "Гастроэнтерология",
+  "description": "Оценка риска при кровотечении из верхних отделов ЖКТ до эндоскопии.",
+  "scoring": "sum",
+  "preFields": [
+    {
+      "id": "m_sex",
+      "label": "Пол",
+      "type": "radio",
+      "options": [
+        { "value": 1, "label": "Мужской" },
+        { "value": 0, "label": "Женский" }
+      ]
+    }
+  ],
+  "questions": [
+    { "id": "q1", "text": "Мочевина крови (ммоль/л)", "options": [
+      { "value": 0, "label": "< 6,5" },
+      { "value": 2, "label": "6,5–7,9" },
+      { "value": 3, "label": "8,0–9,9" },
+      { "value": 4, "label": "10,0–24,9" },
+      { "value": 6, "label": "≥ 25,0" }
+    ]},
+    { "id": "q2_male", "text": "Гемоглобин (мужчины, г/дл)", "hideIf": "m_sex === 0", "options": [
+      { "value": 0, "label": "≥ 13,0" },
+      { "value": 1, "label": "12,0–12,9" },
+      { "value": 3, "label": "10,0–11,9" },
+      { "value": 6, "label": "< 10,0" }
+    ]},
+    { "id": "q2_female", "text": "Гемоглобин (женщины, г/дл)", "hideIf": "m_sex === 1", "options": [
+      { "value": 0, "label": "≥ 12,0" },
+      { "value": 1, "label": "10,0–11,9" },
+      { "value": 6, "label": "< 10,0" }
+    ]},
+    { "id": "q3", "text": "Систолическое АД (мм рт. ст.)", "options": [
+      { "value": 0, "label": "≥ 110" },
+      { "value": 1, "label": "100–109" },
+      { "value": 2, "label": "90–99" },
+      { "value": 3, "label": "< 90" }
+    ]},
+    { "id": "q4", "text": "Пульс ≥ 100 уд/мин", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Да" }
+    ]},
+    { "id": "q5", "text": "Мелена при поступлении", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Да" }
+    ]},
+    { "id": "q6", "text": "Синкопе при поступлении", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 2, "label": "Да" }
+    ]},
+    { "id": "q7", "text": "Заболевание печени", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 2, "label": "Да" }
+    ]},
+    { "id": "q8", "text": "Сердечная недостаточность", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 2, "label": "Да" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 1, "label": "Очень низкий риск. Возможна ранняя выписка и амбулаторная эндоскопия.", "color": "#22c55e" },
+    { "min": 1, "max": 6, "label": "Низкий–средний риск. Требуется госпитализация и оценка.", "color": "#f59e0b" },
+    { "min": 6, "max": 999, "label": "Высокий риск. Показано срочное эндоскопическое вмешательство.", "color": "#ef4444" }
+  ],
+  "source": "Blatchford O, et al. Lancet. 2000;356(9238):1318-1321."
+   },
+   {
+  "id": "bisap",
+  "type": "questionnaire",
+  "name": "BISAP (тяжесть острого панкреатита)",
+  "specialty": "Гастроэнтерология",
+  "description": "Bedside Index for Severity in Acute Pancreatitis — оценка тяжести острого панкреатита у постели больного. 5 критериев, оцениваемых в первые 24 часа.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Азот мочевины крови > 25 мг/дл (> 8,9 ммоль/л)", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Да" }
+    ]},
+    { "id": "q2", "text": "Нарушение психического статуса (шкала комы Глазго < 15)", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Да" }
+    ]},
+    { "id": "q3", "text": "Признаки SIRS (синдром системного воспалительного ответа: ≥2 критериев)", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Да" }
+    ]},
+    { "id": "q4", "text": "Возраст > 60 лет", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Да" }
+    ]},
+    { "id": "q5", "text": "Плевральный выпот (по данным визуализации)", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Да" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 3, "label": "Низкая смертность (< 2%)", "color": "#22c55e" },
+    { "min": 3, "max": 999, "label": "Высокая смертность (> 15%)", "color": "#ef4444" }
+  ],
+  "source": "MSD Manuals. BISAP Score. https://www.msdmanuals.com "
+   },
+   {
+  "id": "harvey_bradshaw",
+  "type": "questionnaire",
+  "name": "Индекс Харви-Брэдшоу (Harvey-Bradshaw Index)",
+  "specialty": "Гастроэнтерология",
+  "description": "Упрощённая оценка активности болезни Крона за последние 24 часа. Хорошо коррелирует с CDAI.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Общее самочувствие (за 24 часа)", "options": [
+      { "value": 0, "label": "Очень хорошее" },
+      { "value": 1, "label": "Слегка ниже среднего" },
+      { "value": 2, "label": "Плохое" },
+      { "value": 3, "label": "Очень плохое" },
+      { "value": 4, "label": "Ужасное" }
+    ]},
+    { "id": "q2", "text": "Боль в животе (за 24 часа)", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Слабая" },
+      { "value": 2, "label": "Умеренная" },
+      { "value": 3, "label": "Сильная" }
+    ]},
+    { "id": "q3", "text": "Число жидких дефекаций (за 24 часа)", "options": [
+      { "value": 0, "label": "0" }, { "value": 1, "label": "1" }, { "value": 2, "label": "2" },
+      { "value": 3, "label": "3" }, { "value": 4, "label": "4" }, { "value": 5, "label": "5" },
+      { "value": 6, "label": "6" }, { "value": 7, "label": "7" }, { "value": 8, "label": "8+" }
+    ]},
+    { "id": "q4", "text": "Абдоминальная масса", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "Сомнительная" },
+      { "value": 2, "label": "Определённая" },
+      { "value": 3, "label": "Определённая и болезненная" }
+    ]},
+    { "id": "q5", "text": "Осложнения (каждое +1)", "options": [
+      { "value": 0, "label": "Нет" },
+      { "value": 1, "label": "1 осложнение" },
+      { "value": 2, "label": "2 осложнения" },
+      { "value": 3, "label": "3 осложнения" },
+      { "value": 4, "label": "4+ осложнения" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 5, "label": "Ремиссия (< 5)", "color": "#22c55e" },
+    { "min": 5, "max": 8, "label": "Лёгкая активность (5–7)", "color": "#84cc16" },
+    { "min": 8, "max": 17, "label": "Умеренная активность (8–16)", "color": "#f59e0b" },
+    { "min": 17, "max": 999, "label": "Тяжёлая активность (> 16)", "color": "#ef4444" }
+  ],
+  "source": "NHS Scotland. Inflammatory Bowel Disease. Right Decisions. [citation:4]"
+   },
+   {
+  "id": "cdai",
+  "type": "questionnaire",
+  "name": "CDAI (индекс активности болезни Крона)",
+  "specialty": "Гастроэнтерология",
+  "description": "Crohn's Disease Activity Index. Точный расчёт по 8 компонентам за 7 дней. Введите числовые значения и ответьте на вопросы.",
+  "scoring": "sum",
+  "preFields": [
+    { "id": "m_stools", "label": "Ср. число жидких стула/день", "type": "number", "placeholder": "3", "step": "1" },
+    { "id": "m_hct", "label": "Гематокрит (%)", "type": "number", "placeholder": "40", "step": "0.1" },
+    {
+      "id": "m_hct_norm",
+      "label": "Норма гематокрита",
+      "type": "radio",
+      "options": [
+        { "value": 47, "label": "47 (муж.)" },
+        { "value": 42, "label": "42 (жен.)" }
+      ]
+    },
+    { "id": "m_weight_loss", "label": "Потеря веса (%)", "type": "number", "placeholder": "0", "step": "0.1" }
+  ],
+  "calc": [
+    { "id": "c_stools", "formula": "m_stools * 14", "decimals": 0, "label": "Стул × 14", "unit": "балл.", "includeInTotal": true },
+    { "id": "c_hct", "formula": "Math.max(0, (m_hct_norm - m_hct)) * 6", "decimals": 0, "label": "Откл. Ht × 6", "unit": "балл.", "includeInTotal": true },
+    { "id": "c_weight", "formula": "m_weight_loss * 1", "decimals": 0, "label": "Потеря веса × 1", "unit": "балл.", "includeInTotal": true }
+  ],
+  "questions": [
+    { "id": "q2", "text": "Приём дифеноксилата/лоперамида", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 30, "label": "Да" }
+    ]},
+    { "id": "q3", "text": "Интенсивность боли в животе", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 35, "label": "Слабая" },
+      { "value": 70, "label": "Умеренная" }, { "value": 105, "label": "Сильная" }
+    ]},
+    { "id": "q4", "text": "Общее самочувствие", "options": [
+      { "value": 0, "label": "Хорошее" }, { "value": 49, "label": "Слегка ниже" },
+      { "value": 98, "label": "Плохое" }, { "value": 147, "label": "Очень плохое" }, { "value": 196, "label": "Ужасное" }
+    ]},
+    { "id": "q5", "text": "Осложнения (каждое +20)", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 20, "label": "1" }, { "value": 40, "label": "2" },
+      { "value": 60, "label": "3" }, { "value": 80, "label": "4+" }
+    ]},
+    { "id": "q6", "text": "Абдоминальная масса", "options": [
+      { "value": 0, "label": "Нет" }, { "value": 20, "label": "Возможная" }, { "value": 50, "label": "Определённая" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 150, "label": "Ремиссия (0–149)", "color": "#22c55e" },
+    { "min": 150, "max": 221, "label": "Лёгкая–умеренная активность (150–220)", "color": "#84cc16" },
+    { "min": 221, "max": 451, "label": "Умеренная–тяжёлая активность (221–450)", "color": "#f59e0b" },
+    { "min": 451, "max": 9999, "label": "Тяжёлая–фульминантная активность (451+)", "color": "#ef4444" }
+  ],
+  "source": "Best WR, et al. Development of a Crohn's disease activity index. Gastroenterology. 1976;70(3):439-444. MSD Manuals."
     }
   ]
 }
