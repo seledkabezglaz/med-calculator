@@ -51,7 +51,6 @@
   .opt { flex: 1 1 auto; min-width: 60px; padding: 10px 8px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: white; font-size: 13px; text-align: center; cursor: pointer; transition: 0.12s; font-weight: 500; color: #4a5a6a; }
   .opt:hover { border-color: #cbd5e1; }
   .opt.active { background: #1a2634; color: white; border-color: #1a2634; font-weight: 600; }
-
   .q-check { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 12px 14px; background: white; border-radius: 14px; margin-bottom: 8px; border: 1.5px solid transparent; transition: 0.12s; user-select: none; }
   .q-check:hover { border-color: #cbd5e1; }
   .q-check.on { border-color: #1a2634; background: #f8fafc; }
@@ -66,7 +65,6 @@
   .q-check .pts { font-size: 12px; color: #6b7a8a; font-weight: 600; white-space: nowrap; margin-top: 2px; }
   .q-check.on .pts { color: #1a2634; }
   .q-check .auto-tag { font-size: 10px; font-weight: 700; color: #1e40af; background: #dbeafe; padding: 2px 6px; border-radius: 6px; margin-left: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
-
   .pre-block { background: white; border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
   .pre-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .pre-fields .field { margin-bottom: 0; }
@@ -77,10 +75,8 @@
   .calc-line .cl-value .unit { font-size: 13px; color: #6b7a8a; font-weight: 500; margin-left: 3px; }
   .calc-line.in-total .cl-value { color: #1e40af; }
   .calc-line.in-total .cl-label::after { content: " · в сумме"; color: #3b82f6; font-size: 11px; font-weight: 600; }
-
   .progress-bar { font-size: 13px; color: #6b7a8a; margin-bottom: 12px; padding: 8px 4px; display: flex; justify-content: space-between; align-items: center; }
   .progress-bar b { color: #1a2634; }
-
   .btn { width: 100%; background: #1a2634; color: white; border: none; padding: 16px; border-radius: 40px; font-size: 17px; font-weight: 600; cursor: pointer; transition: 0.15s; margin-top: 12px; }
   .btn:active { transform: scale(0.98); background: #2d3b4a; }
   .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
@@ -164,7 +160,6 @@ function goHome() {
   renderList();
 }
 
-
 // ---------- Экран списка ----------
 function renderList(filter = '') {
   const f = filter.toLowerCase().trim();
@@ -218,7 +213,6 @@ function openCalc(id, pushState = true) {
   calcVars = {};
 
   if (pushState) {
-    // Сообщаем браузеру, что мы перешли на новый экран
     history.pushState({ calcId: id }, '', '#' + id);
   }
 
@@ -245,9 +239,9 @@ function renderFormula() {
       });
       html += `</div>`;
     } else if (f.type === 'date') {
-      html += `<input type="date" id="f_${f.id}" oninput="applyFieldVisibility()">`;
+      html += `<input type="date" id="f_${f.id}" oninput="applyFieldVisibility(); checkFormulaValidity()" onchange="checkFormulaValidity()">`;
     } else {
-      html += `<input type="number" id="f_${f.id}" placeholder="${f.placeholder || ''}" step="${f.step || 'any'}" inputmode="decimal" oninput="applyFieldVisibility()">`;
+      html += `<input type="number" id="f_${f.id}" placeholder="${f.placeholder || ''}" step="${f.step || 'any'}" inputmode="decimal" oninput="applyFieldVisibility(); checkFormulaValidity()">`;
     }
     html += `</div>`;
   });
@@ -257,6 +251,7 @@ function renderFormula() {
 
   document.getElementById('calcBtn').addEventListener('click', calcFormula);
   applyFieldVisibility();
+  checkFormulaValidity();
 }
 
 // --- Скрытие/показ полей формулы ---
@@ -264,7 +259,6 @@ function applyFieldVisibility() {
   const c = currentCalc;
   if (!c || !c.fields) return;
 
-  // Собираем все значения из полей
   const vals = {};
   c.fields.forEach(f => {
     if (f.type === 'select' || f.type === 'radio') {
@@ -281,7 +275,6 @@ function applyFieldVisibility() {
     }
   });
 
-  // Применяем hideIf и showIf
   c.fields.forEach(f => {
     const wrap = document.querySelector(`[data-field-wrap="${f.id}"]`);
     if (!wrap) return;
@@ -293,7 +286,7 @@ function applyFieldVisibility() {
         const keys = Object.keys(vals);
         const fn = new Function(...keys, `return (${f.hideIf});`);
         if (fn(...keys.map(k => vals[k]))) visible = false;
-      } catch (e) { /* ignore */ }
+      } catch (e) { }
     }
 
     if (f.showIf && visible) {
@@ -301,7 +294,7 @@ function applyFieldVisibility() {
         const keys = Object.keys(vals);
         const fn = new Function(...keys, `return (${f.showIf});`);
         if (!fn(...keys.map(k => vals[k]))) visible = false;
-      } catch (e) { /* ignore */ }
+      } catch (e) { }
     }
 
     if (visible) wrap.classList.remove('hidden');
@@ -315,7 +308,8 @@ function selectField(btn) {
   formValues[fieldId] = value;
   btn.parentElement.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-   applyFieldVisibility();
+  applyFieldVisibility();
+  checkFormulaValidity();
 }
 
 // ---------- Интерпретация ----------
@@ -330,7 +324,6 @@ function pickInterpretation(interpList, mode, value, vars) {
         const fn = new Function('value', ...keys, `return (${item.if});`);
         condOk = !!fn(value, ...keys.map(k => vars[k]));
       } catch (e) {
-        console.warn('Ошибка в условии if:', item.if, e);
         condOk = false;
       }
       if (!condOk) continue;
@@ -345,6 +338,34 @@ function pickInterpretation(interpList, mode, value, vars) {
     if (value >= item.min && value < item.max) return item;
   }
   return null;
+}
+
+function checkFormulaValidity() {
+  const c = currentCalc;
+  if (!c || !c.fields) return;
+
+  let isValid = true;
+  c.fields.forEach(f => {
+    const wrap = document.querySelector(`[data-field-wrap="${f.id}"]`);
+    if (wrap && wrap.classList.contains('hidden')) return;
+
+    let valueValid = false;
+    if (f.type === 'select' || f.type === 'radio') {
+      valueValid = formValues[f.id] !== undefined;
+    } else if (f.type === 'date') {
+      const el = document.getElementById(`f_${f.id}`);
+      valueValid = !!(el && el.value);
+    } else {
+      const el = document.getElementById(`f_${f.id}`);
+      const v = el ? parseFloat(el.value) : NaN;
+      valueValid = !isNaN(v);
+    }
+
+    if (!valueValid) isValid = false;
+  });
+
+  const calcBtn = document.getElementById('calcBtn');
+  if (calcBtn) calcBtn.disabled = !isValid;
 }
 
 function calcFormula() {
@@ -387,11 +408,58 @@ function calcFormula() {
     return;
   }
 
+  if (c.results && Array.isArray(c.results)) {
+    let resultsHTML = '';
+    const evalVars = { ...vals };
+
+    c.results.forEach(res => {
+      let resVal = null;
+      try {
+        const keys = Object.keys(evalVars);
+        const values = keys.map(k => evalVars[k]);
+        let fn;
+        try {
+          fn = new Function('Math', ...keys, `return (${res.formula});`);
+          resVal = fn(Math, ...values);
+        } catch (e) {
+          fn = new Function('Math', ...keys, res.formula);
+          resVal = fn(Math, ...values);
+        }
+        if (typeof resVal === 'number' && isFinite(resVal)) {
+          evalVars[res.id] = resVal;
+        }
+      } catch (e) { }
+
+      if (resVal !== null && isFinite(resVal)) {
+        const dec = res.decimals !== undefined ? res.decimals : 1;
+        const disp = typeof resVal === 'number' ? resVal.toFixed(dec) : resVal;
+        const interp = res.interpretation ? pickInterpretation(res.interpretation, res.interpretationMode, resVal, evalVars) : null;
+        const color = interp ? interp.color : '#1a2634';
+        const label = interp ? interp.label : '';
+
+        resultsHTML += `
+          <div style="border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 16px; text-align: left;">
+            <div style="font-size: 14px; color: #6b7a8a; font-weight: 600; margin-bottom: 4px;">${res.label}</div>
+            <div class="value" style="color:${color}; font-size: 32px;">${disp}<span class="unit">${res.unit || ''}</span></div>
+            ${label ? `<div class="interp" style="background:${color}22; color:${color}; margin-top: 8px; font-size: 13px; padding: 6px 12px;">${label}</div>` : ''}
+          </div>
+        `;
+      }
+    });
+
+    zone.innerHTML = `
+      <div class="result" style="text-align: left; padding: 20px;">
+        <div style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">Результаты расчетов</div>
+        ${resultsHTML}
+        ${c.source ? `<div class="source" style="margin-top: 20px;">Источник: ${c.source}</div>` : ''}
+      </div>`;
+    return;
+  }
+
   let result;
   try {
     const keys = Object.keys(vals);
     const values = keys.map(k => vals[k]);
-
     const formulaCode = c.formula || (c.equation && c.equation.formula);
     if (!formulaCode) throw new Error('Не задана формула');
 
@@ -448,7 +516,6 @@ function renderQuestionnaire() {
     <div class="page-sub">${c.description || ''}</div>
   `;
 
-  // --- Pre-fields + calc ---
   if (hasPre) {
     html += `<div class="pre-block"><div class="pre-fields">`;
     c.preFields.forEach(f => {
@@ -485,7 +552,6 @@ function renderQuestionnaire() {
     html += `<div class="progress-bar"><span>Отмечено: <b id="progCount">0</b> из <b>${c.questions.length}</b></span><span>Сумма: <b id="progSum">0</b> балл.</span></div>`;
   }
 
-  // --- Вопросы ---
   c.questions.forEach(q => {
     const hideAttr = q.hideIf ? ` data-hideif="${q.hideIf.replace(/"/g, '&quot;')}"` : '';
     if (q.type === 'check') {
@@ -522,6 +588,7 @@ function renderQuestionnaire() {
   applyHideIf();
   recalcAutoChecks();
   updateProgress();
+  checkQuestionnaireValidity();
 }
 
 function selectPreField(btn) {
@@ -530,6 +597,7 @@ function selectPreField(btn) {
   btn.parentElement.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   onPreInput();
+  checkQuestionnaireValidity();
 }
 
 function collectPreFields() {
@@ -598,6 +666,7 @@ function onPreInput() {
   applyHideIf();
   recalcAutoChecks();
   updateProgress();
+  checkQuestionnaireValidity();
 }
 
 function applyHideIf() {
@@ -627,6 +696,7 @@ function applyHideIf() {
       el.classList.remove('hidden');
     }
   });
+  checkQuestionnaireValidity();
 }
 
 function recalcAutoChecks() {
@@ -677,6 +747,7 @@ function toggleCheck(el, event) {
   }
   recalcAutoChecks();
   updateProgress();
+  checkQuestionnaireValidity();
 }
 
 function selectOpt(btn) {
@@ -688,6 +759,7 @@ function selectOpt(btn) {
   applyHideIf();
   recalcAutoChecks();
   updateProgress();
+  checkQuestionnaireValidity();
 }
 
 function updateProgress() {
@@ -701,7 +773,34 @@ function updateProgress() {
   progSum.textContent = sum;
 }
 
-// --- Расчёт результата опросника ---
+function checkQuestionnaireValidity() {
+  const c = currentCalc;
+  if (!c || !c.questions) return;
+
+  let isValid = true;
+
+  if (c.preFields) {
+    c.preFields.forEach(f => {
+      if (f.type === 'radio' || f.type === 'select') {
+        if (formValues[f.id] === undefined) isValid = false;
+      }
+    });
+  }
+
+  c.questions.forEach(q => {
+    const el = document.querySelector(`[data-q="${q.id}"]`);
+    if (!el || el.classList.contains('hidden')) return;
+
+    if (q.type !== 'check') {
+      const activeOpt = el.querySelector('.opt.active');
+      if (!activeOpt) isValid = false;
+    }
+  });
+
+  const calcBtn = document.getElementById('calcBtn');
+  if (calcBtn) calcBtn.disabled = !isValid;
+}
+
 function calcQuestionnaire() {
   const c = currentCalc;
 
@@ -719,7 +818,6 @@ function calcQuestionnaire() {
     });
   }
 
-  // --- Сумма ответов (только видимые) ---
   let sumAnswers = 0;
   c.questions.forEach(q => {
     const el = document.querySelector(`[data-q="${q.id}"]`);
@@ -727,12 +825,12 @@ function calcQuestionnaire() {
     sumAnswers += (answers[q.id] || 0);
   });
 
-  // --- Сумма calc с includeInTotal ---
   let sumCalc = 0;
   const calcBreakdown = [];
   if (c.calc) {
     c.calc.forEach(cv => {
-      if (cv.includeInTotal && calcVars[cv.id] !== undefined) {
+      if (calcVars[cv.id] === undefined || isNaN(calcVars[cv.id])) return;
+      if (cv.includeInTotal) {
         const val = calcVars[cv.id];
         sumCalc += val;
         calcBreakdown.push({ label: cv.label || cv.id, value: val, unit: cv.unit || '' });
@@ -741,14 +839,12 @@ function calcQuestionnaire() {
   }
 
   const total = sumAnswers + sumCalc;
-
   const vars = { ...preValues, ...calcVars, ...answers, total };
 
   const interp = pickInterpretation(c.interpretation, c.interpretationMode, total, vars);
   const color = interp ? interp.color : '#1a2634';
   const label = interp ? interp.label : '—';
 
-  // --- Разбивка (показываем если есть calc с includeInTotal) ---
   let breakdownHTML = '';
   if (calcBreakdown.length > 0) {
     breakdownHTML = `<div class="breakdown">`;
@@ -779,18 +875,14 @@ function showDisclaimer() {
   alert('Информационный характер\n\nВсе расчёты носят справочный характер и не заменяют консультацию врача. Клинические решения принимает лечащий врач на основании полного обследования.');
 }
 
-// Реагируем на системную кнопку "Назад" / свайп
 window.addEventListener('popstate', (event) => {
   if (event.state && event.state.calcId) {
-    // Пользователь вернулся вперёд (например, свайп назад-вперёд) — открываем калькулятор
     openCalc(event.state.calcId, false);
   } else {
-    // Пользователь нажал "Назад" — показываем главный экран
     goHome();
   }
 });
 
-// ---------- Старт ----------
 loadData();
 </script>
 </body>
