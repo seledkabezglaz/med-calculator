@@ -156,6 +156,15 @@ function cardHTML(c) {
     </div>`;
 }
 
+function goHome() {
+  currentCalc = null;
+  answers = {};
+  formValues = {};
+  calcVars = {};
+  renderList();
+}
+
+
 // ---------- Экран списка ----------
 function renderList(filter = '') {
   const f = filter.toLowerCase().trim();
@@ -202,11 +211,17 @@ function renderList(filter = '') {
 }
 
 // ---------- Открытие калькулятора ----------
-function openCalc(id) {
+function openCalc(id, pushState = true) {
   currentCalc = DATA.calculators.find(c => c.id === id);
   answers = {};
   formValues = {};
   calcVars = {};
+
+  if (pushState) {
+    // Сообщаем браузеру, что мы перешли на новый экран
+    history.pushState({ calcId: id }, '', '#' + id);
+  }
+
   if (currentCalc.type === 'formula' || currentCalc.type === 'equation') renderFormula();
   else renderQuestionnaire();
 }
@@ -215,7 +230,7 @@ function openCalc(id) {
 function renderFormula() {
   const c = currentCalc;
   let html = `
-    <button class="back" onclick="renderList()">← Назад</button>
+    <button class="back" onclick="history.back()">← Назад</button>
     <div class="page-title">${c.name}</div>
     <div class="page-sub">${c.description || ''}</div>
   `;
@@ -428,7 +443,7 @@ function renderQuestionnaire() {
   const hasCalc = c.calc && c.calc.length > 0;
 
   let html = `
-    <button class="back" onclick="renderList()">← Назад</button>
+    <button class="back" onclick="history.back()">← Назад</button>
     <div class="page-title">${c.name}</div>
     <div class="page-sub">${c.description || ''}</div>
   `;
@@ -763,6 +778,17 @@ function toggleMenu() {
 function showDisclaimer() {
   alert('Информационный характер\n\nВсе расчёты носят справочный характер и не заменяют консультацию врача. Клинические решения принимает лечащий врач на основании полного обследования.');
 }
+
+// Реагируем на системную кнопку "Назад" / свайп
+window.addEventListener('popstate', (event) => {
+  if (event.state && event.state.calcId) {
+    // Пользователь вернулся вперёд (например, свайп назад-вперёд) — открываем калькулятор
+    openCalc(event.state.calcId, false);
+  } else {
+    // Пользователь нажал "Назад" — показываем главный экран
+    goHome();
+  }
+});
 
 // ---------- Старт ----------
 loadData();
