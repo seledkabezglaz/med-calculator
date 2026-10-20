@@ -1,5 +1,5 @@
 {
-  "version": "0.7.1-beta",
+  "version": "0.8.4-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -1651,6 +1651,172 @@
     }
   ],
   "source": "Различные источники гемодинамики и интенсивной терапии."
+    },
+    {
+  "id": "gfr_calculator",
+  "type": "equation",
+  "name": "СКФ (CKD-EPI 2021, 2009, MDRD)",
+  "specialty": "Нефрология",
+  "description": "Расчёт скорости клубочковой фильтрации (СКФ) по формулам CKD-EPI 2021 (без расы), CKD-EPI 2009 (с расой) и MDRD (4 и 6 переменных).",
+  "fields": [
+    { "id": "m_age", "label": "Возраст (лет)", "type": "number", "placeholder": "50", "step": "1" },
+    { "id": "m_sex", "label": "Пол", "type": "radio", "options": [{ "value": 1, "label": "Мужской" }, { "value": 0, "label": "Женский" }] },
+    { "id": "m_race", "label": "Раса (для CKD-EPI 2009)", "type": "radio", "options": [{ "value": 0, "label": "Белая/другая" }, { "value": 1, "label": "Негроидная" }] },
+    { "id": "m_scr", "label": "Креатинин сыворотки (мг/дл)", "type": "number", "placeholder": "1.0", "step": "0.01" },
+    { "id": "m_bun", "label": "Азот мочевины (BUN, мг/дл)", "type": "number", "placeholder": "15", "step": "1" },
+    { "id": "m_albumin", "label": "Альбумин (г/дл)", "type": "number", "placeholder": "4.0", "step": "0.1" }
+  ],
+  "results": [
+    {
+      "id": "ckd_epi_2021",
+      "label": "CKD-EPI 2021 (без расы)",
+      "formula": "(() => { const scr = m_scr; const k = m_sex === 1 ? 0.9 : 0.7; const a = m_sex === 1 ? -0.302 : -0.241; const femaleFactor = m_sex === 0 ? 1.012 : 1; if (scr <= k) { return 142 * Math.pow(scr / k, a) * Math.pow(0.9938, m_age) * femaleFactor; } else { return 142 * Math.pow(scr / k, -1.200) * Math.pow(0.9938, m_age) * femaleFactor; } })()",
+      "unit": "мл/мин/1.73м²",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 90, "max": 999, "label": "G1 (высокая/норма)", "color": "#22c55e" },
+        { "min": 60, "max": 90, "label": "G2 (незначительное снижение)", "color": "#84cc16" },
+        { "min": 45, "max": 60, "label": "G3a (умеренное снижение)", "color": "#f59e0b" },
+        { "min": 30, "max": 45, "label": "G3b (существенное снижение)", "color": "#f97316" },
+        { "min": 15, "max": 30, "label": "G4 (выраженное снижение)", "color": "#ef4444" },
+        { "min": 0, "max": 15, "label": "G5 (почечная недостаточность)", "color": "#991b1b" }
+      ]
+    },
+    {
+      "id": "ckd_epi_2009",
+      "label": "CKD-EPI 2009 (с расой)",
+      "formula": "(() => { const scr = m_scr; const k = m_sex === 1 ? 0.9 : 0.7; const a = m_sex === 1 ? -0.411 : -0.329; const femaleFactor = m_sex === 0 ? 1.018 : 1; const raceFactor = m_race === 1 ? 1.159 : 1; if (scr <= k) { return 141 * Math.pow(scr / k, a) * Math.pow(0.993, m_age) * femaleFactor * raceFactor; } else { return 141 * Math.pow(scr / k, -1.209) * Math.pow(0.993, m_age) * femaleFactor * raceFactor; } })()",
+      "unit": "мл/мин/1.73м²",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 90, "max": 999, "label": "G1", "color": "#22c55e" },
+        { "min": 60, "max": 90, "label": "G2", "color": "#84cc16" },
+        { "min": 45, "max": 60, "label": "G3a", "color": "#f59e0b" },
+        { "min": 30, "max": 45, "label": "G3b", "color": "#f97316" },
+        { "min": 15, "max": 30, "label": "G4", "color": "#ef4444" },
+        { "min": 0, "max": 15, "label": "G5", "color": "#991b1b" }
+      ]
+    },
+    {
+      "id": "mdrd",
+      "label": "MDRD (4 переменные)",
+      "formula": "186 * Math.pow(m_scr, -1.154) * Math.pow(m_age, -0.203) * (m_sex === 0 ? 0.742 : 1) * (m_race === 1 ? 1.210 : 1)",
+      "unit": "мл/мин/1.73м²",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 90, "max": 999, "label": "G1", "color": "#22c55e" },
+        { "min": 60, "max": 90, "label": "G2", "color": "#84cc16" },
+        { "min": 45, "max": 60, "label": "G3a", "color": "#f59e0b" },
+        { "min": 30, "max": 45, "label": "G3b", "color": "#f97316" },
+        { "min": 15, "max": 30, "label": "G4", "color": "#ef4444" },
+        { "min": 0, "max": 15, "label": "G5", "color": "#991b1b" }
+      ]
+    },
+    {
+      "id": "mdrd_extended",
+      "label": "MDRD (расширенная, 6 переменных)",
+      "formula": "170 * Math.pow(m_scr, -0.999) * Math.pow(m_age, -0.176) * (m_sex === 0 ? 0.762 : 1) * (m_race === 1 ? 1.18 : 1) * Math.pow(m_bun, -0.170) * Math.pow(m_albumin, 0.318)",
+      "unit": "мл/мин/1.73м²",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 90, "max": 999, "label": "G1", "color": "#22c55e" },
+        { "min": 60, "max": 90, "label": "G2", "color": "#84cc16" },
+        { "min": 45, "max": 60, "label": "G3a", "color": "#f59e0b" },
+        { "min": 30, "max": 45, "label": "G3b", "color": "#f97316" },
+        { "min": 15, "max": 30, "label": "G4", "color": "#ef4444" },
+        { "min": 0, "max": 15, "label": "G5", "color": "#991b1b" }
+      ]
+    }
+  ],
+  "source": "CKD-EPI 2021: Inker LA, et al. NEJM. 2021;385:1737-1749. CKD-EPI 2009: Levey AS, et al. Ann Intern Med. 2009;150(9):604-612. MDRD: Levey AS, et al. Ann Intern Med. 1999;130(6):461-470. MSD Manuals."
+    },
+    {
+  "id": "cockcroft_gault",
+  "type": "equation",
+  "name": "Клиренс креатинина (Кокрофт-Голт)",
+  "specialty": "Нефрология",
+  "description": "Оценка клиренса креатинина (КК) для расчета доз лекарств. Рассчитывается по фактической, идеальной (IBW) и скорректированной (AdjBW) массе тела.",
+  "fields": [
+    { "id": "m_age", "label": "Возраст (лет)", "type": "number", "placeholder": "50", "step": "1" },
+    { "id": "m_sex", "label": "Пол", "type": "radio", "options": [{ "value": 1, "label": "Мужской" }, { "value": 0, "label": "Женский" }] },
+    { "id": "m_weight", "label": "Фактический вес (кг)", "type": "number", "placeholder": "70", "step": "0.1" },
+    { "id": "m_height", "label": "Рост (см)", "type": "number", "placeholder": "175", "step": "1" },
+    { "id": "m_scr", "label": "Креатинин сыворотки (мг/дл)", "type": "number", "placeholder": "1.0", "step": "0.01" }
+  ],
+  "results": [
+    {
+      "id": "cg_actual",
+      "label": "По фактической массе (Actual BW)",
+      "formula": "((140 - m_age) * m_weight) / (72 * m_scr) * (m_sex === 0 ? 0.85 : 1)",
+      "unit": "мл/мин",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 90, "max": 999, "label": "Норма", "color": "#22c55e" },
+        { "min": 60, "max": 90, "label": "Незначительное снижение", "color": "#84cc16" },
+        { "min": 30, "max": 60, "label": "Умеренное снижение", "color": "#f59e0b" },
+        { "min": 15, "max": 30, "label": "Тяжелое снижение", "color": "#ef4444" },
+        { "min": 0, "max": 15, "label": "Почечная недостаточность", "color": "#991b1b" }
+      ]
+    },
+    {
+      "id": "cg_ibw",
+      "label": "По идеальной массе (Ideal BW — Devine)",
+      "formula": "((140 - m_age) * (m_sex === 1 ? (50 + 2.3 * (m_height / 2.54 - 60)) : (45.5 + 2.3 * (m_height / 2.54 - 60)))) / (72 * m_scr) * (m_sex === 0 ? 0.85 : 1)",
+      "unit": "мл/мин",
+      "decimals": 1
+    },
+    {
+      "id": "cg_adjbw",
+      "label": "По скорректированной массе (Adjusted BW)",
+      "formula": "(() => { const ibw = m_sex === 1 ? (50 + 2.3 * (m_height / 2.54 - 60)) : (45.5 + 2.3 * (m_height / 2.54 - 60)); const adj = ibw + 0.4 * (m_weight - ibw); return ((140 - m_age) * adj) / (72 * m_scr) * (m_sex === 0 ? 0.85 : 1); })()",
+      "unit": "мл/мин",
+      "decimals": 1
+    }
+  ],
+  "source": "Cockcroft DW, Gault MH. Prediction of creatinine clearance from serum creatinine. Nephron. 1976;16(1):31-41. PMID: 1244564."
+    },
+    {
+  "id": "fena",
+  "type": "formula",
+  "name": "Фракционная экскреция натрия (FeNa)",
+  "specialty": "Нефрология",
+  "description": "Оценка фракционной экскреции натрия. Используется для дифференциальной диагностики преренальной и ренальной острой почечной недостаточности.",
+  "fields": [
+    { "id": "m_una", "label": "Натрий в моче (ммоль/л)", "type": "number", "placeholder": "40", "step": "1" },
+    { "id": "m_pna", "label": "Натрий в плазме (ммоль/л)", "type": "number", "placeholder": "140", "step": "1" },
+    { "id": "m_ucr", "label": "Креатинин в моче (мг/дл или ммоль/л)", "type": "number", "placeholder": "100", "step": "0.1" },
+    { "id": "m_pcr", "label": "Креатинин в плазме (мг/дл или ммоль/л)", "type": "number", "placeholder": "1.0", "step": "0.01" }
+  ],
+  "formula": "(m_una * m_pcr) / (m_pna * m_ucr) * 100",
+  "unit": "%",
+  "decimals": 2,
+  "interpretation": [
+    { "min": 0, "max": 1, "label": "Преренальная ОПН (или контраст-индуцированная)", "color": "#3b82f6" },
+    { "min": 1, "max": 2, "label": "Пограничное значение", "color": "#f59e0b" },
+    { "min": 2, "max": 999, "label": "Ренальная ОПН (острый канальцевый некроз)", "color": "#ef4444" }
+  ],
+  "source": "Espinel CH. The FENa test. Use in the differential diagnosis of acute renal failure. JAMA. 1976;236(6):579-581. PMID: 947239."
+    },
+    {
+  "id": "urine_protein_creatinine_ratio",
+  "type": "formula",
+  "name": "Соотношение белок/креатинин (UPCR)",
+  "specialty": "Нефрология",
+  "description": "Оценка протеинурии по разовой порции мочи. Хорошо коррелирует с суточной потерей белка.",
+  "fields": [
+    { "id": "m_uprotein", "label": "Белок в моче (мг/дл)", "type": "number", "placeholder": "30", "step": "1" },
+    { "id": "m_ucreat", "label": "Креатинин в моче (мг/дл)", "type": "number", "placeholder": "100", "step": "1" }
+  ],
+  "formula": "m_uprotein / m_ucreat",
+  "unit": "мг/мг",
+  "decimals": 2,
+  "interpretation": [
+    { "min": 0, "max": 0.15, "label": "Норма (< 150 мг/сут)", "color": "#22c55e" },
+    { "min": 0.15, "max": 0.5, "label": "Умеренная протеинурия (А2)", "color": "#f59e0b" },
+    { "min": 0.5, "max": 3.5, "label": "Высокая протеинурия (А3)", "color": "#f97316" },
+    { "min": 3.5, "max": 999, "label": "Нефротический диапазон (> 3.5 г/сут)", "color": "#ef4444" }
+  ],
+  "source": "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases. Kidney Int. 2021;100(4S):S1-S276. Ginsberg JM, et al. Ann Intern Med. 1983."
     }
   ]
 }
