@@ -1,5 +1,5 @@
 {
-  "version": "0.8.6-beta",
+  "version": "0.8.7-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -1797,179 +1797,178 @@
   ],
   "source": "Espinel CH. The FENa test. Use in the differential diagnosis of acute renal failure. JAMA. 1976;236(6):579-581. PMID: 947239."
     },
-    {
-  "id": "urine_protein_creatinine_ratio",
-  "type": "formula",
-  "name": "Соотношение белок/креатинин (UPCR)",
-  "specialty": "Нефрология",
-  "description": "Оценка протеинурии по разовой порции мочи. Хорошо коррелирует с суточной потерей белка.",
-  "fields": [
-    { "id": "m_uprotein", "label": "Белок в моче (мг/дл)", "type": "number", "placeholder": "30", "step": "1" },
-    { "id": "m_ucreat", "label": "Креатинин в моче (мг/дл)", "type": "number", "placeholder": "100", "step": "1" }
-  ],
-  "formula": "m_uprotein / m_ucreat",
-  "unit": "мг/мг",
-  "decimals": 2,
-  "interpretation": [
-    { "min": 0, "max": 0.15, "label": "Норма (< 150 мг/сут)", "color": "#22c55e" },
-    { "min": 0.15, "max": 0.5, "label": "Умеренная протеинурия (А2)", "color": "#f59e0b" },
-    { "min": 0.5, "max": 3.5, "label": "Высокая протеинурия (А3)", "color": "#f97316" },
-    { "min": 3.5, "max": 999, "label": "Нефротический диапазон (> 3.5 г/сут)", "color": "#ef4444" }
-  ],
-  "source": "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases. Kidney Int. 2021;100(4S):S1-S276. Ginsberg JM, et al. Ann Intern Med. 1983."
+        {
+      "id": "urine_protein_creatinine_ratio",
+      "type": "formula",
+      "name": "Соотношение белок/креатинин (UPCR)",
+      "specialty": "Нефрология",
+      "description": "Оценка протеинурии по разовой порции мочи. Хорошо коррелирует с суточной потерей белка.",
+      "fields": [
+        { "id": "m_uprotein", "label": "Белок в моче (мг/дл)", "type": "number", "placeholder": "30", "step": "1" },
+        { "id": "m_ucreat", "label": "Креатинин в моче (мг/дл)", "type": "number", "placeholder": "100", "step": "1" }
+      ],
+      "formula": "m_uprotein / m_ucreat",
+      "unit": "мг/мг",
+      "decimals": 2,
+      "interpretation": [
+        { "min": 0, "max": 0.15, "label": "Норма (< 150 мг/сут)", "color": "#22c55e" },
+        { "min": 0.15, "max": 0.5, "label": "Умеренная протеинурия (А2)", "color": "#f59e0b" },
+        { "min": 0.5, "max": 3.5, "label": "Высокая протеинурия (А3)", "color": "#f97316" },
+        { "min": 3.5, "max": 999, "label": "Нефротический диапазон (> 3.5 г/сут)", "color": "#ef4444" }
+      ],
+      "source": "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases. Kidney Int. 2021;100(4S):S1-S276. Ginsberg JM, et al. Ann Intern Med. 1983."
     },
     {
-  "id": "preeclampsia_nice",
-  "type": "questionnaire",
-  "name": "Преэклампсия (критерии NICE)",
-  "specialty": "Акушерство и гинекология",
-  "description": "Оценка риска преэклампсии для решения о назначении аспирина. Критерии NICE NG133. Профилактика показана при ≥1 факторе высокого риска или ≥2 факторах умеренного риска.",
-  "scoring": "logic",
-  "interpretationMode": "logic",
-  "questions": [
-    { "id": "high_1", "text": "Гипертензивные расстройства в предыдущую беременность", "type": "check", "points": 1 },
-    { "id": "high_2", "text": "Хроническая артериальная гипертензия", "type": "check", "points": 1 },
-    { "id": "high_3", "text": "Хроническая болезнь почек", "type": "check", "points": 1 },
-    { "id": "high_4", "text": "Сахарный диабет 1 или 2 типа", "type": "check", "points": 1 },
-    { "id": "high_5", "text": "Аутоиммунные заболевания (СКВ, АФС)", "type": "check", "points": 1 },
-    
-    { "id": "mod_1", "text": "Первая беременность (нерожавшая)", "type": "check", "points": 1 },
-    { "id": "mod_2", "text": "Возраст 40 лет и старше", "type": "check", "points": 1 },
-    { "id": "mod_3", "text": "Интервал между беременностями более 10 лет", "type": "check", "points": 1 },
-    { "id": "mod_4", "text": "ИМТ ≥ 35 кг/м² при первом визите", "type": "check", "points": 1 },
-    { "id": "mod_5", "text": "Семейный анамнез преэклампсии (у матери/сестры)", "type": "check", "points": 1 },
-    { "id": "mod_6", "text": "Многоплодная беременность", "type": "check", "points": 1 }
-  ],
-  "interpretation": [
-    { 
-      "if": "high_1 || high_2 || high_3 || high_4 || high_5", 
-      "label": "ВЫСОКИЙ РИСК (≥1 фактор высокого риска). Показана профилактика аспирином 150 мг/сут с 12 недель (до 36 недель).", 
-      "color": "#ef4444" 
-    },
-    { 
-      "if": "(mod_1 + mod_2 + mod_3 + mod_4 + mod_5 + mod_6) >= 2", 
-      "label": "УМЕРЕННЫЙ РИСК (≥2 факторов умеренного риска). Показана профилактика аспирином 150 мг/сут.", 
-      "color": "#f59e0b" 
-    },
-    { 
-      "min": 0, "max": 999, 
-      "label": "НИЗКИЙ РИСК. Профилактика аспирином не показана.", 
-      "color": "#22c55e" 
-    }
-  ],
-  "source": "NICE NG133. Hypertension in pregnancy: diagnosis and management. 2019 (updated 2023). Reclin.ru."
-    },
-    {
-  "id": "roma_index",
-  "type": "equation",
-  "name": "Индекс ROMA",
-  "specialty": "Онкология / Гинекология",
-  "description": "Оценка риска эпителиального рака яичников на основе HE4 и CA-125. Учитывает менопаузальный статус. Не является диагнозом.",
-  "fields": [
-    { "id": "m_menopause", "label": "Менопаузальный статус", "type": "radio", "options": [{ "value": 0, "label": "Пременопауза" }, { "value": 1, "label": "Постменопауза" }] },
-    { "id": "m_he4", "label": "HE4 (пмоль/л)", "type": "number", "placeholder": "50", "step": "0.1" },
-    { "id": "m_ca125", "label": "CA-125 (Ед/мл)", "type": "number", "placeholder": "30", "step": "0.1" }
-  ],
-  "formula": "(() => { const isPost = m_menopause === 1; const he4 = Math.max(0.1, m_he4); const ca125 = Math.max(0.1, m_ca125); let pi; if (isPost) { pi = -8.09 + 1.04 * Math.log(he4) + 0.732 * Math.log(ca125); } else { pi = -12.0 + 2.38 * Math.log(he4) + 0.0626 * Math.log(ca125); } const risk = (Math.exp(pi) / (1 + Math.exp(pi))) * 100; return Math.min(95, Math.max(5, risk)); })()",
-  "unit": "%",
-  "decimals": 1,
-  "interpretation": [
-    { "min": 0, "max": 13, "label": "Низкий риск (для пременопаузы порог 13%)", "color": "#22c55e" },
-    { "min": 13, "max": 28, "label": "Промежуточный риск (для постменопаузы порог 28%)", "color": "#f59e0b" },
-    { "min": 28, "max": 100, "label": "Высокий риск эпителиального рака яичников", "color": "#ef4444" }
-  ],
-  "source": "Moore RG, et al. Gynecol Oncol. 2009;112(1):40-46. Mayo Clinic Laboratories. Abbott ARCHITECT ROMA. РЛС."
+      "id": "preeclampsia_nice",
+      "type": "questionnaire",
+      "name": "Преэклампсия (критерии NICE)",
+      "specialty": "Акушерство и гинекология",
+      "description": "Оценка риска преэклампсии для решения о назначении аспирина. Критерии NICE NG133. Профилактика показана при ≥1 факторе высокого риска или ≥2 факторах умеренного риска.",
+      "scoring": "logic",
+      "interpretationMode": "logic",
+      "questions": [
+        { "id": "high_1", "text": "Гипертензивные расстройства в предыдущую беременность", "type": "check", "points": 1 },
+        { "id": "high_2", "text": "Хроническая артериальная гипертензия", "type": "check", "points": 1 },
+        { "id": "high_3", "text": "Хроническая болезнь почек", "type": "check", "points": 1 },
+        { "id": "high_4", "text": "Сахарный диабет 1 или 2 типа", "type": "check", "points": 1 },
+        { "id": "high_5", "text": "Аутоиммунные заболевания (СКВ, АФС)", "type": "check", "points": 1 },
+        { "id": "mod_1", "text": "Первая беременность (нерожавшая)", "type": "check", "points": 1 },
+        { "id": "mod_2", "text": "Возраст 40 лет и старше", "type": "check", "points": 1 },
+        { "id": "mod_3", "text": "Интервал между беременностями более 10 лет", "type": "check", "points": 1 },
+        { "id": "mod_4", "text": "ИМТ ≥ 35 кг/м² при первом визите", "type": "check", "points": 1 },
+        { "id": "mod_5", "text": "Семейный анамнез преэклампсии (у матери/сестры)", "type": "check", "points": 1 },
+        { "id": "mod_6", "text": "Многоплодная беременность", "type": "check", "points": 1 }
+      ],
+      "interpretation": [
+        { 
+          "if": "high_1 || high_2 || high_3 || high_4 || high_5", 
+          "label": "ВЫСОКИЙ РИСК (≥1 фактор высокого риска). Показана профилактика аспирином 150 мг/сут с 12 недель (до 36 недель).", 
+          "color": "#ef4444" 
+        },
+        { 
+          "if": "(mod_1 + mod_2 + mod_3 + mod_4 + mod_5 + mod_6) >= 2", 
+          "label": "УМЕРЕННЫЙ РИСК (≥2 факторов умеренного риска). Показана профилактика аспирином 150 мг/сут.", 
+          "color": "#f59e0b" 
+        },
+        { 
+          "min": 0, "max": 999, 
+          "label": "НИЗКИЙ РИСК. Профилактика аспирином не показана.", 
+          "color": "#22c55e" 
+        }
+      ],
+      "source": "NICE NG133. Hypertension in pregnancy: diagnosis and management. 2019 (updated 2023). Reclin.ru."
     },
     {
-  "id": "sofa_score",
-  "type": "questionnaire",
-  "name": "Шкала SOFA",
-  "specialty": "Реанимация",
-  "description": "Sequential Organ Failure Assessment. Оценка полиорганной недостаточности у пациентов в ОРИТ (сепсис).",
-  "scoring": "sum",
-  "questions": [
-    { "id": "q_resp", "text": "Дыхание: PaO2/FiO2 (мм рт. ст.)", "options": [
-      { "value": 0, "label": "≥ 400" }, { "value": 1, "label": "< 400" }, { "value": 2, "label": "< 300" }, { "value": 3, "label": "< 200 (на ИВЛ)" }, { "value": 4, "label": "< 100 (на ИВЛ)" }
-    ]},
-    { "id": "q_coag", "text": "Коагуляция: Тромбоциты (×10³/мкл)", "options": [
-      { "value": 0, "label": "≥ 150" }, { "value": 1, "label": "< 150" }, { "value": 2, "label": "< 100" }, { "value": 3, "label": "< 50" }, { "value": 4, "label": "< 20" }
-    ]},
-    { "id": "q_liver", "text": "Печень: Билирубин (мг/дл)", "options": [
-      { "value": 0, "label": "< 1.2" }, { "value": 1, "label": "1.2–1.9" }, { "value": 2, "label": "2.0–5.9" }, { "value": 3, "label": "6.0–11.9" }, { "value": 4, "label": "> 12.0" }
-    ]},
-    { "id": "q_cv", "text": "Сердечно-сосудистая система", "options": [
-      { "value": 0, "label": "САД ≥ 70" }, { "value": 1, "label": "САД < 70" }, { "value": 2, "label": "Допамин ≤5 или Добутамин" }, { "value": 3, "label": "Допамин >5 или Адреналин/Норадреналин ≤0.1" }, { "value": 4, "label": "Допамин >15 или Адреналин/Норадреналин >0.1" }
-    ]},
-    { "id": "q_cns", "text": "ЦНС: Шкала комы Глазго", "options": [
-      { "value": 0, "label": "15" }, { "value": 1, "label": "13–14" }, { "value": 2, "label": "10–12" }, { "value": 3, "label": "6–9" }, { "value": 4, "label": "< 6" }
-    ]},
-    { "id": "q_renal", "text": "Почки: Креатинин (мг/дл) или Диурез", "options": [
-      { "value": 0, "label": "< 1.2" }, { "value": 1, "label": "1.2–1.9" }, { "value": 2, "label": "2.0–3.4" }, { "value": 3, "label": "3.5–4.9 или <500 мл/сут" }, { "value": 4, "label": ">5.0 или <200 мл/сут" }
-    ]}
-  ],
-  "interpretation": [
-    { "min": 0, "max": 2, "label": "Низкий риск (0-1 балл)", "color": "#22c55e" },
-    { "min": 2, "max": 6, "label": "Средний риск (2-5 баллов)", "color": "#f59e0b" },
-    { "min": 6, "max": 10, "label": "Высокий риск (6-9 баллов)", "color": "#f97316" },
-    { "min": 10, "max": 13, "label": "Очень высокий риск (10-12 баллов)", "color": "#ef4444" },
-    { "min": 13, "max": 25, "label": "Крайне высокий риск (13-24 балла)", "color": "#991b1b" }
-  ],
-  "source": "Singer M, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA. 2016;315(8):801-810. MSD Manuals."
+      "id": "roma_index",
+      "type": "equation",
+      "name": "Индекс ROMA",
+      "specialty": "Онкология / Гинекология",
+      "description": "Оценка риска эпителиального рака яичников на основе HE4 и CA-125. Учитывает менопаузальный статус. Не является диагнозом.",
+      "fields": [
+        { "id": "m_menopause", "label": "Менопаузальный статус", "type": "radio", "options": [{ "value": 0, "label": "Пременопауза" }, { "value": 1, "label": "Постменопауза" }] },
+        { "id": "m_he4", "label": "HE4 (пмоль/л)", "type": "number", "placeholder": "50", "step": "0.1" },
+        { "id": "m_ca125", "label": "CA-125 (Ед/мл)", "type": "number", "placeholder": "30", "step": "0.1" }
+      ],
+      "formula": "(() => { const isPost = m_menopause === 1; const he4 = Math.max(0.1, m_he4); const ca125 = Math.max(0.1, m_ca125); let pi; if (isPost) { pi = -8.09 + 1.04 * Math.log(he4) + 0.732 * Math.log(ca125); } else { pi = -12.0 + 2.38 * Math.log(he4) + 0.0626 * Math.log(ca125); } const risk = (Math.exp(pi) / (1 + Math.exp(pi))) * 100; return Math.min(95, Math.max(5, risk)); })()",
+      "unit": "%",
+      "decimals": 1,
+      "interpretation": [
+        { "min": 0, "max": 13, "label": "Низкий риск (для пременопаузы порог 13%)", "color": "#22c55e" },
+        { "min": 13, "max": 28, "label": "Промежуточный риск (для постменопаузы порог 28%)", "color": "#f59e0b" },
+        { "min": 28, "max": 100, "label": "Высокий риск эпителиального рака яичников", "color": "#ef4444" }
+      ],
+      "source": "Moore RG, et al. Gynecol Oncol. 2009;112(1):40-46. Mayo Clinic Laboratories. Abbott ARCHITECT ROMA. РЛС."
     },
     {
-  "id": "qsofa",
-  "type": "questionnaire",
-  "name": "Шкала qSOFA",
-  "specialty": "Реанимация",
-  "description": "Quick Sequential Organ Failure Assessment. Быстрый скрининг сепсиса у пациентов с подозрением на инфекцию. Оценка ≥2 баллов — предиктор плохого исхода.",
-  "scoring": "sum",
-  "questions": [
-    { "id": "q1", "text": "Частота дыхания ≥ 22 в минуту", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
-    { "id": "q2", "text": "Изменение психического статуса (по шкале Глазго < 15)", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
-    { "id": "q3", "text": "Систолическое АД ≤ 100 мм рт. ст.", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] }
-  ],
-  "interpretation": [
-    { "min": 0, "max": 2, "label": "Низкий риск (0-1 балл). Продолжить наблюдение.", "color": "#22c55e" },
-    { "min": 2, "max": 3, "label": "Высокий риск (≥2 балла). Необходима дальнейшая оценка органной дисфункции (SOFA) и интенсивная терапия.", "color": "#ef4444" }
-  ],
-  "source": "Singer M, et al. Sepsis-3. JAMA. 2016. MSD Manuals."
+      "id": "sofa_score",
+      "type": "questionnaire",
+      "name": "Шкала SOFA",
+      "specialty": "Реанимация",
+      "description": "Sequential Organ Failure Assessment. Оценка полиорганной недостаточности у пациентов в ОРИТ (сепсис).",
+      "scoring": "sum",
+      "questions": [
+        { "id": "q_resp", "text": "Дыхание: PaO2/FiO2 (мм рт. ст.)", "options": [
+          { "value": 0, "label": "≥ 400" }, { "value": 1, "label": "< 400" }, { "value": 2, "label": "< 300" }, { "value": 3, "label": "< 200 (на ИВЛ)" }, { "value": 4, "label": "< 100 (на ИВЛ)" }
+        ]},
+        { "id": "q_coag", "text": "Коагуляция: Тромбоциты (×10³/мкл)", "options": [
+          { "value": 0, "label": "≥ 150" }, { "value": 1, "label": "< 150" }, { "value": 2, "label": "< 100" }, { "value": 3, "label": "< 50" }, { "value": 4, "label": "< 20" }
+        ]},
+        { "id": "q_liver", "text": "Печень: Билирубин (мг/дл)", "options": [
+          { "value": 0, "label": "< 1.2" }, { "value": 1, "label": "1.2–1.9" }, { "value": 2, "label": "2.0–5.9" }, { "value": 3, "label": "6.0–11.9" }, { "value": 4, "label": "> 12.0" }
+        ]},
+        { "id": "q_cv", "text": "Сердечно-сосудистая система", "options": [
+          { "value": 0, "label": "САД ≥ 70" }, { "value": 1, "label": "САД < 70" }, { "value": 2, "label": "Допамин ≤5 или Добутамин" }, { "value": 3, "label": "Допамин >5 или Адреналин/Норадреналин ≤0.1" }, { "value": 4, "label": "Допамин >15 или Адреналин/Норадреналин >0.1" }
+        ]},
+        { "id": "q_cns", "text": "ЦНС: Шкала комы Глазго", "options": [
+          { "value": 0, "label": "15" }, { "value": 1, "label": "13–14" }, { "value": 2, "label": "10–12" }, { "value": 3, "label": "6–9" }, { "value": 4, "label": "< 6" }
+        ]},
+        { "id": "q_renal", "text": "Почки: Креатинин (мг/дл) или Диурез", "options": [
+          { "value": 0, "label": "< 1.2" }, { "value": 1, "label": "1.2–1.9" }, { "value": 2, "label": "2.0–3.4" }, { "value": 3, "label": "3.5–4.9 или <500 мл/сут" }, { "value": 4, "label": ">5.0 или <200 мл/сут" }
+        ]}
+      ],
+      "interpretation": [
+        { "min": 0, "max": 2, "label": "Низкий риск (0-1 балл)", "color": "#22c55e" },
+        { "min": 2, "max": 6, "label": "Средний риск (2-5 баллов)", "color": "#f59e0b" },
+        { "min": 6, "max": 10, "label": "Высокий риск (6-9 баллов)", "color": "#f97316" },
+        { "min": 10, "max": 13, "label": "Очень высокий риск (10-12 баллов)", "color": "#ef4444" },
+        { "min": 13, "max": 25, "label": "Крайне высокий риск (13-24 балла)", "color": "#991b1b" }
+      ],
+      "source": "Singer M, et al. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA. 2016;315(8):801-810. MSD Manuals."
     },
     {
-  "id": "news2",
-  "type": "questionnaire",
-  "name": "NEWS2 (National Early Warning Score 2)",
-  "specialty": "Реанимация",
-  "description": "Стандартизированная оценка витальных функций для раннего выявления ухудшения состояния. Используется в стационарах.",
-  "scoring": "sum",
-  "questions": [
-    { "id": "q_rr", "text": "Частота дыхания (в минуту)", "options": [
-      { "value": 3, "label": "≤ 8" }, { "value": 1, "label": "9–11" }, { "value": 0, "label": "12–20" }, { "value": 2, "label": "21–24" }, { "value": 3, "label": "≥ 25" }
-    ]},
-    { "id": "q_spo2", "text": "Сатурация SpO2 (%)", "options": [
-      { "value": 3, "label": "≤ 91" }, { "value": 2, "label": "92–93" }, { "value": 1, "label": "94–95" }, { "value": 0, "label": "≥ 96" }
-    ]},
-    { "id": "q_o2", "text": "Дополнительный кислород", "options": [
-      { "value": 0, "label": "Нет" }, { "value": 2, "label": "Да" }
-    ]},
-    { "id": "q_sbp", "text": "Систолическое АД (мм рт. ст.)", "options": [
-      { "value": 3, "label": "≤ 90" }, { "value": 2, "label": "91–100" }, { "value": 1, "label": "101–110" }, { "value": 0, "label": "111–219" }, { "value": 3, "label": "≥ 220" }
-    ]},
-    { "id": "q_hr", "text": "Пульс (уд/мин)", "options": [
-      { "value": 3, "label": "≤ 40" }, { "value": 1, "label": "41–50" }, { "value": 0, "label": "51–90" }, { "value": 1, "label": "91–110" }, { "value": 2, "label": "111–130" }, { "value": 3, "label": "≥ 131" }
-    ]},
-    { "id": "q_avpu", "text": "Сознание (ACVPU)", "options": [
-      { "value": 0, "label": "Alert (Ясное)" }, { "value": 3, "label": "CVPU (Спутанность/Реакция на голос/Боль/Нет)" }
-    ]},
-    { "id": "q_temp", "text": "Температура (°C)", "options": [
-      { "value": 3, "label": "≤ 35.0" }, { "value": 1, "label": "35.1–36.0" }, { "value": 0, "label": "36.1–38.0" }, { "value": 1, "label": "38.1–39.0" }, { "value": 2, "label": "≥ 39.1" }
-    ]}
-  ],
-  "interpretation": [
-    { "min": 0, "max": 5, "label": "Низкий риск (0-4 балла). Обычное наблюдение.", "color": "#22c55e" },
-    { "min": 5, "max": 7, "label": "Средний риск (5-6 баллов). Срочная оценка врача.", "color": "#f59e0b" },
-    { "min": 7, "max": 20, "label": "Высокий риск (≥7 баллов). Экстренная помощь, перевод в ОРИТ.", "color": "#ef4444" }
-  ],
-  "source": "Royal College of Physicians. National Early Warning Score (NEWS) 2. 2017."
+      "id": "qsofa",
+      "type": "questionnaire",
+      "name": "Шкала qSOFA",
+      "specialty": "Реанимация",
+      "description": "Quick Sequential Organ Failure Assessment. Быстрый скрининг сепсиса у пациентов с подозрением на инфекцию. Оценка ≥2 баллов — предиктор плохого исхода.",
+      "scoring": "sum",
+      "questions": [
+        { "id": "q1", "text": "Частота дыхания ≥ 22 в минуту", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+        { "id": "q2", "text": "Изменение психического статуса (по шкале Глазго < 15)", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+        { "id": "q3", "text": "Систолическое АД ≤ 100 мм рт. ст.", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] }
+      ],
+      "interpretation": [
+        { "min": 0, "max": 2, "label": "Низкий риск (0-1 балл). Продолжить наблюдение.", "color": "#22c55e" },
+        { "min": 2, "max": 3, "label": "Высокий риск (≥2 балла). Необходима дальнейшая оценка органной дисфункции (SOFA) и интенсивная терапия.", "color": "#ef4444" }
+      ],
+      "source": "Singer M, et al. Sepsis-3. JAMA. 2016. MSD Manuals."
+    },
+    {
+      "id": "news2",
+      "type": "questionnaire",
+      "name": "NEWS2 (National Early Warning Score 2)",
+      "specialty": "Реанимация",
+      "description": "Стандартизированная оценка витальных функций для раннего выявления ухудшения состояния. Используется в стационарах.",
+      "scoring": "sum",
+      "questions": [
+        { "id": "q_rr", "text": "Частота дыхания (в минуту)", "options": [
+          { "value": 3, "label": "≤ 8" }, { "value": 1, "label": "9–11" }, { "value": 0, "label": "12–20" }, { "value": 2, "label": "21–24" }, { "value": 3, "label": "≥ 25" }
+        ]},
+        { "id": "q_spo2", "text": "Сатурация SpO2 (%)", "options": [
+          { "value": 3, "label": "≤ 91" }, { "value": 2, "label": "92–93" }, { "value": 1, "label": "94–95" }, { "value": 0, "label": "≥ 96" }
+        ]},
+        { "id": "q_o2", "text": "Дополнительный кислород", "options": [
+          { "value": 0, "label": "Нет" }, { "value": 2, "label": "Да" }
+        ]},
+        { "id": "q_sbp", "text": "Систолическое АД (мм рт. ст.)", "options": [
+          { "value": 3, "label": "≤ 90" }, { "value": 2, "label": "91–100" }, { "value": 1, "label": "101–110" }, { "value": 0, "label": "111–219" }, { "value": 3, "label": "≥ 220" }
+        ]},
+        { "id": "q_hr", "text": "Пульс (уд/мин)", "options": [
+          { "value": 3, "label": "≤ 40" }, { "value": 1, "label": "41–50" }, { "value": 0, "label": "51–90" }, { "value": 1, "label": "91–110" }, { "value": 2, "label": "111–130" }, { "value": 3, "label": "≥ 131" }
+        ]},
+        { "id": "q_avpu", "text": "Сознание (ACVPU)", "options": [
+          { "value": 0, "label": "Alert (Ясное)" }, { "value": 3, "label": "CVPU (Спутанность/Реакция на голос/Боль/Нет)" }
+        ]},
+        { "id": "q_temp", "text": "Температура (°C)", "options": [
+          { "value": 3, "label": "≤ 35.0" }, { "value": 1, "label": "35.1–36.0" }, { "value": 0, "label": "36.1–38.0" }, { "value": 1, "label": "38.1–39.0" }, { "value": 2, "label": "≥ 39.1" }
+        ]}
+      ],
+      "interpretation": [
+        { "min": 0, "max": 5, "label": "Низкий риск (0-4 балла). Обычное наблюдение.", "color": "#22c55e" },
+        { "min": 5, "max": 7, "label": "Средний риск (5-6 баллов). Срочная оценка врача.", "color": "#f59e0b" },
+        { "min": 7, "max": 20, "label": "Высокий риск (≥7 баллов). Экстренная помощь, перевод в ОРИТ.", "color": "#ef4444" }
+      ],
+      "source": "Royal College of Physicians. National Early Warning Score (NEWS) 2. 2017."
     }
   ]
 }
