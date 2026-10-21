@@ -91,15 +91,102 @@
   .hidden { display: none !important; }
   .loading { text-align: center; color: #6b7a8a; padding: 40px 0; }
   .error-box { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 16px; border-radius: 14px; font-size: 14px; margin-top: 20px; }
+  /* Стили для всплывающего меню */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+  .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 24px 24px 0 0; padding: 24px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 85vh; overflow-y: auto; }
+  .modal-overlay.show .modal-content { transform: translateY(0); }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .modal-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
+  .close-btn { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #6b7a8a; }
+  
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; background: #f1f5f9; padding: 4px; border-radius: 12px; }
+  .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-size: 14px; font-weight: 600; color: #6b7a8a; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+  .tab-btn.active { background: white; color: #1a2634; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  
+  .tab-content { display: none; font-size: 14px; line-height: 1.6; color: #4a5a6a; }
+  .tab-content.active { display: block; }
+  .tab-content h3 { font-size: 16px; color: #1a2634; margin: 16px 0 8px; }
+  .tab-content ol, .tab-content ul { padding-left: 20px; margin-bottom: 16px; }
+  .tab-content li { margin-bottom: 6px; }
+  .tab-content a { color: #3b82f6; text-decoration: none; font-weight: 500; }
+  
+  .support-card { background: #f8fafc; border-radius: 14px; padding: 16px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
+  .support-card p { margin-bottom: 8px; }
 </style>
 </head>
 <body>
 <div class="app">
-  <div id="app"></div>
-</div>
+<div id="app"></div>
+  <!-- Всплывающее меню -->
+  <div class="modal-overlay" id="menuModal" onclick="closeMenu(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Меню</h2>
+        <button class="close-btn" onclick="closeMenu()">✕</button>
+      </div>
+      
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('install')">Как установить</button>
+        <button class="tab-btn" onclick="switchTab('support')">Поддержка</button>
+      </div>
 
+      <!-- Вкладка 1: Установка -->
+      <div id="tab-install" class="tab-content active">
+        <p>Приложение можно установить на главный экран телефона. Оно будет работать даже без интернета.</p>
+        
+        <h3>📱 Android</h3>
+        <ol>
+          <li>Откройте приложение в браузере <b>Chrome</b>.</li>
+          <li>Нажмите на три точки в правом верхнем углу.</li>
+          <li>Выберите <b>«Добавить на главный экран»</b> (или «Установить приложение»).</li>
+        </ol>
+
+        <h3>🍏 iOS (iPhone/iPad)</h3>
+        <ol>
+          <li>Откройте приложение в браузере <b>Safari</b>.</li>
+          <li>Нажмите на кнопку <b>«Поделиться»</b> (квадрат со стрелкой вверх).</li>
+          <li>Прокрутите вниз и выберите <b>«На экран "Домой"</b>.</li>
+        </ol>
+        <p style="font-size: 12px; color: #94a3b8; margin-top: 16px;">* Скриншоты появятся в следующем обновлении.</p>
+      </div>
+
+      <!-- Вкладка 2: Поддержка -->
+      <div id="tab-support" class="tab-content">
+        <p>Это открытый некоммерческий проект, созданный для удобства врачей. Без регистрации, рекламы и трекеров.</p>
+        
+        <div class="support-card">
+          <p><b>Ссылка на проект:</b></p>
+          <a href="https://github.com/seledkabezglaz/med-calculator" target="_blank">github.com/seledkabezglaz/med-calculator</a>
+        </div>
+        
+        <div class="support-card">
+          <p><b>Связаться со мной:</b></p>
+          <p>Почта: <a href="mailto:example@mail.ru">example@mail.ru</a></p>
+          <p style="margin-top: 4px;">Предложения о добавлении новых формул, сообщения об ошибках и просто отзывы — приветствуются.</p>
+        </div>
+
+        <div class="support-card" style="text-align: center;">
+          <p><b>Поддержать проект:</b></p>
+          <div style="width: 120px; height: 120px; background: #e2e8f0; margin: 10px auto; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8;">
+            [Ваш QR-код]
+          </div>
+          <p style="font-size: 12px;">Спасибо за любую поддержку!</p>
+          
+          <!-- Вкладка 3: Поделиться -->
+          <button onclick="shareApp()" style="width: 100%; background: #1e40af; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+            Поделиться приложением
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
+
 // ---------- Состояние ----------
+
 let DATA = null;
 let currentCalc = null;
 let answers = {};
@@ -866,9 +953,52 @@ function calcQuestionnaire() {
     </div>`;
 }
 
-// ---------- Меню ----------
+// ---------- Меню ---------
+
 function toggleMenu() {
-  alert('Меню работает! Скоро здесь будет: инструкция, о проекте, сообщество, донаты.');
+  document.getElementById('menuModal').classList.add('show');
+}
+
+function closeMenu(event) {
+  // Закрываем только если кликнули на фон (не на само окно)
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('menuModal').classList.remove('show');
+}
+
+function switchTab(tab) {
+  // Убираем класс active у всех кнопок и блоков
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  // Добавляем класс active нужным
+  if (tab === 'install') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('tab-install').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('tab-support').classList.add('active');
+  }
+}
+
+function closeMenu(event) {
+  // Закрываем только если кликнули на фон (не на само окно)
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('menuModal').classList.remove('show');
+}
+
+function switchTab(tab) {
+  // Убираем класс active у всех кнопок и блоков
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  // Добавляем класс active нужным
+  if (tab === 'install') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('tab-install').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('tab-support').classList.add('active');
+  }
 }
 
 function showDisclaimer() {
@@ -893,6 +1023,30 @@ if ('serviceWorker' in navigator) {
       .then(reg => console.log('Service Worker готов!', reg))
       .catch(err => console.log('Ошибка Service Worker:', err));
   });
+}
+
+// Функция для "Поделиться"
+function shareApp() {
+  const url = window.location.origin + window.location.pathname;
+  const shareData = {
+    title: 'МедКалькулятор',
+    text: 'Медицинские калькуляторы и шкалы для врачей. Без рекламы и регистрации.',
+    url: url
+  };
+
+  if (navigator.share) {
+    // Если телефон поддерживает системное окно "Поделиться"
+    navigator.share(shareData)
+      .then(() => console.log('Успешно поделились'))
+      .catch((err) => console.log('Ошибка при попытке поделиться', err));
+  } else {
+    // Если не поддерживает (например, на старом компьютере) — просто копируем ссылку
+    navigator.clipboard.writeText(url).then(() => {
+      alert('Ссылка скопирована в буфер обмена!\nВы можете отправить её коллегам.');
+    }).catch(() => {
+      alert('Не удалось скопировать ссылку. Вот она: ' + url);
+    });
+  }
 }
 </script>
 </body>
