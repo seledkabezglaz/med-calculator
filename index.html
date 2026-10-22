@@ -140,24 +140,26 @@
   }
   
   /* Кнопка закрытия (крестик) */
+  /* Кнопка закрытия (крестик) */
   .guide-close { 
-    position: absolute; top: 20px; right: 20px; 
-    background: rgba(255,255,255,0.2); border: none; 
+    position: absolute; top: 70px; right: 20px; /* Сдвинули вниз, чтобы не мешать верхней панели */
+    background: rgba(0,0,0,0.5); border: none; /* Сделали фон темнее для контраста */
     color: white; width: 44px; height: 44px; border-radius: 50%; 
-    font-size: 22px; cursor: pointer; z-index: 10; 
+    font-size: 22px; cursor: pointer; z-index: 20; /* Подняли z-index */
     display: flex; align-items: center; justify-content: center; 
     backdrop-filter: blur(4px); 
   }
   
+  
   /* Всплывающее окошко с текстом поверх скриншота */
   .guide-text-box { 
-    position: absolute; bottom: 60px; left: 20px; right: 20px; 
+    position: absolute; bottom: 40px; /* Опустили чуть ниже */
+    left: 20px; right: 20px; 
     background: white; color: #1a2634; padding: 16px 20px; 
     border-radius: 16px; font-size: 16px; font-weight: 600; 
     text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
     z-index: 10; line-height: 1.4;
-    max-width: 400px; 
-    margin: 0 auto; 
+    max-width: 400px; margin: 0 auto; 
   }
   
   /* Подсказка "Нажмите на экран" */
@@ -180,6 +182,11 @@
       <div class="modal-header">
         <h2>Меню</h2>
         <button class="close-btn" onclick="closeMenu()">✕</button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('install')">Как установить</button>
+        <button class="tab-btn" onclick="switchTab('support')">Поддержка</button>
       </div>
       
       <!-- Вкладка 1: Установка -->
@@ -1200,7 +1207,8 @@ const androidSteps = [
 // Набор шагов для iOS
 const iosSteps = [
   { img: 'img/ios-1.jpg', text: 'Нажмите на кнопку «Поделиться» (квадрат со стрелкой вверх) внизу экрана Safari.' },
-  { img: 'img/ios-2.jpg', text: 'Прокрутите список вниз и выберите «На экран "Домой"».' }
+  { img: 'img/ios-2.jpg', text: 'Прокрутите список вниз и выберите «На экран "Домой"».' },
+  { img: 'img/ios-3.jpg', text: 'Нажмите «Добавить» в правом верхнем углу. Готово!' }
 ];
 
 function openGuide(os) {
@@ -1231,16 +1239,35 @@ function nextGuideSlide() {
 function updateGuideUI() {
   const step = currentGuideSteps[guideStep];
   const imgEl = document.getElementById('guideImage');
+  const textBox = document.getElementById('guideText');
+  const closeBtn = document.querySelector('.guide-close');
   
   imgEl.src = step.img;
   
-  // Заглушка, если картинки нет (для iOS)
   imgEl.onerror = function() {
     this.onerror = null;
     this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e2e8f0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="14" fill="%2394a3b8">Скриншот скоро появится</text></svg>';
   };
 
-  document.getElementById('guideText').textContent = step.text;
+  textBox.textContent = step.text;
+  
+  // УМНАЯ ЛОГИКА ДЛЯ ТЕКСТА
+  // Если это третий шаг (индекс 2), поднимаем текст наверх, чтобы он не перекрывал кнопку внизу
+  if (guideStep === 2) {
+    textBox.style.bottom = 'auto';
+    textBox.style.top = '120px'; 
+  } else {
+    textBox.style.bottom = '40px';
+    textBox.style.top = 'auto';
+  }
+
+  // УМНАЯ ЛОГИКА ДЛЯ КРЕСТИКА
+  // На первом шаге (где рамка сверху справа) опускаем крестик еще ниже
+  if (guideStep === 0) {
+    closeBtn.style.top = '120px';
+  } else {
+    closeBtn.style.top = '70px';
+  }
   
   const hint = document.getElementById('guideHint');
   if (guideStep === currentGuideSteps.length - 1) {
