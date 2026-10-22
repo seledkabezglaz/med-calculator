@@ -1,4 +1,8 @@
-const CACHE_NAME = 'medcalc-v1';
+// Забираем версию из адреса (которую мы передали из index.html)
+const urlParams = new URLSearchParams(location.search);
+const versionParam = urlParams.get('v') || 'v1'; 
+const CACHE_NAME = 'medcalc-' + versionParam;
+
 const ASSETS = [
   './',
   './index.html',
@@ -6,7 +10,8 @@ const ASSETS = [
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './favicon.png'
+  './favicon.png',
+  './qr.png' 
 ];
 
 // Установка: сохраняем файлы в память
@@ -14,6 +19,8 @@ self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
+  // ДОБАВЛЕНО: Заставляем новый Service Worker активироваться немедленно, не ждать закрытия вкладок
+  self.skipWaiting(); 
 });
 
 // Активация: удаляем старый кэш, если версия обновилась
@@ -25,6 +32,8 @@ self.addEventListener('activate', (e) => {
       );
     })
   );
+  // ДОБАВЛЕНО: Заставляем новый Service Worker взять контроль над всеми открытыми вкладками
+  e.waitUntil(clients.claim());
 });
 
 // Работа: отдаем файлы из памяти, если нет интернета
