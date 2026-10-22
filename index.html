@@ -149,16 +149,17 @@
     backdrop-filter: blur(4px); 
   }
   
-  
   /* Всплывающее окошко с текстом поверх скриншота */
-  .guide-text-box { 
-    position: absolute; bottom: 40px; /* Опустили чуть ниже */
-    left: 20px; right: 20px; 
-    background: white; color: #1a2634; padding: 16px 20px; 
-    border-radius: 16px; font-size: 16px; font-weight: 600; 
-    text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+  .guide-text-box {
+    position: absolute; 
+    /* Убрали bottom и top, теперь ими управляет только JS */
+    left: 20px; right: 20px;
+    background: white; color: #1a2634; padding: 16px 20px;
+    border-radius: 16px; font-size: 16px; font-weight: 600;
+    text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     z-index: 10; line-height: 1.4;
-    max-width: 400px; margin: 0 auto; 
+    max-width: 400px; margin: 0 auto;
+    transition: all 0.3s ease; /* Добавили плавности при перемещении */
   }
   
   /* Подсказка "Нажмите на экран" */
@@ -1251,14 +1252,14 @@ function updateGuideUI() {
   textBox.textContent = step.text;
   
   // --- УПРАВЛЕНИЕ ПОЛОЖЕНИЕМ ТЕКСТА ---
-  // На третьем шаге (индекс 2) поднимаем текст наверх
   if (guideStep === 2) {
-    textBox.style.top = '80px';
-    textBox.style.bottom = 'auto';
+    // На третьем шаге поднимаем наверх
+    textBox.style.setProperty('top', '80px', 'important');
+    textBox.style.setProperty('bottom', 'auto', 'important');
   } else {
     // На первом и втором шаге держим внизу
-    textBox.style.bottom = '40px';
-    textBox.style.top = 'auto';
+    textBox.style.setProperty('bottom', '40px', 'important');
+    textBox.style.setProperty('top', 'auto', 'important');
   }
   
   const hint = document.getElementById('guideHint');
