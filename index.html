@@ -140,12 +140,11 @@
   }
   
   /* Кнопка закрытия (крестик) */
-  /* Кнопка закрытия (крестик) */
   .guide-close { 
-    position: absolute; top: 70px; right: 20px; /* Сдвинули вниз, чтобы не мешать верхней панели */
-    background: rgba(0,0,0,0.5); border: none; /* Сделали фон темнее для контраста */
+    position: absolute; top: 20px; left: 20px; 
+    background: rgba(0,0,0,0.5); border: none; 
     color: white; width: 44px; height: 44px; border-radius: 50%; 
-    font-size: 22px; cursor: pointer; z-index: 20; /* Подняли z-index */
+    font-size: 22px; cursor: pointer; z-index: 20; 
     display: flex; align-items: center; justify-content: center; 
     backdrop-filter: blur(4px); 
   }
@@ -1240,10 +1239,10 @@ function updateGuideUI() {
   const step = currentGuideSteps[guideStep];
   const imgEl = document.getElementById('guideImage');
   const textBox = document.getElementById('guideText');
-  const closeBtn = document.querySelector('.guide-close');
   
   imgEl.src = step.img;
   
+  // Заглушка для iOS
   imgEl.onerror = function() {
     this.onerror = null;
     this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23e2e8f0"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="14" fill="%2394a3b8">Скриншот скоро появится</text></svg>';
@@ -1251,22 +1250,15 @@ function updateGuideUI() {
 
   textBox.textContent = step.text;
   
-  // УМНАЯ ЛОГИКА ДЛЯ ТЕКСТА
-  // Если это третий шаг (индекс 2), поднимаем текст наверх, чтобы он не перекрывал кнопку внизу
+  // --- УПРАВЛЕНИЕ ПОЛОЖЕНИЕМ ТЕКСТА ---
+  // На третьем шаге (индекс 2) поднимаем текст наверх
   if (guideStep === 2) {
+    textBox.style.top = '80px';
     textBox.style.bottom = 'auto';
-    textBox.style.top = '120px'; 
   } else {
+    // На первом и втором шаге держим внизу
     textBox.style.bottom = '40px';
     textBox.style.top = 'auto';
-  }
-
-  // УМНАЯ ЛОГИКА ДЛЯ КРЕСТИКА
-  // На первом шаге (где рамка сверху справа) опускаем крестик еще ниже
-  if (guideStep === 0) {
-    closeBtn.style.top = '120px';
-  } else {
-    closeBtn.style.top = '70px';
   }
   
   const hint = document.getElementById('guideHint');
