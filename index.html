@@ -295,14 +295,24 @@ async function loadData() {
     const res = await fetch('formulas.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('Не удалось загрузить formulas.json');
     DATA = await res.json();
+
+    // --- ПРОВЕРКА ОБНОВЛЕНИЯ ВЕРСИИ ---
+    if (DATA && DATA.version) {
+      const savedVersion = localStorage.getItem('app_version');
+      if (savedVersion && savedVersion !== DATA.version) {
+        // Версия изменилась! Запоминаем новую
+        localStorage.setItem('app_version', DATA.version);
+        // И принудительно перезагружаем страницу, чтобы применить новый Service Worker
+        window.location.reload(); 
+      } else {
+        localStorage.setItem('app_version', DATA.version);
+      }
+    }
+    // ---------------------------------
+
     renderList();
   } catch (e) {
-    document.getElementById('app').innerHTML = `
-      <div class="error-box">
-        <b>Ошибка загрузки данных</b><br>
-        ${e.message}<br><br>
-        Убедитесь, что файл <code>formulas.json</code> лежит в той же папке, и вы открываете страницу через Live Server, а не двойным кликом.
-      </div>`;
+    // ... ошибка ...
   }
 }
 
@@ -1157,14 +1167,17 @@ window.addEventListener('popstate', (event) => {
 
 
 loadData();
+
 // Включаем Service Worker для офлайн-работы
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Берем версию из JSON, чтобы передать её в Service Worker
     const version = DATA && DATA.version ? DATA.version : 'v1';
-    // Передаем версию в виде параметра в ссылке (например, sw.js?v=0.8.7-beta)
     navigator.serviceWorker.register(`./sw.js?v=${version}`)
-      .then(reg => console.log('Service Worker готов! Версия:', version))
+      .then(reg => {
+        console.log('Service Worker готов! Версия:', version);
+        // ПРИНУДИТЕЛЬНО проверяем обновления при каждом запуске
+        reg.update();
+      })
       .catch(err => console.log('Ошибка Service Worker:', err));
   });
 }
@@ -1190,6 +1203,19 @@ function shareApp() {
     }).catch(() => {
       alert('Не удалось скопировать ссылку. Вот она: ' + url);
     });
+  }
+}
+
+// После загрузки данных
+if (DATA && DATA.version) {
+  const savedVersion = localStorage.getItem('app_version');
+  if (savedVersion && savedVersion !== DATA.version) {
+    // Версия изменилась! Показываем пользователю кнопку "Обновить"
+    // или просто перезагружаем страницу
+    localStorage.setItem('app_version', DATA.version);
+    // window.location.reload(); // Раскомментируйте, если хотите авто-перезагрузку
+  } else {
+    localStorage.setItem('app_version', DATA.version);
   }
 }
 
