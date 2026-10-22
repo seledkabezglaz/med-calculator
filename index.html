@@ -701,6 +701,7 @@ function renderQuestionnaire() {
 
   applyHideIf();
   recalcAutoChecks();
+  recalcFormulaQuestions(); 
   updateProgress();
   checkQuestionnaireValidity();
 }
@@ -779,6 +780,7 @@ function onPreInput() {
 
   applyHideIf();
   recalcAutoChecks();
+  recalcFormulaQuestions(); 
   updateProgress();
   checkQuestionnaireValidity();
 }
@@ -862,6 +864,43 @@ function toggleCheck(el, event) {
   recalcAutoChecks();
   updateProgress();
   checkQuestionnaireValidity();
+}
+
+function recalcFormulaQuestions() {
+  const c = currentCalc;
+  if (!c || !c.questions) return;
+
+  const varsForCalc = { ...formValues, ...calcVars, ...answers };
+
+  c.questions.forEach(q => {
+    if (!q.formula) return; // Обрабатываем только те вопросы, у которых задана формула
+    
+    const el = document.querySelector(`[data-q="${q.id}"]`);
+    if (!el || el.classList.contains('hidden')) return;
+
+    try {
+      const keys = Object.keys(varsForCalc);
+      const values = keys.map(k => varsForCalc[k]);
+      let fn;
+      try {
+        fn = new Function('Math', ...keys, `return (${q.formula});`);
+      } catch(e) {
+        fn = new Function('Math', ...keys, q.formula);
+      }
+      
+      const resVal = fn(Math, ...values);
+      
+      if (typeof resVal === 'number' && isFinite(resVal)) {
+        answers[q.id] = resVal;
+        // Обновляем текст вопроса, чтобы врач видел, сколько баллов начислилось
+        const qtextEl = el.querySelector('.qtext');
+        if (qtextEl) {
+          if (!qtextEl.dataset.origText) qtextEl.dataset.origText = qtextEl.innerHTML;
+          qtextEl.innerHTML = `${qtextEl.dataset.origText} <span style="color: #3b82f6; font-weight: bold;">(+${resVal} балл.)</span>`;
+        }
+      }
+    } catch (e) {}
+  });
 }
 
 function selectOpt(btn) {
