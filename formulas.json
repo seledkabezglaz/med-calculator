@@ -1,5 +1,5 @@
 {
-  "version": "0.8.7-beta",
+  "version": "0.8.8-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -1969,6 +1969,148 @@
         { "min": 7, "max": 20, "label": "Высокий риск (≥7 баллов). Экстренная помощь, перевод в ОРИТ.", "color": "#ef4444" }
       ],
       "source": "Royal College of Physicians. National Early Warning Score (NEWS) 2. 2017."
+    },
+    {
+  "id": "horowitz_index",
+  "type": "formula",
+  "name": "Индекс Горовица (PaO2/FiO2)",
+  "specialty": "Пульмонология",
+  "description": "Отношение парциального давления кислорода в артериальной крови к фракции кислорода во вдыхаемой смеси. Используется для оценки тяжести гипоксемии и диагностики ОРДС.",
+  "fields": [
+    { "id": "m_pao2", "label": "PaO2 (мм рт. ст.)", "type": "number", "placeholder": "80", "step": "1" },
+    { "id": "m_fio2", "label": "FiO2 (доля, 0.21–1.0)", "type": "number", "placeholder": "0.21", "step": "0.01" }
+  ],
+  "formula": "m_pao2 / m_fio2",
+  "unit": "мм рт. ст.",
+  "decimals": 0,
+  "interpretation": [
+    { "min": 0, "max": 101, "label": "Тяжёлый ОРДС (≤ 100)", "color": "#991b1b" },
+    { "min": 101, "max": 201, "label": "Умеренный ОРДС (101–200)", "color": "#ef4444" },
+    { "min": 201, "max": 301, "label": "Лёгкий ОРДС (201–300)", "color": "#f59e0b" },
+    { "min": 301, "max": 9999, "label": "ОРДС отсутствует (> 300)", "color": "#22c55e" }
+  ],
+  "source": "ARDS Definition Task Force. Acute respiratory distress syndrome: the Berlin Definition. JAMA. 2012;307(23):2526-2533. PMID: 22797452."
+    },
+    {
+  "id": "curb65",
+  "type": "questionnaire",
+  "name": "Шкала CURB-65",
+  "specialty": "Пульмонология",
+  "description": "Оценка тяжести внебольничной пневмонии и потребности в госпитализации. 5 критериев: Confusion, Urea, Respiratory rate, Blood pressure, Age ≥65.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Спутанность сознания (Confusion)", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+    { "id": "q2", "text": "Мочевина крови > 7 ммоль/л (Urea > 19 мг/дл)", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+    { "id": "q3", "text": "ЧДД ≥ 30 в минуту (Respiratory rate)", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+    { "id": "q4", "text": "АД сист. < 90 или диаст. ≤ 60 мм рт. ст. (Blood pressure)", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] },
+    { "id": "q5", "text": "Возраст ≥ 65 лет", "options": [{ "value": 0, "label": "Нет" }, { "value": 1, "label": "Да" }] }
+  ],
+  "interpretation": [
+    { "min": 0, "max": 2, "label": "Низкий риск (0-1). Возможно амбулаторное лечение. Смертность < 3%.", "color": "#22c55e" },
+    { "min": 2, "max": 3, "label": "Средний риск (2). Короткая госпитализация или тщательное наблюдение. Смертность ~9%.", "color": "#f59e0b" },
+    { "min": 3, "max": 4, "label": "Высокий риск (3). Показана госпитализация. Смертность 14%.", "color": "#ef4444" },
+    { "min": 4, "max": 6, "label": "Очень высокий риск (4-5). Рассмотреть ОРИТ. Смертность 27.8%.", "color": "#991b1b" }
+  ],
+  "source": "Lim WS, et al. Defining community acquired pneumonia severity on presentation to hospital: an international derivation and validation study. Thorax. 2003;58(5):377-382. PMID: 12728155."
+    },
+    {
+  "id": "light_criteria",
+  "type": "questionnaire",
+  "name": "Критерии Лайта (плевральный выпот)",
+  "specialty": "Пульмонология",
+  "description": "Дифференциальная диагностика транссудата и экссудата плевральной жидкости. Экссудат при выполнении хотя бы одного критерия.",
+  "scoring": "logic",
+  "interpretationMode": "logic",
+  "questions": [
+    { "id": "q1", "text": "Белок в плевральной жидкости / белок сыворотки > 0.5", "type": "check", "points": 1 },
+    { "id": "q2", "text": "ЛДГ в плевральной жидкости / ЛДГ сыворотки > 0.6", "type": "check", "points": 1 },
+    { "id": "q3", "text": "ЛДГ в плевральной жидкости > 2/3 верхней границы нормы ЛДГ сыворотки", "type": "check", "points": 1 }
+  ],
+  "interpretation": [
+    { 
+      "if": "q1 || q2 || q3", 
+      "label": "ЭКССУДАТ (выполнен хотя бы один критерий). Требуется дальнейшая диагностика (инфекция, злокачественное новообразование, ТЭЛА и др.).", 
+      "color": "#ef4444" 
+    },
+    { 
+      "min": 0, "max": 999, 
+      "label": "ТРАНССУДАТ (все критерии отрицательны). Вероятные причины: сердечная недостаточность, цирроз, нефротический синдром.", 
+      "color": "#22c55e" 
+    }
+  ],
+  "source": "Light RW, et al. Pleural effusions: the diagnostic separation of transudates and exudates. Ann Intern Med. 1972;77(4):507-513. PMID: 4642731."
+    },
+    {
+  "id": "mrc_dyspnea",
+  "type": "questionnaire",
+  "name": "Шкала одышки MRC (mMRC)",
+  "specialty": "Пульмонология",
+  "description": "Модифицированная шкала Британского медицинского исследовательского совета для оценки степени одышки при повседневной активности.",
+  "scoring": "sum",
+  "questions": [
+    { "id": "q1", "text": "Выберите степень, наиболее соответствующую состоянию пациента:", "options": [
+      { "value": 0, "label": "0: Одышка только при тяжёлой физической нагрузке" },
+      { "value": 1, "label": "1: Одышка при быстрой ходьбе или подъёме на небольшой холм" },
+      { "value": 2, "label": "2: Идёт медленнее сверстников из-за одышки или вынужден останавливаться при ходьбе в своём темпе" },
+      { "value": 3, "label": "3: Останавливается из-за одышки через ~100 м или несколько минут ходьбы" },
+      { "value": 4, "label": "4: Одышка не позволяет выходить из дома или возникает при одевании/раздевании" }
+    ]}
+  ],
+  "interpretation": [
+    { "min": 0, "max": 1, "label": "Слабая одышка (0-1)", "color": "#22c55e" },
+    { "min": 2, "max": 3, "label": "Умеренная одышка (2-3)", "color": "#f59e0b" },
+    { "min": 4, "max": 5, "label": "Тяжёлая одышка (4)", "color": "#ef4444" }
+  ],
+  "source": "Mahler DA, Wells CK. Evaluation of clinical methods for rating dyspnea. Chest. 1988;93(3):580-586. PMID: 3342669. MSD Manuals."
+    },
+    {
+  "id": "psi_port_score",
+  "type": "questionnaire",
+  "name": "Индекс PSI/PORT (пневмония)",
+  "specialty": "Пульмонология",
+  "description": "Pneumonia Severity Index. Оценка риска летальности при внебольничной пневмонии и выбор места лечения. Баллы за возраст считаются автоматически.",
+  "scoring": "sum",
+  "preFields": [
+    { "id": "m_age", "label": "Возраст (лет)", "type": "number", "placeholder": "60", "step": "1" },
+    { "id": "m_sex", "label": "Пол", "type": "radio", "options": [
+      { "value": 1, "label": "Мужской" },
+      { "value": 0, "label": "Женский" }
+    ]}
+  ],
+  "questions": [
+    {
+      "id": "q_age_pts",
+      "text": "Баллы за возраст и пол",
+      "type": "formula",
+      "formula": "m_sex === 1 ? m_age : Math.max(0, m_age - 10)"
+    },
+    { "id": "q_nursing", "text": "Проживание в доме престарелых", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_cancer", "text": "Злокачественное новообразование", "options": [{ "value": 0, "label": "Нет" }, { "value": 30, "label": "Да (+30)" }] },
+    { "id": "q_liver", "text": "Заболевание печени", "options": [{ "value": 0, "label": "Нет" }, { "value": 20, "label": "Да (+20)" }] },
+    { "id": "q_chf", "text": "Хроническая сердечная недостаточность", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_cvd", "text": "Цереброваскулярное заболевание", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_renal", "text": "Заболевание почек", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_mental", "text": "Изменение психического статуса", "options": [{ "value": 0, "label": "Нет" }, { "value": 20, "label": "Да (+20)" }] },
+    { "id": "q_rr", "text": "ЧДД ≥ 30 в минуту", "options": [{ "value": 0, "label": "Нет" }, { "value": 20, "label": "Да (+20)" }] },
+    { "id": "q_sbp", "text": "Систолическое АД < 90 мм рт. ст.", "options": [{ "value": 0, "label": "Нет" }, { "value": 20, "label": "Да (+20)" }] },
+    { "id": "q_temp", "text": "Температура < 35°C или ≥ 40°C", "options": [{ "value": 0, "label": "Нет" }, { "value": 15, "label": "Да (+15)" }] },
+    { "id": "q_hr", "text": "Пульс ≥ 125 уд/мин", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_ph", "text": "pH артериальной крови < 7.35", "options": [{ "value": 0, "label": "Нет" }, { "value": 30, "label": "Да (+30)" }] },
+    { "id": "q_bun", "text": "Азот мочевины > 30 мг/дл (или мочевина > 10.7 ммоль/л)", "options": [{ "value": 0, "label": "Нет" }, { "value": 20, "label": "Да (+20)" }] },
+    { "id": "q_sodium", "text": "Натрий < 130 ммоль/л", "options": [{ "value": 0, "label": "Нет" }, { "value": 20, "label": "Да (+20)" }] },
+    { "id": "q_glucose", "text": "Глюкоза > 14 ммоль/л (250 мг/дл)", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_hct", "text": "Гематокрит < 30%", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_pao2", "text": "PaO2 < 60 мм рт. ст.", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] },
+    { "id": "q_pleural", "text": "Плевральный выпот", "options": [{ "value": 0, "label": "Нет" }, { "value": 10, "label": "Да (+10)" }] }
+  ],
+  "interpretation": [
+    { "min": 0, "max": 51, "label": "Класс I-II (≤ 50). Низкий риск. Амбулаторное лечение. Смертность < 1%.", "color": "#22c55e" },
+    { "min": 51, "max": 71, "label": "Класс II (51-70). Низкий риск. Амбулаторное лечение. Смертность 0.6%.", "color": "#22c55e" },
+    { "min": 71, "max": 91, "label": "Класс III (71-90). Умеренный риск. Кратковременная госпитализация. Смертность 0.9-2.8%.", "color": "#f59e0b" },
+    { "min": 91, "max": 131, "label": "Класс IV (91-130). Высокий риск. Госпитализация. Смертность 8.2-9.3%.", "color": "#ef4444" },
+    { "min": 131, "max": 999, "label": "Класс V (≥131). Очень высокий риск. Госпитализация (возможно ОРИТ). Смертность 27-29.2%.", "color": "#991b1b" }
+  ],
+  "source": "Fine MJ, et al. A prediction rule to identify low-risk patients with community-acquired pneumonia. N Engl J Med. 1997;336(4):243-250. PMID: 8995086."
     }
   ]
 }
