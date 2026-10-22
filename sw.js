@@ -11,11 +11,9 @@ const ASSETS = [
   './icon-192.png',
   './icon-512.png',
   './favicon.png',
-  './qr.png' ,
   './img/android-1.jpg',
   './img/android-2.jpg',
   './img/android-3.jpg'
-  
 ];
 
 // Установка: сохраняем файлы в память
