@@ -12,7 +12,7 @@
   * { box-sizing: border-box; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { background: #f5f7fa; color: #1a2634; min-height: 100vh; padding: 16px; display: flex; justify-content: center; }
   .app { max-width: 480px; width: 100%; }
-  .header { background: #1e40af; color: white; padding: 16px; margin: -16px -16px 16px -16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .header { background: #1e40af; color: white; padding: 16px; margin: -16px -16px 16px -16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
   .header .logo { width: 36px; height: 36px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
   .header .logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .header .title-block { flex: 1; min-width: 0; }
@@ -172,15 +172,32 @@
             [Ваш QR-код]
           </div>
           <p style="font-size: 12px;">Спасибо за любую поддержку!</p>
-          
-          <!-- Вкладка 3: Поделиться -->
-          <button onclick="shareApp()" style="width: 100%; background: #1e40af; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-            Поделиться приложением
-          </button>
         </div>
+      </div> <!-- Закрыли вкладку Поддержка -->
+      
+    </div> <!-- Закрыли modal-content -->
+  </div> <!-- Закрыли modal-overlay (меню) -->
+
+  <!-- Модальное окно: Дисклеймер -->
+  <div class="modal-overlay" id="disclaimerModal" onclick="closeDisclaimer(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Информация</h2>
+        <button class="close-btn" onclick="closeDisclaimer()">✕</button>
+      </div>
+      
+      <div class="tab-content active" style="display: block; padding-top: 5px;">
+        <p style="margin-bottom: 16px;">Этот инструмент создан для удобства медицинских работников.</p>
+        
+        <div class="support-card" style="background: #fef2f2; border-color: #fecaca;">
+          <p style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">⚠️ Важно</p>
+          <p style="color: #991b1b; font-size: 14px;">Все расчеты носят исключительно справочный характер и не заменяют клиническое мышление.</p>
+        </div>
+
+        <p style="margin-top: 16px; font-size: 14px;">Клинические решения принимает лечащий врач на основании полного обследования пациента. Автор не несет ответственности за возможные последствия использования данных расчетов.</p>
       </div>
     </div>
+   </div> <!-- Закрыли Дисклеймер -->
   </div>
 </div>
 <script>
@@ -260,12 +277,22 @@ function renderList(filter = '') {
 
   let html = `
       <div class="header">
-        <div class="logo"><img src="icon-192.png" alt=""></div>
-        <div class="title-block">
-          <h1>МедКалькулятор <span onclick="showDisclaimer()" class="info-btn">ⓘ</span></h1>
-          <p>v${DATA.version} · ${DATA.calculators.length} инструментов</p>
+        <!-- Слева: Меню (точки) -->
+        <button class="menu-btn" onclick="toggleMenu()" title="Меню" style="font-size: 28px; padding: 0 8px; font-weight: 900; letter-spacing: -2px;">⋮</button>
+        
+        <!-- Центр: Логотип и название -->
+        <div class="title-block" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="logo" style="width: 28px; height: 28px; border-radius: 8px;"><img src="icon-192.png" alt=""></div>
+            <h1 style="font-size: 17px; margin: 0;">МедКалькулятор <span onclick="showDisclaimer()" class="info-btn" style="font-size: 14px;">ⓘ</span></h1>
+          </div>
+          <p style="margin-top: 2px;">v${DATA.version} · ${DATA.calculators.length} инструментов</p>
         </div>
-        <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+
+        <!-- Справа: Поделиться -->
+        <button class="menu-btn" onclick="shareApp()" title="Поделиться" style="padding: 0 8px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+        </button>
       </div>
     <input class="search" id="search" placeholder="Поиск по названию или специальности..." value="${filter}">
   `;
@@ -1001,8 +1028,15 @@ function switchTab(tab) {
   }
 }
 
+// ---------- Дисклеймер ----------
+
 function showDisclaimer() {
-  alert('Информационный характер\n\nВсе расчёты носят справочный характер и не заменяют консультацию врача. Клинические решения принимает лечащий врач на основании полного обследования.');
+  document.getElementById('disclaimerModal').classList.add('show');
+}
+
+function closeDisclaimer(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('disclaimerModal').classList.remove('show');
 }
 
 window.addEventListener('popstate', (event) => {
@@ -1019,8 +1053,11 @@ loadData();
 // Включаем Service Worker для офлайн-работы
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker готов!', reg))
+    // Берем версию из JSON, чтобы передать её в Service Worker
+    const version = DATA && DATA.version ? DATA.version : 'v1';
+    // Передаем версию в виде параметра в ссылке (например, sw.js?v=0.8.7-beta)
+    navigator.serviceWorker.register(`./sw.js?v=${version}`)
+      .then(reg => console.log('Service Worker готов! Версия:', version))
       .catch(err => console.log('Ошибка Service Worker:', err));
   });
 }
