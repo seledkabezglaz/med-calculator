@@ -40,9 +40,29 @@ self.addEventListener('activate', (e) => {
 
 // Работа: отдаем файлы из памяти, если нет интернета
 self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => {
-      return response || fetch(e.request);
-    })
-  );
+  // Если браузер запрашивает index.html или формулы — сначала идем в сеть!
+  if (e.request.mode === 'navigate' || e.request.url.includes('index.html') || e.request.url.includes('formulas.json')) {
+    e.respondWith(
+      fetch(e.request)
+        .then((response) => {
+          // Если сеть ответила, сохраняем свежую копию в кэш и отдаем её
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(e.request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => {
+          // Если сети нет — отдаем из кэша (офлайн-режим)
+          return caches.match(e.request);
+        })
+    );
+  } else {
+    // Для картинок и иконок: сначала кэш, потом сеть (чтобы грузилось быстро)
+    e.respondWith(
+      caches.match(e.request).then((response) => {
+        return response || fetch(e.request);
+      })
+    );
+  }
 });
