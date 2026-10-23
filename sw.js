@@ -13,7 +13,10 @@ const ASSETS = [
   './favicon.png',
   './img/android-1.jpg',
   './img/android-2.jpg',
-  './img/android-3.jpg'
+  './img/android-3.jpg',
+  './img/ios-1.jpg',
+  './img/ios-2.jpg',
+  './img/ios-3.jpg'
 ];
 
 // Установка: сохраняем файлы в память
