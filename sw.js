@@ -16,7 +16,8 @@ const ASSETS = [
   './img/android-3.jpg',
   './img/ios-1.jpg',
   './img/ios-2.jpg',
-  './img/ios-3.jpg'
+  './img/ios-3.jpg',
+  './img/qr.png'
 ];
 
 // Установка: сохраняем файлы в память
