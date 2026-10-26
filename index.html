@@ -107,18 +107,33 @@
     transform: translateY(100%); 
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     
-    /* ЖЕСТКО ФИКСИРУЕМ ВЫСОТУ */
-    height: 43vh; 
-    /* Включаем аккуратную прокрутку внутри окна */
-    overflow-y: auto; 
-    /* Делаем прокрутку плавной */
-    -webkit-overflow-scrolling: touch; 
+    /* ВАЖНО: */
+    height: 65vh; /* или 70vh */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Прячем скролл у самой карточки */
   }
+  
+  /* Заголовок не должен сжиматься */
+  .modal-header {
+    flex-shrink: 0; 
+  }
+
+  /* А вот тут будет скроллиться контент */
+  .modal-scroll-area {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-grow: 1;
+    /* Скрываем ползунок */
+    scrollbar-width: none; 
+  }
+  .modal-scroll-area::-webkit-scrollbar { display: none; }
 
   /* Скрываем некрасивый ползунок прокрутки, но оставляем возможность скроллить */
   .modal-content::-webkit-scrollbar { 
     display: none; 
   }
+  
   .modal-overlay.show .modal-content { transform: translateY(0); }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .modal-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
@@ -204,10 +219,23 @@
   <!-- Всплывающее меню -->
   <div class="modal-overlay" id="menuModal" onclick="closeMenu(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
+      
       <div class="modal-header">
         <h2>Меню</h2>
         <button class="close-btn" onclick="closeMenu()">✕</button>
       </div>
+      
+      <!-- НОВАЯ ОБЕРТКА ДЛЯ СКРОЛЛА -->
+      <div class="modal-scroll-area">
+          <!-- Вставляем сюда все вкладки (tabs), установку, поддержку -->
+          <div class="tabs">...</div>
+          <div id="tab-install" ...>...</div>
+          <div id="tab-support" ...>...</div>
+      </div>
+      <!-- КОНЕЦ ОБЕРТКИ -->
+
+    </div>
+  </div>
 
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('install')">Как установить</button>
