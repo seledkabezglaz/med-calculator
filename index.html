@@ -211,16 +211,22 @@
   }
     /* Стили для нижнего меню */
   .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: white;
-    display: flex;
+    position: fixed; 
+    bottom: 20px; /* Отступ от низа экрана */
+    left: 50%; /* Центрируем */
+    transform: translateX(-50%); /* Точное центрирование */
+    width: 90%; /* Ширина 90% от экрана */
+    max-width: 400px; /* Чтобы на ПК не растягивалось на весь экран */
+    
+    background: white; 
+    display: flex; 
     justify-content: space-around;
-    padding: 10px 0 20px 0; /* 20px снизу для отступа под экран телефона */
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    padding: 10px 0; 
+    border-radius: 30px; /* Делаем капсулу круглой */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15); /* Добавляем красивую тень */
     z-index: 100;
-    border-top: 1px solid #e2e8f0;
   }
+
   .nav-item {
     display: flex;
     flex-direction: column;
@@ -231,8 +237,14 @@
     transition: 0.2s;
     padding: 0 20px;
   }
-  .nav-item.active {
-    color: #1e40af;
+  .nav-item.active { 
+    color: #1e40af; 
+    font-weight: 700; 
+  }
+  .nav-item.active .nav-icon {
+    background: #eff6ff; /* Легкий голубой фон вокруг иконки */
+    border-radius: 12px;
+    padding: 4px 12px;
   }
   .nav-icon {
     margin-bottom: 4px;
@@ -242,8 +254,10 @@
     font-weight: 600;
   }
   /* Отступ для контента, чтобы меню не перекрывало низ списка */
-  .app {
-    padding-bottom: 80px; 
+  .app { 
+    max-width: 480px; 
+    width: 100%; 
+    padding-bottom: 100px; /* Добавили отступ снизу, чтобы меню не перекрывало контент */
   }
 
 </style>
@@ -470,8 +484,13 @@ function switchMainTab(tab) {
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   document.getElementById(tab === 'calc' ? 'nav-calc' : 'nav-icd').classList.add('active');
 
-  // Вызываем общую функцию рендера
-  renderList(); 
+  // Вызываем нужную функцию
+  if (tab === 'icd') {
+    icdLevel = 1; // Сбрасываем на классы при переходе
+    renderICD();  // Вызываем наш новый рендер
+  } else {
+    renderList(); // Вызываем старый рендер
+  }
   
   window.scrollTo(0, 0); 
 }
@@ -481,27 +500,8 @@ function renderList(filter = '') {
   const f = filter.toLowerCase().trim();
   
   // Сначала строим шапку (она одинаковая для всех вкладок)
-  let html = `
-      <div class="header">
-        <!-- Слева: Меню (точки) -->
-        <button class="menu-btn" onclick="toggleMenu()" title="Меню" style="font-size: 28px; padding: 0 8px; font-weight: 900; letter-spacing: -2px;">⋮</button>
-        
-        <!-- Центр: Логотип и название -->
-        <div class="title-block" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div class="logo" style="width: 28px; height: 28px; border-radius: 8px;"><img src="icon-192.png" alt=""></div>
-            <h1 style="font-size: 17px; margin: 0;">МедКалькулятор <span onclick="showDisclaimer()" class="info-btn" style="font-size: 14px;">ⓘ</span></h1>
-          </div>
-          <p style="margin-top: 2px;">v${DATA.version} · ${DATA.calculators.length} инструментов</p>
-        </div>
-
-        <!-- Справа: Поделиться -->
-        <button class="menu-btn" onclick="shareApp()" title="Поделиться" style="padding: 0 8px;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-        </button>
-      </div>
-    <input class="search" id="search" placeholder="Поиск по названию или специальности..." value="${filter}">
-  `;
+  let html = renderHeader(`v${DATA.version} · ${DATA.calculators.length} инструментов`);
+  html += `<input class="search" id="search" placeholder="Поиск по названию или специальности..." value="${filter}">`;
 
   // ==========================================
   // НОВАЯ ПРОВЕРКА: Если открыта вкладка МКБ-10
@@ -558,6 +558,27 @@ function renderList(filter = '') {
     searchEl.addEventListener('input', e => renderList(e.target.value));
     if (filter) { searchEl.focus(); searchEl.setSelectionRange(filter.length, filter.length); }
   }
+}
+
+// Единый хедер для всего приложения
+function renderHeader(subtitle = '') {
+  return `
+    <div class="header">
+      <button class="menu-btn" onclick="toggleMenu()" title="Меню" style="font-size: 28px; padding: 0 8px; font-weight: 900; letter-spacing: -2px;">⋮</button>
+      
+      <div class="title-block" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="logo" style="width: 28px; height: 28px; border-radius: 8px;"><img src="icon-192.png" alt=""></div>
+          <h1 style="font-size: 17px; margin: 0;">МедКалькулятор <span onclick="showDisclaimer()" class="info-btn" style="font-size: 14px;">ⓘ</span></h1>
+        </div>
+        <p style="margin-top: 2px;">${subtitle}</p>
+      </div>
+
+      <button class="menu-btn" onclick="shareApp()" title="Поделиться" style="padding: 0 8px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+      </button>
+    </div>
+  `;
 }
 
 // ---------- Открытие калькулятора ----------
@@ -1461,6 +1482,192 @@ function updateGuideUI() {
   } else {
     hint.textContent = 'Нажмите на экран, чтобы продолжить';
   }
+}
+
+// ---------- ЛОГИКА МКБ-10 ----------
+let ICD_DATA = null;
+let icdLevel = 1; 
+let currentClassId = null;
+let currentGroupCode = null;
+
+// Массив классов (тот, что вы копировали ранее)
+const icdClasses = [
+  { code: "A00-B99", letters: "AB", name: "Некоторые инфекционные и паразитарные болезни" },
+  { code: "C00-D48", letters: "CD", name: "Новообразования" },
+  { code: "D50-D89", letters: "D", name: "Болезни крови, кроветворных органов..." },
+  { code: "E00-E90", letters: "E", name: "Болезни эндокринной системы..." },
+  { code: "F00-F99", letters: "F", name: "Психические расстройства и расстройства поведения" },
+  { code: "G00-G99", letters: "G", name: "Болезни нервной системы" },
+  { code: "H00-H59", letters: "H", name: "Болезни глаза и его придаточного аппарата" },
+  { code: "H60-H95", letters: "H", name: "Болезни уха и сосцевидного отростка" },
+  { code: "I00-I99", letters: "I", name: "Болезни системы кровообращения" },
+  { code: "J00-J99", letters: "J", name: "Болезни органов дыхания" },
+  { code: "K00-K93", letters: "K", name: "Болезни органов пищеварения" },
+  { code: "L00-L99", letters: "L", name: "Болезни кожи и подкожной клетчатки" },
+  { code: "M00-M99", letters: "M", name: "Болезни костно-мышечной системы..." },
+  { code: "N00-N99", letters: "N", name: "Болезни мочеполовой системы" },
+  { code: "O00-O99", letters: "O", name: "Беременность, роды и послеродовой период" },
+  { code: "P00-P96", letters: "P", name: "Отдельные состояния, возникающие в перинатальном периоде" },
+  { code: "Q00-Q99", letters: "Q", name: "Врожденные аномалии..." },
+  { code: "R00-R99", letters: "R", name: "Симптомы, признаки и отклонения от нормы..." },
+  { code: "S00-T98", letters: "ST", name: "Травмы, отравления и некоторые другие последствия..." },
+  { code: "V01-Y98", letters: "VWXY", name: "Внешние причины заболеваемости и смертности" },
+  { code: "Z00-Z99", letters: "Z", name: "Факторы, влияющие на состояние здоровья..." }
+];
+
+async function loadICDData() {
+  if (ICD_DATA) return; 
+  try {
+    const res = await fetch('icd.json');
+    ICD_DATA = await res.json();
+  } catch (e) {
+    console.error("Ошибка загрузки МКБ", e);
+  }
+}
+
+async function renderICD() {
+  await loadICDData(); 
+  const app = document.getElementById('app');
+  
+app.innerHTML = renderHeader('Справочник МКБ-10');
+
+  // 2. Создаем поле поиска через DOM (без innerHTML, чтобы не было бага с курсором)
+  const searchWrapper = document.createElement('div');
+  searchWrapper.style.padding = '16px';
+  
+  const searchInput = document.createElement('input');
+  searchInput.className = 'search';
+  searchInput.id = 'icdSearch';
+  searchInput.placeholder = 'Поиск по коду или названию...';
+  searchInput.autocomplete = 'off';
+  // Жестко задаем стили через JS
+  searchInput.style.textAlign = 'left';
+  searchInput.style.width = '100%';
+  searchInput.style.padding = '14px 16px';
+  searchInput.style.borderRadius = '16px';
+  searchInput.style.border = '1.5px solid #e2e8f0';
+  
+  searchWrapper.appendChild(searchInput);
+  app.appendChild(searchWrapper);
+
+  // 3. Создаем контейнер для списка
+  const resultsDiv = document.createElement('div');
+  resultsDiv.id = 'icdResults';
+  app.appendChild(resultsDiv);
+
+  // 4. Рисуем карточки
+  let cardsHtml = '';
+  if (icdLevel === 1) {
+    cardsHtml += `<div class="section-title">Основные классы</div>`;
+    icdClasses.forEach(c => {
+      cardsHtml += `<div class="card" data-search="${c.code} ${c.name}" onclick="openICDClass('${c.code}')">
+        <div class="name">${c.code}</div><div class="meta">${c.name}</div>
+      </div>`;
+    });
+
+  } else if (icdLevel === 2) {
+    cardsHtml += `<button class="back" onclick="closeICDLevel()">← Назад к классам</button>`;
+    const currentClass = icdClasses.find(c => c.code === currentClassId);
+    cardsHtml += `<div class="section-title">${currentClass.code} — ${currentClass.name}</div>`;
+    
+    // ФИЛЬТР ПО БУКВАМ (вместо class_id)
+    const groups = ICD_DATA.filter(item => {
+      const firstLetter = item.group_code[0].toUpperCase(); // Берем первую букву кода
+      return currentClass.letters.includes(firstLetter);
+    });
+    
+    groups.forEach(group => {
+      cardsHtml += `<div class="card" data-search="${group.group_code} ${group.group_name}" onclick="openICDGroup('${group.group_code}')">
+        <div class="name">${group.group_code}</div><div class="meta">${group.group_name}</div>
+      </div>`;
+    });
+
+
+  } else if (icdLevel === 3) {
+    cardsHtml += `<button class="back" onclick="closeICDLevel()">← Назад к блокам</button>`;
+    const group = ICD_DATA.find(g => g.group_code === currentGroupCode);
+    cardsHtml += `<div class="section-title">${group.group_code} — ${group.group_name}</div>`;
+    
+    group.items.forEach(item => {
+      cardsHtml += `<div class="card" data-search="${item.code} ${item.name}">
+        <div class="name">${item.code}</div><div class="meta">${item.name}</div>
+      </div>`;
+    });
+  }
+  resultsDiv.innerHTML = cardsHtml;
+
+  // 5. ГЛОБАЛЬНЫЙ ОБРАБОТЧИК ПОИСКА
+  searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    
+    // Если поиск пустой — возвращаем текущий уровень
+    if (query === "") {
+      renderICD(); 
+      return;
+    }
+
+    // Ищем совпадения во ВСЕХ болезнях (по коду и названию)
+    const foundItems = [];
+    ICD_DATA.forEach(group => {
+      group.items.forEach(item => {
+        if (item.code.toLowerCase().includes(query) || item.name.toLowerCase().includes(query)) {
+          foundItems.push(item);
+        }
+      });
+    });
+
+    // Если что-то нашли, перерисовываем список болезней
+    if (foundItems.length > 0) {
+      let html = `<div class="section-title">Результаты поиска (${foundItems.length})</div>`;
+      foundItems.forEach(item => {
+        html += `<div class="card">
+          <div class="name">${item.code}</div><div class="meta">${item.name}</div>
+        </div>`;
+      });
+      resultsDiv.innerHTML = html;
+      
+      // Скрываем кнопку "Назад", так как мы в режиме поиска
+      const backBtn = resultsDiv.querySelector('.back');
+      if (backBtn) backBtn.style.display = 'none';
+
+    } else {
+      resultsDiv.innerHTML = `<div class="loading">Ничего не найдено</div>`;
+    }
+  });
+}
+
+
+// --- УМНЫЙ ФИЛЬТР (не сбрасывает фокус) ---
+function filterICD(query) {
+  const q = query.toLowerCase().trim();
+  const cards = document.querySelectorAll('#icdResults .card');
+  
+  cards.forEach(card => {
+    const text = card.getAttribute('data-search').toLowerCase();
+    if (text.includes(q)) {
+      card.classList.remove('hidden');
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+}
+
+// Навигация
+function openICDClass(classCode) {
+  currentClassId = classCode; // Теперь храним код класса (например, "A00-B99")
+  icdLevel = 2;
+  renderICD();
+}
+
+function openICDGroup(groupCode) {
+  currentGroupCode = groupCode;
+  icdLevel = 3;
+  renderICD();
+}
+
+function closeICDLevel() {
+  icdLevel--;
+  renderICD();
 }
 
 </script>
