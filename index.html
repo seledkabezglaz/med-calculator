@@ -209,6 +209,42 @@
     max-width: 400px; 
     margin: 0 auto; 
   }
+    /* Стили для нижнего меню */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 20px 0; /* 20px снизу для отступа под экран телефона */
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    z-index: 100;
+    border-top: 1px solid #e2e8f0;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: 0.2s;
+    padding: 0 20px;
+  }
+  .nav-item.active {
+    color: #1e40af;
+  }
+  .nav-icon {
+    margin-bottom: 4px;
+  }
+  .nav-text {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  /* Отступ для контента, чтобы меню не перекрывало низ списка */
+  .app {
+    padding-bottom: 80px; 
+  }
 
 </style>
 </head>
@@ -333,6 +369,22 @@
       <div class="guide-hint" id="guideHint">Нажмите на экран, чтобы продолжить</div>
     </div>
   </div>
+
+    <!-- НИЖНЕЕ МЕНЮ (НАВИГАЦИЯ) -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-calc" onclick="switchMainTab('calc')">
+      <div class="nav-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16.01" y2="14"></line><line x1="12" y1="14" x2="12.01" y2="14"></line><line x1="8" y1="14" x2="8.01" y2="14"></line><line x1="16" y1="18" x2="16.01" y2="18"></line><line x1="12" y1="18" x2="12.01" y2="18"></line><line x1="8" y1="18" x2="8.01" y2="18"></line></svg>
+      </div>
+      <span class="nav-text">Расчеты</span>
+    </div>
+    <div class="nav-item" id="nav-icd" onclick="switchMainTab('icd')">
+      <div class="nav-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      </div>
+      <span class="nav-text">МКБ-10</span>
+    </div>
+  </div>
 <script>
 
 // ---------- Состояние ----------
@@ -343,6 +395,7 @@ let answers = {};
 let formValues = {};
 let calcVars = {};
 let favorites = JSON.parse(localStorage.getItem('medcalc_favorites') || '[]');
+let currentMainTab = 'calc'; // 'calc' (калькуляторы) или 'icd' (МКБ-10)
 
 // ---------- Избранное ----------
 function toggleFavorite(id, event) {
@@ -410,17 +463,24 @@ function goHome() {
   }
 }
 
+function switchMainTab(tab) {
+  currentMainTab = tab;
+  
+  // Меняем активный класс у кнопок нижнего меню
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById(tab === 'calc' ? 'nav-calc' : 'nav-icd').classList.add('active');
+
+  // Вызываем общую функцию рендера
+  renderList(); 
+  
+  window.scrollTo(0, 0); 
+}
+
 // ---------- Экран списка ----------
 function renderList(filter = '') {
   const f = filter.toLowerCase().trim();
-  const matches = c =>
-    !f || c.name.toLowerCase().includes(f) ||
-    (c.specialty || '').toLowerCase().includes(f) ||
-    (c.description || '').toLowerCase().includes(f);
-
-  const favItems = DATA.calculators.filter(c => favorites.includes(c.id) && matches(c));
-  const otherItems = DATA.calculators.filter(c => !favorites.includes(c.id) && matches(c));
-
+  
+  // Сначала строим шапку (она одинаковая для всех вкладок)
   let html = `
       <div class="header">
         <!-- Слева: Меню (точки) -->
@@ -442,6 +502,41 @@ function renderList(filter = '') {
       </div>
     <input class="search" id="search" placeholder="Поиск по названию или специальности..." value="${filter}">
   `;
+
+  // ==========================================
+  // НОВАЯ ПРОВЕРКА: Если открыта вкладка МКБ-10
+  // ==========================================
+  if (currentMainTab === 'icd') {
+    // Рисуем заглушку для МКБ
+    html += `
+      <div class="loading" style="margin-top: 50px;">
+        <div style="font-size: 40px; margin-bottom: 10px;">📖</div>
+        <b>Справочник МКБ-10</b><br>
+        Скоро здесь появится полный список болезней.
+      </div>
+    `;
+    
+    document.getElementById('app').innerHTML = html;
+    
+    // Привязываем поиск (если нужно будет искать по МКБ)
+    const searchEl = document.getElementById('search');
+    if (searchEl) {
+      searchEl.addEventListener('input', e => renderList(e.target.value));
+      if (filter) { searchEl.focus(); }
+    }
+    return; // Выходим из функции, чтобы не рисовать калькуляторы
+  }
+
+  // ==========================================
+  // ДАЛЬШЕ ИДЕТ СТАРЫЙ КОД ДЛЯ КАЛЬКУЛЯТОРОВ
+  // ==========================================
+  const matches = c =>
+    !f || c.name.toLowerCase().includes(f) ||
+    (c.specialty || '').toLowerCase().includes(f) ||
+    (c.description || '').toLowerCase().includes(f);
+
+  const favItems = DATA.calculators.filter(c => favorites.includes(c.id) && matches(c));
+  const otherItems = DATA.calculators.filter(c => !favorites.includes(c.id) && matches(c));
 
   if (favItems.length > 0) {
     html += `<div class="section-title">★ Избранное</div>`;
