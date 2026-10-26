@@ -384,7 +384,7 @@
     </div>
   </div>
 
-    <!-- НИЖНЕЕ МЕНЮ (НАВИГАЦИЯ) -->
+  <!-- НИЖНЕЕ МЕНЮ (НАВИГАЦИЯ) -->
   <div class="bottom-nav">
     <div class="nav-item active" id="nav-calc" onclick="switchMainTab('calc')">
       <div class="nav-icon">
@@ -392,6 +392,15 @@
       </div>
       <span class="nav-text">Расчеты</span>
     </div>
+    
+    <!-- НОВАЯ КНОПКА СМП -->
+    <div class="nav-item" id="nav-smp" onclick="switchMainTab('smp')">
+      <div class="nav-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+      </div>
+      <span class="nav-text">СМП</span>
+    </div>
+
     <div class="nav-item" id="nav-icd" onclick="switchMainTab('icd')">
       <div class="nav-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
@@ -480,16 +489,18 @@ function goHome() {
 function switchMainTab(tab) {
   currentMainTab = tab;
   
-  // Меняем активный класс у кнопок нижнего меню
+  // Меняем активный класс у кнопок
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  document.getElementById(tab === 'calc' ? 'nav-calc' : 'nav-icd').classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
 
   // Вызываем нужную функцию
   if (tab === 'icd') {
-    icdLevel = 1; // Сбрасываем на классы при переходе
-    renderICD();  // Вызываем наш новый рендер
+    icdLevel = 1; 
+    renderICD();  
+  } else if (tab === 'smp') {
+    renderSMP(); // Вызываем функцию заглушки
   } else {
-    renderList(); // Вызываем старый рендер
+    renderList(); 
   }
   
   window.scrollTo(0, 0); 
@@ -1636,6 +1647,39 @@ app.innerHTML = renderHeader('Справочник МКБ-10');
   });
 }
 
+// ---------- СМП (Скоро Медицинская Помощь) ----------
+function renderSMP() {
+  const app = document.getElementById('app');
+  
+  // Рисуем хедер
+  app.innerHTML = renderHeader('Алгоритмы СМП');
+  
+  // Рисуем заглушку
+  let html = `
+    <div style="text-align: center; padding: 40px 20px;">
+      <div style="font-size: 60px; margin-bottom: 20px;">🚑</div>
+      
+      <h2 style="font-size: 20px; color: #1a2634; margin-bottom: 12px;">Раздел в разработке</h2>
+      
+      <p style="font-size: 14px; color: #6b7a8a; line-height: 1.6; margin-bottom: 24px; max-width: 300px; margin-left: auto; margin-right: auto;">
+        Здесь скоро появятся алгоритмы и протоколы скорой медицинской помощи.
+      </p>
+
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+        <p style="font-size: 14px; color: #1e40af; font-weight: 600; margin-bottom: 8px;">Приложение работает на энтузиазме 🙌</p>
+        <p style="font-size: 13px; color: #4a5a6a; line-height: 1.5;">
+          Чтобы этот раздел появился, нужна ваша обратная связь и помощь. Если вы знаете хорошие источники по СМП или хотите помочь с парсингом — напишите мне!
+        </p>
+      </div>
+
+      <button onclick="toggleMenu()" style="width: 100%; background: #1a2634; color: white; border: none; padding: 16px; border-radius: 40px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        💬 Написать мне
+      </button>
+    </div>
+  `;
+  
+  app.innerHTML += html;
+}
 
 // --- УМНЫЙ ФИЛЬТР (не сбрасывает фокус) ---
 function filterICD(query) {
