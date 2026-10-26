@@ -108,7 +108,7 @@
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     
     /* ВАЖНО: */
-    height: 65vh; /* или 70vh */
+    height: 45vh; /* или 70vh */
     display: flex;
     flex-direction: column;
     overflow: hidden; /* Прячем скролл у самой карточки */
@@ -133,7 +133,6 @@
   .modal-content::-webkit-scrollbar { 
     display: none; 
   }
-  
   .modal-overlay.show .modal-content { transform: translateY(0); }
   .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .modal-header h2 { font-size: 20px; font-weight: 700; margin: 0; }
@@ -220,101 +219,80 @@
   <div class="modal-overlay" id="menuModal" onclick="closeMenu(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       
-      <div class="modal-header">
-        <h2>Меню</h2>
-        <button class="close-btn" onclick="closeMenu()">✕</button>
-      </div>
-      
-      <!-- НОВАЯ ОБЕРТКА ДЛЯ СКРОЛЛА -->
-      <div class="modal-scroll-area">
-          <!-- Вставляем сюда все вкладки (tabs), установку, поддержку -->
-          <div class="tabs">...</div>
-          <div id="tab-install" ...>...</div>
-          <div id="tab-support" ...>...</div>
-      </div>
-      <!-- КОНЕЦ ОБЕРТКИ -->
+          <!-- Вкладки -->
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('install')">Как установить</button>
+            <button class="tab-btn" onclick="switchTab('support')">Поддержка</button>
+          </div>
 
-    </div>
-  </div>
+          <!-- Вкладка 1: Установка -->
+          <div id="tab-install" class="tab-content active">
+            <p style="margin-bottom: 20px;">Приложение можно установить на главный экран телефона. Это позволит работать без интернета.</p>
+            
+            <!-- Android -->
+            <h3>📱 Android</h3>
+            <p style="font-size: 13px; color: #4a5a6a; margin-bottom: 10px;">Нажмите на кнопку ниже для просмотра пошаговой инструкции.</p>
+            <button onclick="openGuide('android')" style="width: 100%; background: #eff6ff; color: #1e40af; border: 2px solid #bfdbfe; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
+              📱 Показать наглядно (Android)
+            </button>
 
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('install')">Как установить</button>
-        <button class="tab-btn" onclick="switchTab('support')">Поддержка</button>
-      </div>
-      
-      <!-- Вкладка 1: Установка -->
-      <div id="tab-install" class="tab-content active">
-        <p style="margin-bottom: 20px;">Приложение можно установить на главный экран телефона.Что позволит работать без интернета. </p>
-        
-        <!-- Android -->
-        <h3>📱 Android</h3>
-        <p style="font-size: 13px; color: #4a5a6a; margin-bottom: 10px;">Нажмите на кнопку ниже для просмотра пошаговой инструкции.</p>
-        <button onclick="openGuide('android')" style="width: 100%; background: #eff6ff; color: #1e40af; border: 2px solid #bfdbfe; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
-          📱 Показать наглядно (Android)
-        </button>
+            <!-- iOS -->
+            <h3>🍏 iOS (iPhone/iPad)</h3>
+            <p style="font-size: 13px; color: #4a5a6a; margin-bottom: 10px;">Нажмите на кнопку ниже для просмотра пошаговой инструкции.</p>
+            <button onclick="openGuide('ios')" style="width: 100%; background: #eff6ff; color: #1e40af; border: 2px solid #bfdbfe; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
+              🍏 Показать наглядно (iOS)
+            </button>
+          </div>
 
-        <!-- iOS -->
-        <h3>🍏 iOS (iPhone/iPad)</h3>
-        <p style="font-size: 13px; color: #4a5a6a; margin-bottom: 10px;">Нажмите на кнопку ниже для просмотра пошаговой инструкции.</p>
-        <button onclick="openGuide('ios')" style="width: 100%; background: #eff6ff; color: #1e40af; border: 2px solid #bfdbfe; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
-          🍏 Показать наглядно (iOS)
-        </button>
-        <p style="font-size: 12px; color: #94a3b8; margin-top: 0; text-align: center;"> </p>
-      </div>
+          <!-- Вкладка 2: Поддержка -->
+          <div id="tab-support" class="tab-content">
+            <p style="font-size: 13px; margin-bottom: 12px; color: #6b7a8a; text-align: center;">
+              Открытый некоммерческий проект.
+            </p>
 
-      <!-- Вкладка 2: Поддержка -->
-      <div id="tab-support" class="tab-content">
-        
-        <p style="font-size: 13px; margin-bottom: 12px; color: #6b7a8a; text-align: center;">
-          Открытый некоммерческий проект.
-        </p>
+            <p style="font-size: 13px; margin-bottom: 20px; color: #4a5a6a; text-align: center;">
+              Нашли ошибку, есть идеи по новым формулам или просто хотите оставить отзыв? <b>Напишите мне!</b>
+            </p>
+            
+            <!-- Иконки со ссылками -->
+            <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px;">
+              
+              <!-- Telegram -->
+              <a href="https://t.me/seledkabezglaz" target="_blank" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#229ED9"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.223-.548.223l.188-2.85 5.18-4.686c.223-.198-.054-.308-.346-.11l-6.4 4.026-2.76-.864c-.6-.187-.612-.6.125-.888l10.786-4.155c.5-.187.94.112.776.814z"/></svg>
+                </div>
+                <span style="font-size: 11px; color: #4a5a6a; font-weight: 500;">Telegram</span>
+              </a>
 
-        <p style="font-size: 13px; margin-bottom: 20px; color: #4a5a6a; text-align: center; line-height: 1.4;">
-          Нашли ошибку, есть идеи по новым формулам или просто хотите оставить отзыв? <b>Напишите мне!</b>
-        </p>
-        
-        <!-- Иконки со ссылками -->
-        <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 24px;">
-          
-          <!-- Telegram -->
-          <a href="https://t.me/seledkabezglaz" target="_blank" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 6px;">
-            <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#229ED9"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.223-.548.223l.188-2.85 5.18-4.686c.223-.198-.054-.308-.346-.11l-6.4 4.026-2.76-.864c-.6-.187-.612-.6.125-.888l10.786-4.155c.5-.187.94.112.776.814z"/></svg>
+              <!-- GitHub -->
+              <a href="https://github.com/seledkabezglaz/med-calculator/issues" target="_blank" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#24292e"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </div>
+                <span style="font-size: 11px; color: #4a5a6a; font-weight: 500;">GitHub</span>
+              </a>
+
+              <!-- Почта -->
+              <button onclick="copyEmail()" style="background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea4335" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </div>
+                <span style="font-size: 11px; color: #4a5a6a; font-weight: 500;">Почта</span>
+              </button>
+
             </div>
-            <span style="font-size: 11px; color: #4a5a6a; font-weight: 500;">Telegram</span>
-          </a>
 
-          <!-- GitHub -->
-          <a href="https://github.com/seledkabezglaz/med-calculator/issues" target="_blank" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 6px;">
-            <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#24292e"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <!-- Блок с QR-кодом -->
+            <div class="support-card" style="text-align: center; padding: 16px; margin-bottom: 10px;">
+              <p style="font-size: 14px; margin-bottom: 4px; font-weight: 600; color: #1a2634;">Поддержать проект:</p>
+              <a href="https://finance.ozon.ru/apps/sbp/ozonbankpay/01a17702-d002-7bb3-afba-b427041b0fe6" target="_blank" style="display: inline-block; text-decoration: none;">
+                <p style="font-size: 13px; color: #3b82f6; font-weight: 600; margin-top: 8px; margin-bottom: 8px;">Нажмите, чтобы перевести</p>
+                <img src="img/qr.png" alt="QR-код для поддержки" style="width: 140px; height: 140px; border-radius: 12px; border: 1px solid #e2e8f0; padding: 4px; background: white; transition: 0.2s;">
+              </a>
+              <p style="font-size: 11px; color: #94a3b8; margin-top: 8px; margin-bottom: 0;">Спасибо за любую поддержку!</p>
             </div>
-            <span style="font-size: 11px; color: #4a5a6a; font-weight: 500;">GitHub</span>
-          </a>
-
-          <!-- Почта -->
-          <button onclick="copyEmail()" style="background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px;">
-            <div style="width: 50px; height: 50px; background: #f1f5f9; border-radius: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea4335" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            </div>
-            <span style="font-size: 11px; color: #4a5a6a; font-weight: 500;">Почта</span>
-          </button>
-
-        </div>
-
-        <!-- Блок с QR-кодом (на всю ширину) -->
-        <div class="support-card" style="text-align: center; padding: 16px; margin-bottom: 10px;">
-          <p style="font-size: 14px; margin-bottom: 0px; font-weight: 600; color: #1a2634;">Поддержать проект:</p>
-          
-          <a href="https://finance.ozon.ru/apps/sbp/ozonbankpay/01a17702-d002-7bb3-afba-b427041b0fe6" target="_blank" style="display: inline-block; text-decoration: none;">
-            <p style="font-size: 13px; color: #3b82f6; font-weight: 600; margin-top: 10px; margin-bottom: 0;">Нажмите, чтобы перевести</p>
-            <img src="img/qr.png" alt="QR-код для поддержки" style="width: 140px; height: 140px; border-radius: 12px; border: 1px solid #e2e8f0; padding: 4px; background: white; transition: 0.2s;">
-          </a>
-          
-          <p style="font-size: 11px; color: #94a3b8; margin-top: 8px; margin-bottom: 0;">Спасибо за любую поддержку!</p>
-        </div>
-
-    </div> <!-- Закрыли modal-overlay (меню) -->
+          </div>
 
   <!-- Модальное окно: Дисклеймер -->
   <div class="modal-overlay" id="disclaimerModal" onclick="closeDisclaimer(event)">
