@@ -108,7 +108,7 @@
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     
     /* ВАЖНО: */
-    height: 47vh; /* или 70vh */
+    height: 50vh; /* или 70vh */ 
     display: flex;
     flex-direction: column;
     overflow: hidden; /* Прячем скролл у самой карточки */
@@ -259,6 +259,69 @@
     width: 100%; 
     padding-bottom: 100px; /* Добавили отступ снизу, чтобы меню не перекрывало контент */
   }
+  /* Сетка для папок */
+  .folder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Два столбика */
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  /* Плитка папки */
+  .folder-card {
+    background: #f8fafc; /* Легкий серо-голубой фон */
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    cursor: pointer;
+    transition: 0.15s;
+    border: 1.5px solid #e2e8f0; /* Аккуратная рамка */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 90px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Цветная полоска слева (акцент) */
+  .folder-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #3b82f6; /* Синий акцент */
+    border-radius: 4px 0 0 4px;
+  }
+
+  .folder-card:hover {
+    border-color: #3b82f6;
+    background: #eff6ff; /* При наведении становится нежно-голубым */
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(59,130,246,0.1);
+  }
+
+  .folder-card:active {
+    transform: scale(0.98);
+  }
+
+  .folder-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a2634;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    padding-left: 6px; /* Отступ от полоски */
+  }
+
+  .folder-count {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 500;
+    padding-left: 6px;
+  }
 
 </style>
 </head>
@@ -299,7 +362,12 @@
             <button onclick="openGuide('ios')" style="width: 100%; background: #eff6ff; color: #1e40af; border: 2px solid #bfdbfe; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
               🍏 Показать наглядно (iOS)
             </button>
-          </div>
+
+                        <!-- Информация о версии -->
+            <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
+              <p style="font-size: 12px; color: #94a3b8;">Версия приложения: <b id="appVersionText"></b></p>
+             </div>
+            </div>
 
           <!-- Вкладка 2: Поддержка -->
           <div id="tab-support" class="tab-content">
@@ -374,6 +442,32 @@
   </div>
 </div>
 
+  <!-- Модальное окно: Обновления / Приветствие -->
+  <div class="modal-overlay" id="updateModal" onclick="closeUpdateModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Добро пожаловать!</h2>
+        <button class="close-btn" onclick="closeUpdateModal()">✕</button>
+      </div>
+      
+      <div class="tab-content active" style="display: block; padding-top: 5px;">
+        <p style="margin-bottom: 16px;">Спасибо, что заглянули в <b>МедКалькулятор</b> — некоммерческий проект для врачей.</p>
+        
+        <div class="support-card" style="background: #eff6ff; border-color: #bfdbfe; margin-bottom: 16px;">
+          <p style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">📦 Что нового в версии 0.9.9:</p>
+          <ul style="color: #4a5a6a; font-size: 14px; padding-left: 20px; margin: 0;">
+            <li style="margin-bottom: 6px;">Добавлен справочник <b>МКБ-10</b> (более 12 000 болезней).</li>
+            <li style="margin-bottom: 6px;">Появился новый раздел <b>СМП</b> (в разработке).</li>
+            <li>Улучшена работа приложения без интернета.</li>
+          </ul>
+        </div>
+
+        <p style="font-size: 13px; color: #6b7a8a; margin-top: 16px;">Если найдете ошибку или захотите добавить формулу — пишите мне в Telegram или на почту (кнопки в меню).</p>
+      </div>
+    </div>
+  </div>
+
+
   <!-- Модальное окно: Интерактивная инструкция -->
   <div class="guide-modal" id="guideModal" onclick="nextGuideSlide()">
     <div class="guide-content">
@@ -413,6 +507,7 @@
 // ---------- Состояние ----------
 
 let DATA = null;
+let currentFolder = null; // Хранит название открытой категории
 let currentCalc = null;
 let answers = {};
 let formValues = {};
@@ -441,17 +536,36 @@ async function loadData() {
     if (DATA && DATA.version) {
       const savedVersion = localStorage.getItem('app_version');
       if (savedVersion && savedVersion !== DATA.version) {
-        // Версия изменилась! Запоминаем новую
+        // Версия изменилась! Запоминаем новую и показываем окно обновлений
         localStorage.setItem('app_version', DATA.version);
-        // И принудительно перезагружаем страницу, чтобы применить новый Service Worker
-        window.location.reload(); 
+        // Показываем окно обновлений
+        setTimeout(() => {
+          showUpdateModal();
+        }, 1000); // Небольшая задержка, чтобы страница успела загрузиться
+      } else if (!savedVersion) {
+        // Первый запуск! Запоминаем версию и показываем приветствие
+        localStorage.setItem('app_version', DATA.version);
+        setTimeout(() => {
+          showUpdateModal();
+        }, 1000);
       } else {
+        // Версия не менялась, просто обновляем в памяти
         localStorage.setItem('app_version', DATA.version);
       }
     }
     // ---------------------------------
 
     renderList();
+        // Если вкладка была не "Расчеты", нужно перерисовать её после загрузки данных
+    if (currentMainTab === 'icd') {
+      renderICD();
+    } else if (currentMainTab === 'smp') {
+      renderSMP();
+    }
+        // Записываем версию в меню
+    const verEl = document.getElementById('appVersionText');
+    if (verEl) verEl.textContent = 'v' + DATA.version;
+
   } catch (e) {
     // ... ошибка ...
   }
@@ -480,6 +594,9 @@ function goHome() {
   answers = {};
   formValues = {};
   calcVars = {};
+  
+    document.querySelector('.bottom-nav').style.display = 'flex';
+
   renderList();
     if (window.lastScrollPosition !== undefined) {
     window.scrollTo(0, window.lastScrollPosition);
@@ -488,19 +605,27 @@ function goHome() {
 
 function switchMainTab(tab) {
   currentMainTab = tab;
+  currentFolder = null; 
   
   // Меняем активный класс у кнопок
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   document.getElementById('nav-' + tab).classList.add('active');
 
-  // Вызываем нужную функцию
-  if (tab === 'icd') {
-    icdLevel = 1; 
-    renderICD();  
+  // Показываем меню
+  document.querySelector('.bottom-nav').style.display = 'flex';
+
+  if (tab === 'calc') {
+    if (DATA && DATA.calculators) {
+      renderList(); 
+    } else {
+      // Если данных еще нет, показываем загрузку
+      document.getElementById('app').innerHTML = '<div class="loading">Загрузка...</div>';
+    }
   } else if (tab === 'smp') {
-    renderSMP(); // Вызываем функцию заглушки
-  } else {
-    renderList(); 
+    renderSMP(); 
+  } else if (tab === 'icd') {
+    icdLevel = 1; 
+    renderICD(); 
   }
   
   window.scrollTo(0, 0); 
@@ -508,67 +633,99 @@ function switchMainTab(tab) {
 
 // ---------- Экран списка ----------
 function renderList(filter = '') {
+    // ЗАЩИТА ОТ ОШИБКИ: Если данные еще не загрузились, ждем
+  if (!DATA || !DATA.calculators) {
+    document.getElementById('app').innerHTML = '<div class="loading">Загрузка данных...</div>';
+    return;
+  }
   const f = filter.toLowerCase().trim();
   
-  // Сначала строим шапку (она одинаковая для всех вкладок)
-  let html = renderHeader(`v${DATA.version} · ${DATA.calculators.length} инструментов`);
+  // 1. Хедер и поиск
+  let html = renderHeader(`Расчеты · ${DATA.calculators.length} инструментов`);
   html += `<input class="search" id="search" placeholder="Поиск по названию или специальности..." value="${filter}">`;
 
-  // ==========================================
-  // НОВАЯ ПРОВЕРКА: Если открыта вкладка МКБ-10
-  // ==========================================
-  if (currentMainTab === 'icd') {
-    // Рисуем заглушку для МКБ
-    html += `
-      <div class="loading" style="margin-top: 50px;">
-        <div style="font-size: 40px; margin-bottom: 10px;">📖</div>
-        <b>Справочник МКБ-10</b><br>
-        Скоро здесь появится полный список болезней.
-      </div>
-    `;
+  // Если мы в поиске, сбрасываем папку
+  if (f) currentFolder = null;
+
+  // 2. ЛОГИКА ОТОБРАЖЕНИЯ
+  if (currentFolder) {
+    // --- МЫ ВНУТРИ ПАПКИ ---
+    html += `<button class="back" onclick="closeFolder()">← Назад к папкам</button>`;
+    html += `<div class="section-title">${currentFolder}</div>`;
     
-    document.getElementById('app').innerHTML = html;
+    const folderItems = DATA.calculators.filter(c => 
+      (c.specialty || 'Общеклинические') === currentFolder &&
+      (!f || c.name.toLowerCase().includes(f) || (c.description||'').toLowerCase().includes(f))
+    );
     
-    // Привязываем поиск (если нужно будет искать по МКБ)
-    const searchEl = document.getElementById('search');
-    if (searchEl) {
-      searchEl.addEventListener('input', e => renderList(e.target.value));
-      if (filter) { searchEl.focus(); }
+    if (folderItems.length === 0) {
+      html += `<div class="loading">В этой папке пока пусто</div>`;
+    } else {
+      folderItems.forEach(c => { html += cardHTML(c); });
     }
-    return; // Выходим из функции, чтобы не рисовать калькуляторы
-  }
+  } else {
+    // --- МЫ НА ГЛАВНОЙ ---
+    if (!f) {
+      // Избранное
+      const favItems = DATA.calculators.filter(c => favorites.includes(c.id));
+      if (favItems.length > 0) {
+        html += `<div class="section-title">★ Избранное</div>`;
+        favItems.forEach(c => { html += cardHTML(c); });
+      }
 
-  // ==========================================
-  // ДАЛЬШЕ ИДЕТ СТАРЫЙ КОД ДЛЯ КАЛЬКУЛЯТОРОВ
-  // ==========================================
-  const matches = c =>
-    !f || c.name.toLowerCase().includes(f) ||
-    (c.specialty || '').toLowerCase().includes(f) ||
-    (c.description || '').toLowerCase().includes(f);
-
-  const favItems = DATA.calculators.filter(c => favorites.includes(c.id) && matches(c));
-  const otherItems = DATA.calculators.filter(c => !favorites.includes(c.id) && matches(c));
-
-  if (favItems.length > 0) {
-    html += `<div class="section-title">★ Избранное</div>`;
-    favItems.forEach(c => { html += cardHTML(c); });
-  }
-
-  if (otherItems.length > 0) {
-    if (favItems.length > 0) html += `<div class="section-title">Все инструменты</div>`;
-    otherItems.forEach(c => { html += cardHTML(c); });
-  }
-
-  if (favItems.length === 0 && otherItems.length === 0) {
-    html += `<div class="loading">Ничего не найдено</div>`;
+      // Папки (сетка)
+      const allSpecs = [...new Set(DATA.calculators.map(c => c.specialty || 'Общеклинические'))].sort();
+      
+      html += `<div class="section-title">Все инструменты</div>`;
+      html += `<div class="folder-grid">`;
+      
+      allSpecs.forEach(spec => {
+        const count = DATA.calculators.filter(c => (c.specialty || 'Общеклинические') === spec).length;
+        html += `
+          <div class="folder-card" onclick="openFolder('${spec}')">
+            <div class="folder-name">${spec}</div>
+            <div class="folder-count">${count} шт.</div>
+          </div>`;
+      });
+      
+      html += `</div>`;
+    } else {
+      // Поиск
+      const searchResults = DATA.calculators.filter(c => 
+        c.name.toLowerCase().includes(f) || 
+        (c.specialty || '').toLowerCase().includes(f) ||
+        (c.description || '').toLowerCase().includes(f)
+      );
+      
+      html += `<div class="section-title">Результаты поиска (${searchResults.length})</div>`;
+      searchResults.forEach(c => { html += cardHTML(c); });
+      
+      if (searchResults.length === 0) html += `<div class="loading">Ничего не найдено</div>`;
+    }
   }
 
   document.getElementById('app').innerHTML = html;
+  
+  // Привязываем поиск
   const searchEl = document.getElementById('search');
   if (searchEl) {
     searchEl.addEventListener('input', e => renderList(e.target.value));
     if (filter) { searchEl.focus(); searchEl.setSelectionRange(filter.length, filter.length); }
   }
+}
+
+// Функции для работы с папками
+function openFolder(spec) {
+  currentFolder = spec;
+  document.querySelector('.bottom-nav').style.display = 'flex'; 
+  history.pushState({ folder: spec }, '', '#' + spec);
+  renderList();
+  window.scrollTo(0, 0);
+}
+
+function closeFolder() {
+  document.querySelector('.bottom-nav').style.display = 'flex';
+  history.back();
 }
 
 // Единый хедер для всего приложения
@@ -603,6 +760,8 @@ function openCalc(id, pushState = true) {
   if (pushState) {
     history.pushState({ calcId: id }, '', '#' + id);
   }
+    // СКРЫВАЕМ НИЖНЕЕ МЕНЮ
+  document.querySelector('.bottom-nav').style.display = 'none';
 
   if (currentCalc.type === 'formula' || currentCalc.type === 'equation') renderFormula();
   else renderQuestionnaire();
@@ -1355,30 +1514,52 @@ function closeDisclaimer(event) {
 }
 
 window.addEventListener('popstate', (event) => {
-  if (event.state && event.state.calcId) {
-    openCalc(event.state.calcId, false);
-  } else {
-    goHome();
+  // --- ЛОГИКА ДЛЯ КАЛЬКУЛЯТОРОВ ---
+  if (currentCalc) {
+    // Если открыт калькулятор, возвращаемся в список
+    if (event.state && event.state.calcId) {
+      openCalc(event.state.calcId, false);
+    } else {
+      document.querySelector('.bottom-nav').style.display = 'flex';
+      goHome();
+    }
+    return;
   }
+
+  // --- ЛОГИКА ДЛЯ ПАПОК ---
+  if (currentFolder) {
+    currentFolder = null;
+    document.querySelector('.bottom-nav').style.display = 'flex';
+    renderList();
+    return;
+  }
+
+  // --- ЛОГИКА ДЛЯ МКБ (МНОГОУРОВНЕВАЯ) ---
+  if (currentMainTab === 'icd') {
+    if (event.state && event.state.icdLevel === 2) {
+      // Если мы вернулись к блокам (2 уровень)
+      icdLevel = 2;
+      currentClassId = event.state.classId;
+      renderICD();
+    } else if (event.state && event.state.icdLevel === 3) {
+      // Если мы вернулись к болезням (3 уровень) — маловероятно, но на всякий случай
+      icdLevel = 3;
+      currentGroupCode = event.state.groupCode;
+      renderICD();
+    } else {
+      // Если вернулись на главный экран МКБ (1 уровень)
+      icdLevel = 1;
+      currentClassId = null;
+      currentGroupCode = null;
+      renderICD();
+    }
+    return;
+  }
+
+  // --- ВСЕ ОСТАЛЬНОЕ (ВЫХОД НА ГЛАВНУЮ) ---
+  document.querySelector('.bottom-nav').style.display = 'flex';
+  goHome();
 });
-
-
-
-loadData();
-
-// Включаем Service Worker для офлайн-работы
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    const version = DATA && DATA.version ? DATA.version : 'v1';
-    navigator.serviceWorker.register(`./sw.js?v=${version}`)
-      .then(reg => {
-        console.log('Service Worker готов! Версия:', version);
-        // ПРИНУДИТЕЛЬНО проверяем обновления при каждом запуске
-        reg.update();
-      })
-      .catch(err => console.log('Ошибка Service Worker:', err));
-  });
-}
 
 // Функция для "Поделиться"
 function shareApp() {
@@ -1662,13 +1843,13 @@ function renderSMP() {
       <h2 style="font-size: 20px; color: #1a2634; margin-bottom: 12px;">Раздел в разработке</h2>
       
       <p style="font-size: 14px; color: #6b7a8a; line-height: 1.6; margin-bottom: 24px; max-width: 300px; margin-left: auto; margin-right: auto;">
-        Здесь скоро появятся алгоритмы и протоколы скорой медицинской помощи.
+        Экипаж выехал за обновлениями.
       </p>
 
       <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 16px; padding: 20px; margin-bottom: 24px;">
         <p style="font-size: 14px; color: #1e40af; font-weight: 600; margin-bottom: 8px;">Приложение работает на энтузиазме 🙌</p>
         <p style="font-size: 13px; color: #4a5a6a; line-height: 1.5;">
-          Чтобы этот раздел появился, нужна ваша обратная связь и помощь. Если вы знаете хорошие источники по СМП или хотите помочь с парсингом — напишите мне!
+          Чтобы этот раздел появился, нужна ваша обратная связь и помощь. Если вы знаете хорошие источники по СМП — напишите мне!
         </p>
       </div>
 
@@ -1696,24 +1877,41 @@ function filterICD(query) {
   });
 }
 
-// Навигация
-function openICDClass(classCode) {
-  currentClassId = classCode; // Теперь храним код класса (например, "A00-B99")
+function openICDClass(classId) {
+  currentClassId = classId;
   icdLevel = 2;
+  // Добавляем в историю
+  history.pushState({ icdLevel: 2, classId: classId }, '', '#' + classId);
   renderICD();
 }
 
 function openICDGroup(groupCode) {
   currentGroupCode = groupCode;
   icdLevel = 3;
+  // Добавляем в историю
+  history.pushState({ icdLevel: 3, groupCode: groupCode }, '', '#' + groupCode);
   renderICD();
 }
 
 function closeICDLevel() {
-  icdLevel--;
-  renderICD();
+  // Вызываем системный шаг назад
+  history.back();
 }
+// ---------- СТАРТ ----------
+loadData();
 
+// Включаем Service Worker для офлайн-работы
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    const version = DATA && DATA.version ? DATA.version : 'v1';
+    navigator.serviceWorker.register(`./sw.js?v=${version}`)
+      .then(reg => {
+        console.log('Service Worker готов! Версия:', version);
+        reg.update();
+      })
+      .catch(err => console.log('Ошибка Service Worker:', err));
+  });
+}
 </script>
 </body>
 </html>
