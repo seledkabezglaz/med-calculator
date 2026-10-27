@@ -1,5 +1,5 @@
 {
-  "version": "0.9.9 test-beta",
+  "version": "0.9.9 test (1)-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -129,7 +129,7 @@
   "id": "bishop_score",
   "type": "questionnaire",
   "name": "Шкала Бишопа (зрелость шейки матки)",
-  "specialty": "Акушерство",
+  "specialty": "Акушерство и гинекология",
   "description": "Оценка степени зрелости шейки матки для прогноза успешности индукции родов",
   "scoring": "sum",
   "questions": [
@@ -246,7 +246,7 @@
   "id": "nagele_rule",
   "type": "formula",
   "name": "Правило Негеле (ПДР)",
-  "specialty": "Акушерство",
+  "specialty": "Акушерство и гинекология",
   "description": "Расчёт предполагаемой даты родов по первому дню последней менструации",
   "fields": [
     { "id": "m_lmp", "label": "Первый день последней менструации", "type": "date" }
