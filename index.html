@@ -15,13 +15,41 @@
   * { box-sizing: border-box; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { background: #f5f7fa; color: #1a2634; min-height: 100vh; padding: 16px; display: flex; justify-content: center; }
   .app { max-width: 480px; width: 100%; }
-  .header { background: #1e40af; color: white; padding: 16px; margin: -16px -16px 16px -16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .header {
+    background: #1e40af;
+    color: white;
+    padding: 16px;
+    margin: -16px -16px 16px -16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Распределяет кнопки по краям */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .header .title-block { 
+    flex: 1; 
+    min-width: 0; 
+    /* padding: 0 10px; Опционально: если текст будет слишком близко к кнопкам */
+  }
+  
+  .header .menu-btn { 
+    background: none; 
+    border: none; 
+    font-size: 24px; 
+    cursor: pointer; 
+    padding: 4px 8px; 
+    color: white; 
+    line-height: 1; 
+    flex-shrink: 0; 
+  }
   .header .logo { width: 36px; height: 36px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
   .header .logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  .header .title-block { flex: 1; min-width: 0; }
   .header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; margin: 0; }
   .header p { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 2px; }
-  .header .menu-btn { background: none; border: none; font-size: 24px; cursor: pointer; padding: 4px 8px; color: white; line-height: 1; flex-shrink: 0; }
   .header .info-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 0 4px; color: rgba(255,255,255,0.8); vertical-align: super; }
   .search { width: 100%; padding: 14px 16px; border: 1.5px solid #e2e8f0; border-radius: 16px; font-size: 16px; margin-bottom: 16px; outline: none; background: white; }
   .search:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
@@ -37,7 +65,12 @@
   .star { position: absolute; top: 14px; right: 14px; background: none; border: none; font-size: 22px; cursor: pointer; color: #cbd5e1; padding: 4px; line-height: 1; transition: 0.15s; }
   .star:hover { color: #f59e0b; transform: scale(1.1); }
   .star.active { color: #f59e0b; }
-  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7a8a; margin: 20px 4px 10px; }
+  .section-title { 
+ font-size: 16px; /* Было 13px */
+  font-weight: 700; 
+  color: #1a2634; /* Темнее */
+ margin: 24px 4px 12px; 
+}
   .back { background: none; border: none; font-size: 15px; color: #3b82f6; cursor: pointer; padding: 8px 0; margin-bottom: 8px; font-weight: 500; }
   .page-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
   .page-sub { font-size: 14px; color: #6b7a8a; margin-bottom: 20px; }
@@ -259,68 +292,77 @@
     width: 100%; 
     padding-bottom: 100px; /* Добавили отступ снизу, чтобы меню не перекрывало контент */
   }
-  /* Сетка для папок */
+
+  /* Сетка */
   .folder-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Два столбика */
-    gap: 12px;
-    margin-top: 10px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px; /* Расстояние между папками */
+    margin-top: 12px;
+    margin-left: 0;  /* Убираем лишние отступы, если они были */
+    margin-right: 0;
+    width: 100%; /* Растягиваем сетку на всю доступную ширину */
   }
 
-  /* Плитка папки */
+  /* Карточка папки */
   .folder-card {
-    background: #f8fafc; /* Легкий серо-голубой фон */
+    background: white;
     border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    padding: 14px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
     cursor: pointer;
     transition: 0.15s;
-    border: 1.5px solid #e2e8f0; /* Аккуратная рамка */
+    border: 1.5px solid transparent;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 90px;
     position: relative;
-    overflow: hidden;
-  }
-
-  /* Цветная полоска слева (акцент) */
-  .folder-card::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: #3b82f6; /* Синий акцент */
-    border-radius: 4px 0 0 4px;
+    
+    /* ВОТ ГЛАВНОЕ: задаем высоту и распределяем контент */
+    min-height: 80px; /* Подобрал высоту, чтобы было как в избранном */
+    justify-content: space-between; /* Капсула сверху, текст снизу */
   }
 
   .folder-card:hover {
-    border-color: #3b82f6;
-    background: #eff6ff; /* При наведении становится нежно-голубым */
+    border-color: var(--folder-color, #3b82f6);
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(59,130,246,0.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
   }
 
   .folder-card:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
   }
 
+  /* Контейнер для капсулы (сброс лишних отступов) */
+  .folder-name-wrap {
+    margin-bottom: 0; 
+    display: flex;
+    justify-content: flex-start; 
+    width: 100%;
+  }
+
+  /* Капсула с названием */
   .folder-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1a2634;
-    line-height: 1.3;
-    margin-bottom: 8px;
-    padding-left: 6px; /* Отступ от полоски */
+    font-size: 12px; 
+    font-weight: 700;
+    color: var(--folder-color, #1a2634); 
+    background: var(--folder-color-bg, #f0f9ff); 
+    padding: 4px 8px;
+    border-radius: 6px;
+    line-height: 1.2; 
+    display: inline-block; 
+    white-space: normal; 
+    word-break: break-word; 
   }
 
+  /* Количество (текст внизу) */
   .folder-count {
-    font-size: 12px;
-    color: #64748b;
+    font-size: 11px;
+    color: #6b7a8a;
     font-weight: 500;
-    padding-left: 6px;
+    text-align: left;
+    display: block;
+    width: 100%;
+    /* Убираем auto, так как распределяем через justify-content у карточки */
   }
 
 </style>
@@ -449,14 +491,14 @@
         <h2>Добро пожаловать!</h2>
         <button class="close-btn" onclick="closeUpdateModal()">✕</button>
       </div>
-      
+       
       <div class="tab-content active" style="display: block; padding-top: 5px;">
         <p style="margin-bottom: 16px;">Спасибо, что заглянули в <b>МедКалькулятор</b> — некоммерческий проект для врачей.</p>
         
         <div class="support-card" style="background: #eff6ff; border-color: #bfdbfe; margin-bottom: 16px;">
-          <p style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">📦 Что нового в версии 0.9.9:</p>
+          <p style="color: #1e40af; font-weight: 600; margin-bottom: 8px;">📦 Что нового в версии <span id="updateVersionText"></span>:</p>
           <ul style="color: #4a5a6a; font-size: 14px; padding-left: 20px; margin: 0;">
-            <li style="margin-bottom: 6px;">Добавлен справочник <b>МКБ-10</b> (более 12 000 болезней).</li>
+            <li style="margin-bottom: 6px;">Добавлен справочник <b>МКБ-10</b>.</li>
             <li style="margin-bottom: 6px;">Появился новый раздел <b>СМП</b> (в разработке).</li>
             <li>Улучшена работа приложения без интернета.</li>
           </ul>
@@ -535,22 +577,14 @@ async function loadData() {
     // --- ПРОВЕРКА ОБНОВЛЕНИЯ ВЕРСИИ ---
     if (DATA && DATA.version) {
       const savedVersion = localStorage.getItem('app_version');
-      if (savedVersion && savedVersion !== DATA.version) {
-        // Версия изменилась! Запоминаем новую и показываем окно обновлений
+      
+      // Если версия изменилась ИЛИ это первый запуск
+      if (!savedVersion || savedVersion !== DATA.version) {
         localStorage.setItem('app_version', DATA.version);
         // Показываем окно обновлений
         setTimeout(() => {
           showUpdateModal();
-        }, 1000); // Небольшая задержка, чтобы страница успела загрузиться
-      } else if (!savedVersion) {
-        // Первый запуск! Запоминаем версию и показываем приветствие
-        localStorage.setItem('app_version', DATA.version);
-        setTimeout(() => {
-          showUpdateModal();
-        }, 1000);
-      } else {
-        // Версия не менялась, просто обновляем в памяти
-        localStorage.setItem('app_version', DATA.version);
+        }, 1000); // Задержка 1 секунда, чтобы страница успела прогрузиться
       }
     }
     // ---------------------------------
@@ -565,6 +599,8 @@ async function loadData() {
         // Записываем версию в меню
     const verEl = document.getElementById('appVersionText');
     if (verEl) verEl.textContent = 'v' + DATA.version;
+    const updateVerEl = document.getElementById('updateVersionText');
+    if (updateVerEl) updateVerEl.textContent = 'v' + DATA.version;
 
   } catch (e) {
     // ... ошибка ...
@@ -632,8 +668,9 @@ function switchMainTab(tab) {
 }
 
 // ---------- Экран списка ----------
+// ---------- Экран списка ----------
 function renderList(filter = '') {
-    // ЗАЩИТА ОТ ОШИБКИ: Если данные еще не загрузились, ждем
+  // ЗАЩИТА ОТ ОШИБКИ: Если данные еще не загрузились, ждем
   if (!DATA || !DATA.calculators) {
     document.getElementById('app').innerHTML = '<div class="loading">Загрузка данных...</div>';
     return;
@@ -679,12 +716,56 @@ function renderList(filter = '') {
       html += `<div class="section-title">Все инструменты</div>`;
       html += `<div class="folder-grid">`;
       
+      // Словарь цветов: сгруппировали по 7 базовым цветам, чтобы не было дублей
+      const specStyles = {
+        // --- СИНИЙ (Общая терапия, диагностика) ---
+        'Общеклинические': { main: '#1d4ed8', bg: '#dbeafe' },
+        'Антропометрия': { main: '#1d4ed8', bg: '#dbeafe' },
+        'Качество жизни': { main: '#1d4ed8', bg: '#dbeafe' },
+        'Пульмонология': { main: '#1d4ed8', bg: '#dbeafe' },
+
+        // --- КРАСНЫЙ/РОЗОВЫЙ (Кровь, сердце, срочность) ---
+        'Кардиология': { main: '#be123c', bg: '#ffe4e6' },
+        'Гемодинамика': { main: '#be123c', bg: '#ffe4e6' },
+        'Неотложная помощь': { main: '#be123c', bg: '#ffe4e6' },
+        'Реанимация': { main: '#be123c', bg: '#ffe4e6' },
+
+        // --- ФИОЛЕТОВЫЙ (Неврология, психика) ---
+        'Неврология': { main: '#6d28d9', bg: '#ede9fe' },
+        'Психиатрия': { main: '#6d28d9', bg: '#ede9fe' },
+        'Наркология': { main: '#6d28d9', bg: '#ede9fe' },
+
+        // --- ЗЕЛЕНЫЙ (ЖКТ, печень, обмен веществ) ---
+        'Гастроэнтерология': { main: '#15803d', bg: '#dcfce7' },
+        'Гепатология': { main: '#15803d', bg: '#dcfce7' },
+        'Эндокринология': { main: '#15803d', bg: '#dcfce7' },
+
+        // --- ОРАНЖЕВЫЙ/ЯНТАРНЫЙ (Дети, кожа, сосуды) ---
+        'Педиатрия': { main: '#b45309', bg: '#fef3c7' },
+        'Флебология': { main: '#b45309', bg: '#fef3c7' },
+
+        // --- БИРЮЗОВЫЙ (Женское здоровье, хирургия) ---
+        'Акушерство и гинекология': { main: '#0f766e', bg: '#ccfbf1' },
+        'Хирургия': { main: '#0f766e', bg: '#ccfbf1' },
+        'Травматология': { main: '#0f766e', bg: '#ccfbf1' },
+
+        // --- СЕРЫЙ (Прочее) ---
+        'Сомнология': { main: '#475569', bg: '#f1f5f9' },
+        'Нефрология': { main: '#475569', bg: '#f1f5f9' }
+      };
+      
       allSpecs.forEach(spec => {
         const count = DATA.calculators.filter(c => (c.specialty || 'Общеклинические') === spec).length;
+        const word = count === 1 ? 'инструмент' : (count >= 2 && count <= 4 ? 'инструмента' : 'инструментов');
+        
+        const style = specStyles[spec] || { main: '#1d4ed8', bg: '#dbeafe' };
+        
         html += `
-          <div class="folder-card" onclick="openFolder('${spec}')">
-            <div class="folder-name">${spec}</div>
-            <div class="folder-count">${count} шт.</div>
+          <div class="folder-card" style="--folder-color: ${style.main}; --folder-color-bg: ${style.bg};" onclick="openFolder('${spec}')">
+            <div class="folder-name-wrap">
+              <div class="folder-name">${spec}</div>
+            </div>
+            <div class="folder-count">${count} ${word}</div>
           </div>`;
       });
       
@@ -729,25 +810,43 @@ function closeFolder() {
 }
 
 // Единый хедер для всего приложения
+// Единый хедер для всего приложения
 function renderHeader(subtitle = '') {
   return `
     <div class="header">
+      <!-- Левая кнопка (меню) -->
       <button class="menu-btn" onclick="toggleMenu()" title="Меню" style="font-size: 28px; padding: 0 8px; font-weight: 900; letter-spacing: -2px;">⋮</button>
       
-      <div class="title-block" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div class="logo" style="width: 28px; height: 28px; border-radius: 8px;"><img src="icon-192.png" alt=""></div>
-          <h1 style="font-size: 17px; margin: 0;">МедКалькулятор <span onclick="showDisclaimer()" class="info-btn" style="font-size: 14px;">ⓘ</span></h1>
+      <!-- Центральный блок: Логотип + Текст -->
+      <div class="title-block" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <div class="logo" style="width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;">
+          <img src="icon-192.png" alt="" style="width: 100%; height: 100%; object-fit: contain; display: block;">
         </div>
-        <p style="margin-top: 2px;">${subtitle}</p>
+        
+        <div style="display: flex; flex-direction: column;">
+          <h1 style="font-size: 17px; margin: 0; display: flex; align-items: center; gap: 4px; line-height: 1.2;">
+            МедКалькулятор <span onclick="showDisclaimer()" class="info-btn" style="font-size: 14px; cursor: pointer;">ⓘ</span>
+          </h1>
+          <p style="margin-top: 2px; font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.2;">${subtitle || 'инструменты'}</p>
+        </div>
       </div>
 
-      <button class="menu-btn" onclick="shareApp()" title="Поделиться" style="padding: 0 8px;">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+      <!-- Правая кнопка (Поделиться) - новая иконка -->
+      <button class="menu-btn" onclick="shareApp()" title="Поделиться" style="padding: 0 8px; display: flex; align-items: center; justify-content: center;">
+        <!-- Иконка "Три точки" -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
       </button>
     </div>
   `;
 }
+
+
 
 // ---------- Открытие калькулятора ----------
 function openCalc(id, pushState = true) {
@@ -1597,18 +1696,6 @@ function copyEmail() {
   window.location.href = mailtoLink;
 }
 
-// После загрузки данных
-if (DATA && DATA.version) {
-  const savedVersion = localStorage.getItem('app_version');
-  if (savedVersion && savedVersion !== DATA.version) {
-    // Версия изменилась! Показываем пользователю кнопку "Обновить"
-    // или просто перезагружаем страницу
-    localStorage.setItem('app_version', DATA.version);
-    // window.location.reload(); // Раскомментируйте, если хотите авто-перезагрузку
-  } else {
-    localStorage.setItem('app_version', DATA.version);
-  }
-}
 
 // ---------- Интерактивная инструкция ----------
 let guideStep = 0;
@@ -1893,6 +1980,15 @@ function openICDGroup(groupCode) {
   renderICD();
 }
 
+function showUpdateModal() {
+  document.getElementById('updateModal').classList.add('show');
+}
+
+function closeUpdateModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('updateModal').classList.remove('show');
+}
+
 function closeICDLevel() {
   // Вызываем системный шаг назад
   history.back();
@@ -1912,6 +2008,7 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log('Ошибка Service Worker:', err));
   });
 }
+
 </script>
 </body>
 </html>
