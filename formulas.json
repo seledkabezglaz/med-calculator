@@ -1,5 +1,5 @@
 {
-  "version": "0.9.9 test (1)-beta",
+  "version": "0.9.9 test (7)-beta",
   "updated": "15-09-2026",
   "calculators": [
     {
@@ -374,7 +374,7 @@
   "id": "caprini",
   "type": "questionnaire",
   "name": "Шкала Каприни (Caprini Risk Score)",
-  "specialty": "Хирургия / Флебология",
+  "specialty": "Хирургия",
   "description": "Оценка риска венозных тромбоэмболических осложнений (ВТЭО) у хирургических пациентов. Введите вес и рост — ИМТ рассчитается автоматически.",
   "scoring": "sum",
   "preFields": [
@@ -1843,7 +1843,7 @@
       "id": "roma_index",
       "type": "equation",
       "name": "Индекс ROMA",
-      "specialty": "Онкология / Гинекология",
+      "specialty": "Акушерство и гинекология",
       "description": "Оценка риска эпителиального рака яичников на основе HE4 и CA-125. Учитывает менопаузальный статус. Не является диагнозом.",
       "fields": [
         { "id": "m_menopause", "label": "Менопаузальный статус", "type": "radio", "options": [{ "value": 0, "label": "Пременопауза" }, { "value": 1, "label": "Постменопауза" }] },
@@ -2482,7 +2482,7 @@
   "id": "lawton_iadl",
   "type": "questionnaire",
   "name": "Индекс Лоутона (IADL)",
-  "specialty": "Неврология / Гериатрия",
+  "specialty": "Неврология",
   "description": "Lawton Instrumental Activities of Daily Living Scale. Оценка инструментальной повседневной активности (покупки, готовка, финансы и т.д.).",
   "scoring": "sum",
   "questions": [
@@ -2530,7 +2530,7 @@
   "id": "tinetti",
   "type": "questionnaire",
   "name": "Тест Тинегти (Tinetti POMA)",
-  "specialty": "Неврология / Гериатрия",
+  "specialty": "Неврология",
   "description": "Performance Oriented Mobility Assessment. Оценка риска падений у пожилых. Равновесие (0-16) + Ходьба (0-12) = 28 баллов.",
   "scoring": "sum",
   "questions": [
@@ -2562,7 +2562,7 @@
   "id": "pfeiffer",
   "type": "questionnaire",
   "name": "Тест Пфайффера (SPMSQ)",
-  "specialty": "Неврология / Гериатрия",
+  "specialty": "Неврология",
   "description": "Short Portable Mental Status Questionnaire. Оценка когнитивных нарушений у пожилых. Считаются ошибки: 0-2 — норма, 8+ — тяжелые нарушения.",
   "scoring": "sum",
   "questions": [
@@ -2623,7 +2623,7 @@
   "id": "gds15",
   "type": "questionnaire",
   "name": "Шкала Есавиджа (GDS-15)",
-  "specialty": "Психиатрия / Гериатрия",
+  "specialty": "Психиатрия",
   "description": "Geriatric Depression Scale (short form). Скрининг депрессии у пожилых. 15 вопросов, 1 балл за ответ, указывающий на депрессию.",
   "scoring": "sum",
   "questions": [
@@ -2911,7 +2911,7 @@
   "id": "zarit_burden",
   "type": "questionnaire",
   "name": "Шкала Зарит (бремя ухаживающего)",
-  "specialty": "Психиатрия / Гериатрия",
+  "specialty": "Психиатрия",
   "description": "Zarit Burden Interview. Оценка субъективного бремени ухаживающего за пациентом. 22 вопроса, шкала 0-4. Максимум 88.",
   "scoring": "sum",
   "options": [
@@ -3043,7 +3043,7 @@
   "id": "allgower_shock_index",
   "type": "formula",
   "name": "Индекс шока Альговера",
-  "specialty": "Реанимация / Хирургия",
+  "specialty": "Хирургия",
   "description": "Allgöwer Shock Index. Отношение частоты сердечных сокращений к систолическому артериальному давлению. Быстрый маркер гемодинамической нестабильности.",
   "fields": [
     { "id": "m_hr", "label": "ЧСС (уд/мин)", "type": "number", "placeholder": "80", "step": "1" },
@@ -3214,7 +3214,7 @@
   "id": "fps",
   "type": "questionnaire",
   "name": "Лицевая шкала боли (FPS)",
-  "specialty": "Педиатрия / Общеклинические",
+  "specialty": "Педиатрия",
   "description": "Faces Pain Scale. Оценка боли по выражению лица (для детей от 3 лет и пациентов с трудностями вербального общения).",
   "scoring": "sum",
   "questions": [
@@ -3240,7 +3240,7 @@
   "id": "tug",
   "type": "questionnaire",
   "name": "Тест «Встань и иди» (TUG)",
-  "specialty": "Неврология / Гериатрия",
+  "specialty": "Неврология",
   "description": "Timed Up and Go Test. Оценка мобильности и риска падений. Измеряется время (в секундах) выполнения задания.",
   "scoring": "sum",
   "questions": [
