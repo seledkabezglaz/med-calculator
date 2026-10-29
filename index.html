@@ -332,11 +332,10 @@
     transform: scale(0.97);
   }
 
-  /* Контейнер для капсулы (сброс лишних отступов) */
+  /* Обертка для капсулы */
   .folder-name-wrap {
-    margin-bottom: 0; 
-    display: flex;
-    justify-content: flex-start; 
+    margin-bottom: 6px;
+    display: block; /* Блочный элемент, чтобы растянуть на всю ширину */
     width: 100%;
   }
 
@@ -346,23 +345,23 @@
     font-weight: 700;
     color: var(--folder-color, #1a2634); 
     background: var(--folder-color-bg, #f0f9ff); 
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 6px 12px; 
+    
+    border-radius: 999px; /* ВОТ ОНО! Делает края идеально круглыми */
+    
     line-height: 1.2; 
-    display: inline-block; 
-    white-space: normal; 
-    word-break: break-word; 
+    display: block; 
+    width: 100%; 
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis; 
-    display: block; 
-    width: 100%; 
+    text-align: center; 
   }
 
-    /* Класс для длинных названий */
+  /* Класс для длинных названий */
   .folder-name.long-text {
-    font-size: 11px; /* Уменьшаем шрифт, чтобы влезло больше букв */
-    letter-spacing: -0.3px; /* Чуть сжимаем буквы */
+    font-size: 11px; 
+    letter-spacing: -0.3px;
   }
 
   /* Количество (текст внизу) */
