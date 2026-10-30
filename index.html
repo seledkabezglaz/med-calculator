@@ -383,6 +383,14 @@
     /* Убираем auto, так как распределяем через justify-content у карточки */
   }
 
+
+
+
+
+  /* Запрещаем скролл фона, когда открыто модальное окно */
+  body.modal-open {
+    overflow: hidden !important;
+  }
 </style>
 </head>
 <body>
@@ -1587,15 +1595,15 @@ function calcQuestionnaire() {
 }
 
 // ---------- Меню ---------
-
 function toggleMenu() {
   document.getElementById('menuModal').classList.add('show');
+  document.body.classList.add('modal-open'); // Блокируем фон
 }
 
 function closeMenu(event) {
-  // Закрываем только если кликнули на фон (не на само окно)
   if (event && event.target !== event.currentTarget) return;
   document.getElementById('menuModal').classList.remove('show');
+  document.body.classList.remove('modal-open'); // Разблокируем фон
 }
 
 function switchTab(tab) {
@@ -1613,26 +1621,7 @@ function switchTab(tab) {
   }
 }
 
-function closeMenu(event) {
-  // Закрываем только если кликнули на фон (не на само окно)
-  if (event && event.target !== event.currentTarget) return;
-  document.getElementById('menuModal').classList.remove('show');
-}
-
-function switchTab(tab) {
-  // Убираем класс active у всех кнопок и блоков
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  
-  // Добавляем класс active нужным
-  if (tab === 'install') {
-    document.querySelectorAll('.tab-btn')[0].classList.add('active');
-    document.getElementById('tab-install').classList.add('active');
-  } else {
-    document.querySelectorAll('.tab-btn')[1].classList.add('active');
-    document.getElementById('tab-support').classList.add('active');
-  }
-}
+// ---------- Дисклеймер ---------
 
 // ---------- Дисклеймер ----------
 
