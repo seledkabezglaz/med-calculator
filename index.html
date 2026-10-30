@@ -291,17 +291,18 @@
     max-width: 480px; 
     width: 100%; 
     padding-bottom: 100px; /* Добавили отступ снизу, чтобы меню не перекрывало контент */
+    box-sizing: border-box;
   }
 
   /* Сетка */
   .folder-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px; /* Расстояние между папками */
+    /* Жестко фиксируем колонки, чтобы они не распирали экран */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
+    gap: 12px;
     margin-top: 12px;
-    margin-left: 0;  /* Убираем лишние отступы, если они были */
-    margin-right: 0;
-    width: 100%; /* Растягиваем сетку на всю доступную ширину */
+    width: 100%;
+    box-sizing: border-box;
   }
 
   /* Карточка папки */
@@ -320,6 +321,10 @@
     /* ВОТ ГЛАВНОЕ: задаем высоту и распределяем контент */
     min-height: 80px; /* Подобрал высоту, чтобы было как в избранном */
     justify-content: space-between; /* Капсула сверху, текст снизу */
+        /* ВОТ ЭТИ ДВЕ СТРОЧКИ - ЛЕКАРСТВО ОТ РАЗРЫВА */
+    min-width: 0; 
+    box-sizing: border-box;
+    width: 100%;
   }
 
   .folder-card:hover {
@@ -356,6 +361,9 @@
     overflow: hidden; 
     text-overflow: ellipsis; 
     text-align: center; 
+    max-width: 100%; /* Капсула не может быть шире карточки */
+    box-sizing: border-box;
+
   }
 
   /* Класс для длинных названий */
