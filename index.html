@@ -402,6 +402,14 @@
     <div class="modal-content" onclick="event.stopPropagation()">
       
       <!-- Заголовок (не скроллится) -->
+      <div class="modal-header">
+        <h2>Меню</h2>
+        <button class="close-btn" onclick="closeMenu()">✕</button>
+      </div>
+      
+      <!-- Область скролла (только она прокручивается) -->
+      <div class="modal-scroll-area">
+          
           <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('install')">Как установить</button>
             <button class="tab-btn" onclick="switchTab('support')">Поддержка</button>
@@ -481,6 +489,7 @@
               <p style="font-size: 11px; color: #94a3b8; margin-top: 8px; margin-bottom: 0;">Спасибо за любую поддержку!</p>
             </div>
           </div>
+      </div> 
       <!-- КОНЕЦ ОБЛАСТИ СКРОЛЛА -->
 
     </div>
@@ -1622,8 +1631,6 @@ function switchTab(tab) {
 }
 
 // ---------- Дисклеймер ---------
-
-// ---------- Дисклеймер ----------
 
 function showDisclaimer() {
   document.getElementById('disclaimerModal').classList.add('show');
