@@ -520,38 +520,46 @@
 </div>
 
   <!-- Модальное окно: Обновления / Приветствие -->
-  <div class="modal-overlay" id="updateModal" onclick="closeUpdateModal(event)">
+<div class="modal-overlay" id="updateModal" onclick="closeUpdateModal(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
       
       <!-- Заголовок (не скроллится) -->
       <div class="modal-header">
-        <h2>МедКалькулятор 1.0</h2>
+        <h2>МедКалькулятор 1.1</h2>
         <button class="close-btn" onclick="closeUpdateModal()">✕</button>
       </div>
       
-      <!-- ОБЕРТКА ДЛЯ СКРОЛЛА (добавили ее) -->
+      <!-- ОБЕРТКА ДЛЯ СКРОЛЛА -->
       <div class="modal-scroll-area">
         <div class="tab-content active" style="display: block; padding-top: 5px;">
+          
+          <!-- Блок 1: Приветствие и базовая информация -->
           <p style="margin-bottom: 16px;">Спасибо, что заглянули! Этот проект создан для удобства специалистов здравоохранения.</p>
           
-          <!-- Что уже есть -->
           <div class="support-card" style="background: #f0fdf4; border-color: #bbf7d0; margin-bottom: 16px;">
-            <p style="color: #166534; font-weight: 700; margin-bottom: 8px;">✅ Что уже есть:</p>
+            <p style="color: #166534; font-weight: 700; margin-bottom: 8px;">✅ Что внутри:</p>
             <ul style="color: #4a5a6a; font-size: 14px; padding-left: 20px; margin: 0;">
-              <li style="margin-bottom: 6px;"><b>100+ калькуляторов</b> и медицинских шкал.</li>
+              <li style="margin-bottom: 6px;"><b>Более 100</b> калькуляторов и медицинских шкал.</li>
               <li style="margin-bottom: 6px;">Полный справочник <b>МКБ-10</b> (более 12 000 болезней).</li>
               <li style="margin-bottom: 6px;">Быстрый поиск и распределение по специальностям (папкам).</li>
               <li>Работа <b>без интернета</b> (установка на главный экран).</li>
             </ul>
           </div>
 
-          <!-- Что в планах -->
+          <!-- Блок 2: Что нового в этой версии -->
           <div class="support-card" style="background: #eff6ff; border-color: #bfdbfe; margin-bottom: 16px;">
-            <p style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">🚀 В планах:</p>
+            <p style="color: #1e40af; font-weight: 700; margin-bottom: 8px;">🚀 Что нового в версии 1.1:</p>
+            <ul style="color: #4a5a6a; font-size: 14px; padding-left: 20px; margin: 0;">
+              <li style="margin-bottom: 6px;">Добавлены новые медицинские формулы и шкалы.</li>
+            </ul>
+          </div>
+
+          <!-- Блок 3: Планы -->
+          <div class="support-card" style="background: #f8fafc; border-color: #e2e8f0; margin-bottom: 16px;">
+            <p style="color: #475569; font-weight: 700; margin-bottom: 8px;">📅 В планах:</p>
             <ul style="color: #4a5a6a; font-size: 14px; padding-left: 20px; margin: 0;">
               <li style="margin-bottom: 6px;">Добавление алгоритмов <b>СМП</b> (Скорая помощь).</li>
               <li style="margin-bottom: 6px;">Новые педиатрические и неонатальные шкалы.</li>
-              <li>Улучшение интерфейса и обратной связи.</li>
             </ul>
           </div>
 
